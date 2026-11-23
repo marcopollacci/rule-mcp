@@ -4,8 +4,8 @@
  * docs/ plus the root README stay the source of truth. This module owns the
  * walk that turns them into pages: collect the public routes, render each one,
  * rewrite its links, and copy the shell assets. Which route a source takes is
- * in `./_pages.mjs`, which links are rewritten and why in `./_rewrite.mjs`, and
- * which files are public in `./_collect.mjs`.
+ * in `./_pages.mjs`, which links are rewritten and why in `./rewrite/index.mjs`,
+ * and which files are public in `./_collect.mjs`.
  *
  * Run `pnpm docs:build [outDir]` (default site-dist/); `pnpm docs:dev` serves
  * the same output locally.
@@ -20,8 +20,8 @@ import { copyAssets } from "./_assets.mjs";
 import { collectPages, posix, root } from "./_collect.mjs";
 import { addHeadingIds, decorate } from "./_decorate.mjs";
 import { sourceMap } from "./_pages.mjs";
-import { dropLeadingHeading, focusCodeBlocks, repoBase, rewriteLinks, stripHeadingNumber, unwrapDeadLinks, wrapTables } from "./_rewrite.mjs";
 import { layout, titleOf } from "./_shell.mjs";
+import { dropLeadingHeading, focusCodeBlocks, repoBase, rewriteLinks, stripHeadingNumber, unwrapDeadLinks, wrapTables } from "./rewrite/index.mjs";
 
 export { collectPages } from "./_collect.mjs";
 

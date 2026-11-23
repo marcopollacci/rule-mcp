@@ -72,6 +72,24 @@ test("document boilerplate: lang, unique titles, one h1, landmarks", async ({ br
   await context.close();
 });
 
+test("the narrow layout adds no violation of its own", async ({ browser }) => {
+  // The scan above runs every page at a desktop width. A one-column layout is a
+  // different document, so the phone width is scanned here too.
+  const context = await browser.newContext({ viewport: { width: 320, height: 800 } });
+  const page = await context.newPage();
+
+  for (const out of ["index.html", "docs/getting-started.html"]) {
+    await test.step(`${out} at 320px`, async () => {
+      await page.goto(site.url(out));
+      const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa"]).analyze();
+
+      expect(results.violations).toEqual([]);
+    });
+  }
+
+  await context.close();
+});
+
 test("the reference subnav appears on exactly the reference pages", async ({ browser }) => {
   const context = await browser.newContext();
   const withSubnav = [];
