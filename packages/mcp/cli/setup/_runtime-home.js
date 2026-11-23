@@ -28,7 +28,7 @@ import { getRuntimePaths } from "../paths/index.js";
 /** Mirrors `cli/installers/_env.js` (not exported there): per-user compile cache. */
 const COMPILE_CACHE_DIR = join(homedir(), ".cache", "rule-mcp", "compile-cache");
 
-/** Former `ruleGalaxyHome()` - now the rule-mcp runtime root. */
+/** The rule-mcp runtime root. */
 const ruleGalaxyHome = () => getRuntimePaths().homeDir;
 
 /** Subdirectories the runtime expects to find under the home root. */
@@ -37,10 +37,10 @@ const SUBDIRS = ["state", "data", "projects", "config"];
 /**
  * Count files under a directory, recursively.
  *
- * `lstat` does not follow links. A purge tree holds the launcher and its
- * `node_modules`, and a dangling link there used to throw `ENOENT` out of the
- * uninstall scan: the alternate screen opened, the throw closed it, and the
- * wizard never appeared. A link counts as one entry. A missing path counts zero.
+ * `lstat` does not follow links, so a purge tree that holds the launcher and
+ * its `node_modules` survives a dangling link: `readdirSync` would throw
+ * `ENOENT` out of the uninstall scan. A link counts as one entry. A missing
+ * path counts zero.
  *
  * @param {string} dir
  * @returns {number}

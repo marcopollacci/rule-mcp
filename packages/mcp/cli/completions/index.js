@@ -5,8 +5,8 @@ import { generateZsh } from "./_zsh.js";
 /**
  * @module cli/completions
  *
- * Shell auto-completion for rule-mcp.
- * Generates completion scripts for zsh, bash, and fish.
+ * Shell auto-completion for rule-mcp: completion scripts for zsh, bash and
+ * fish.
  *
  * Usage:
  *   rule-mcp completions          -> prints zsh completion (auto-detected)
@@ -17,8 +17,8 @@ import { generateZsh } from "./_zsh.js";
  * Installing is a step of its own: `rule-mcp install` asks where the script
  * goes, with one row per detected shell (`cli/completions/targets.js`). Redirecting
  * the output needs a directory that already exists and is already on the shell's
- * `fpath`: `~/.zsh/completions` is not, which is why the old one-liner failed on
- * every oh-my-zsh machine. A scripted install answers the same question:
+ * `fpath`, and `~/.zsh/completions` is not on it by default. A scripted install
+ * answers the same question:
  *
  *   rule-mcp install --completions detect        # wherever the login shell reads them
  *   rule-mcp install --completions zsh-oh-my-zsh # $ZSH_CUSTOM/completions

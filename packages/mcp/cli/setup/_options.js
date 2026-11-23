@@ -51,7 +51,7 @@ export function resolveExtras(options = {}) {
  *
  * `--completions detect` resolves through the same detection the wizard's step
  * shows, so a scripted install lands on the path zsh actually reads instead of
- * the one the old docs assumed. An unknown id is dropped rather than written
+ * the directory the shell reads. An unknown id is dropped rather than written
  * somewhere arbitrary.
  *
  * @param {string|boolean|undefined} value
@@ -123,8 +123,8 @@ export function resolveSetupOptions(options = {}) {
     completions: resolveCompletionTargets(options.completions),
     extras: resolveExtras(projectOptions),
     // Null means no flag narrowed the command surface, which the plan reads as
-    // "every command" - what an install wrote before the surface grew one per
-    // skill. The wizard replaces it with whatever its commands step answered.
+    // "every command". The wizard replaces it with whatever its commands step
+    // answered.
     selection: selectionOf(options.selection ?? {}),
     dryRun: Boolean(options.dryRun),
     force: Boolean(options.force),

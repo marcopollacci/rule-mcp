@@ -3,13 +3,9 @@
  *
  * The `rule-mcp help` guide, rendered from the live commander program.
  *
- * It used to be a hand-maintained string tagged "auto-extracted" with no
- * generator and no parity test: 12 of the 28 commands (feature, project, handon,
- * cache, roles, guard, update, agent-commands, reinstall, commit-lint, secrets,
- * init) had silently dropped out of it, and the descriptions it did carry had
- * drifted from the ones the program declares. Rendering the programs' own
- * `usage()`, `description()` and options removes the second source of truth, so
- * a new command or flag cannot fail to appear.
+ * One source of truth: the programs' own `usage()`, `description()` and
+ * options. A hand-written copy drifts, so a new command or flag cannot fail to
+ * appear here.
  */
 
 /** The guide's opening; everything after the command list is prose. */

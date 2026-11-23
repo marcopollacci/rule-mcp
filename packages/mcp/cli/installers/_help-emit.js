@@ -71,8 +71,7 @@ export default function ruleMcpHelp(pi) {
 
     return { action: "handled" };
   });
-}
-`;
+};`;
 }
 
 /**
