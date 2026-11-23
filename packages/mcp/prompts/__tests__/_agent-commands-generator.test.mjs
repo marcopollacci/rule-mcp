@@ -45,7 +45,7 @@ test("coverage: one clean command per prompt, plus the router, plus /rule-check 
 
 test("the area dispatcher and the router fold check intent via keywords; rule-check stays dedicated", () => {
   const area = listAgentCommands().find((c) => c.name === "rule-area");
-  assert.ok(area, "the one area command must exist (ADR 251)");
+  assert.ok(area, "the one area command must exist (ADR 249)");
   assert.match(area.body, /Check intent/i);
   assert.match(area.body, /controlla/);
   assert.match(area.body, /rule_tool_check/);

@@ -2,7 +2,8 @@
 
 - **Role**: privacy v2.
 - **Date**: 2026-11-23.
-  Status: `in-progress`.
+
+Status: `in-progress`.
 
 Steps re-derived from the open findings in [the review](../reviews/privacy.md) on every run, worst
 first, grouped into one workstream per severity. Mark an executed step or sub-step with `[x]` -

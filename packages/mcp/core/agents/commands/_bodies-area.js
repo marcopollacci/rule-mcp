@@ -1,4 +1,4 @@
-/** @module core/agents/commands/bodies-area - the area command bodies (ADR 109, ADR 251) */
+/** @module core/agents/commands/bodies-area - the area command bodies (ADR 109, ADR 249) */
 
 import { CHECK_INTENT_KEYWORDS_LIST } from "./_check-intent.js";
 import { checkModeSteps } from "./_bodies.js";
@@ -53,7 +53,7 @@ export function areaBody(description, { skill, members = [] } = {}) {
 }
 
 /**
- * Body for the one `/rule-area` command (ADR 251).
+ * Body for the one `/rule-area` command (ADR 249).
  *
  * The body carries the vocabulary: the model reads the area from the first word
  * of the request and routes with the hub and leaves named for it.

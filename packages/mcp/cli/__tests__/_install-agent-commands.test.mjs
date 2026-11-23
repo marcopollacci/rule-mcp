@@ -63,7 +63,7 @@ try {
   for (const expected of ["rule-area.md", "rule-check.md", "rule-persona.md", "rule-handoff.md"]) {
     assert.ok(existsSync(join(piPrompts, expected)), `missing registry command: ${expected}`);
   }
-  assert.ok(!existsSync(join(piPrompts, "rule-area-frontend.md")), "the per-area files are gone (ADR 251)");
+  assert.ok(!existsSync(join(piPrompts, "rule-area-frontend.md")), "the per-area files are gone (ADR 249)");
 
   // Renamed/deleted commands never surface: the installer is registry-driven.
   const legacyRouter = ["p", "i", "x", ".md"].join("");

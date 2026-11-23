@@ -71,7 +71,7 @@ export function listAreaPrompts() {
   return prompts;
 }
 
-/** The one area command: the id is the first word of the request (ADR 251). */
+/** The one area command: the id is the first word of the request (ADR 249). */
 export const AREA_DISPATCH_NAME = "rule-area";
 
 /** The area ids, in the order the dispatcher lists them. */

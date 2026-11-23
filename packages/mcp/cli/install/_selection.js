@@ -29,7 +29,7 @@ function familyOf(name) {
     return "router";
   }
 
-  // One command per family since ADR 251: the area and the persona are the
+  // One command per family since ADR 249: the area and the persona are the
   // first word of the request, not the command name.
   if (name === AREA_COMMAND) {
     return "areas";

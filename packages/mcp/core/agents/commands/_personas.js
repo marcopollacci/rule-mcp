@@ -28,7 +28,7 @@ export function personaTarget(name) {
 }
 
 /**
- * Body for the one `/rule-persona` command (ADR 251).
+ * Body for the one `/rule-persona` command (ADR 249).
  *
  * Same contract as the 19 per-role commands, with the role read from the first
  * word of the request instead of from the command name.

@@ -50,7 +50,7 @@ test("the router is in every preset, because nothing works without it", () => {
 test("minimal is the router and the one area command", () => {
   const { commands } = resolveSelection({ preset: "minimal" });
 
-  assert.deepEqual(commands, ["rule", "rule-area"], "router plus the area dispatcher (ADR 251)");
+  assert.deepEqual(commands, ["rule", "rule-area"], "router plus the area dispatcher (ADR 249)");
   assert.ok(
     commands.every((name) => name !== "rule-persona"),
     "and not the persona dispatcher",
@@ -75,7 +75,7 @@ test("picking skills validates the name and keeps the single area command", () =
 test("personas and tasks are their own families", () => {
   const personas = resolveSelection({ families: ["personas"] }).commands;
 
-  assert.deepEqual(personas, ["rule", "rule-persona"], "one command for every role (ADR 251)");
+  assert.deepEqual(personas, ["rule", "rule-persona"], "one command for every role (ADR 249)");
   assert.ok(
     personas.every((name) => !/-(audit|review|plan)$/.test(name)),
     "the per-operation persona commands stay gone (ADR 120)",

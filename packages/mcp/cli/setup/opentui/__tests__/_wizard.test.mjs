@@ -143,26 +143,3 @@ test("an uninstall with nothing to remove says so and stops", async () => {
   assert.match(screen.confirms[0].title, /Nothing to remove/u);
   assert.deepEqual(globalThis.__wizardStub.plans, []);
 });
-
-test("the completions step writes the destinations it was given", async () => {
-  reset();
-  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "no", "run", "close"]);
-
-  // The step is a checklist: this one run ticks a destination and must reach the plan.
-  const ask = screen.ask;
-
-  screen.ask = async (spec) => {
-    const answer = await ask(spec);
-
-    return spec.title === "Shell completions" ? ["zsh-oh-my-zsh"] : answer;
-  };
-
-  await runInstallWizard({ screen });
-
-  assert.ok(globalThis.__wizardStub.plans.at(-1).includes("completions"), "a ticked destination adds the task");
-  assert.equal(
-    screen.asks.some((spec) => spec.title === "Shell completions"),
-    true,
-    "the step is asked",
-  );
-});

@@ -15,7 +15,7 @@ test("every listed prompt has a getPrompt implementation with messages", () => {
 
 test("refactor: one dispatcher per area and persona family, removed commands gone", () => {
   const names = new Set(listPrompts().map((p) => p.name));
-  // ADR 251: the id travels as the first argument, so the families are two
+  // ADR 249: the id travels as the first argument, so the families are two
   // prompts, not 30.
   for (const name of AREA_PROMPTS) {
     assert.ok(names.has(name), `${name} must exist`);

@@ -7,7 +7,7 @@ import { activeRoles, getPrompt, listAgentCommands, listPrompts } from "./_surfa
 test("one persona prompt addresses every active role", () => {
   const names = new Set(listPrompts().map((prompt) => prompt.name));
 
-  assert.ok(names.has("rule-persona"), "the dispatcher addresses the whole catalog (ADR 251)");
+  assert.ok(names.has("rule-persona"), "the dispatcher addresses the whole catalog (ADR 249)");
 
   for (const role of activeRoles()) {
     assert.equal(names.has(`rule-persona-${role.id}`), false, `the per-role ${role.id} prompt must be gone`);
@@ -59,7 +59,7 @@ test("a role prompt takes an optional topic and makes it the binding scope", () 
 test("one agent command addresses every active role", () => {
   const commands = new Set(listAgentCommands().map((command) => command.name));
 
-  assert.ok(commands.has("rule-persona"), "the dispatcher is the persona command (ADR 251)");
+  assert.ok(commands.has("rule-persona"), "the dispatcher is the persona command (ADR 249)");
 
   for (const role of activeRoles()) {
     assert.ok(!commands.has(`rule-persona-${role.id}`), `the per-role ${role.id} command must be gone`);

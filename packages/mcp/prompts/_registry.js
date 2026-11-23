@@ -11,7 +11,7 @@ import { areaDispatcherPrompt } from "./_areas.js";
  * @returns {Array<{ name: string, description: string, arguments: Array<{ name: string, description: string, required?: boolean }> }>}
  */
 export function listPrompts() {
-  // One area prompt, not one per hub (ADR 251): the id is the first word of the
+  // One area prompt, not one per hub (ADR 249): the id is the first word of the
   // request, so 11 files collapse into one and leaf skills keep tools only.
   const { name: areaName, description: areaDescription, arguments: areaArguments } = areaDispatcherPrompt();
   const areas = [{ name: areaName, description: areaDescription, arguments: areaArguments }];
@@ -39,7 +39,7 @@ export function listPrompts() {
 export const PERSONA_DISPATCH_NAME = "rule-persona";
 
 /**
- * The one persona prompt (ADR 251).
+ * The one persona prompt (ADR 249).
  *
  * 19 role commands were 19 copies of one body with a different constant. The
  * role id is the first word of the request; `rule_tool_plan` still takes the

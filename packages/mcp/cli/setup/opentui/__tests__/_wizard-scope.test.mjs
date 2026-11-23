@@ -65,9 +65,9 @@ test("a project answer asks for the roots and the kind, and plans the project in
 });
 
 test("the rails and the orders are pure data", () => {
-  assert.deepEqual(INSTALL_STEPS, ["Preflight", "Profile", "Agents", "Scope", "Transport", "Surface", "Features", "Review", "Install", "Done"]);
+  assert.deepEqual(INSTALL_STEPS, ["Preflight", "Profile", "Agents", "Scope", "Transport", "Surface", "Features", "Completions", "Review", "Install", "Done"]);
   assert.deepEqual(UNINSTALL_STEPS, ["Select", "Purge", "Review", "Remove", "Done"]);
-  assert.deepEqual(installOrder(), ["preflight", "profile", "agents", "scope", "transport", "surface", "features", "review"]);
+  assert.deepEqual(installOrder(), ["preflight", "profile", "agents", "scope", "transport", "surface", "features", "completions", "review"]);
   assert.deepEqual(uninstallOrder({ hasPurge: true }), ["select", "purge", "review"]);
   assert.deepEqual(uninstallOrder(), ["select", "review"]);
 });
