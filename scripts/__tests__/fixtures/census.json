@@ -11,7 +11,7 @@
     },
     {
       "file": "15-prompts.md",
-      "sha256": "24a58b01148d8486286795fd189376692fb05635f84d77e4cc9bcca2e6d8f2f8"
+      "sha256": "592d0b6ea5cc9b2f85b13cc553933757371a95d18053712ee53e79a80b19f0d7"
     },
     {
       "file": "16-instructions.md",
@@ -35,7 +35,7 @@
     },
     {
       "file": "21-surface-map.md",
-      "sha256": "5af7fee417c72b16a84f8dd6863b70faef8ea40ab6688a7471c1604621956515"
+      "sha256": "5b587d3d34a2e646dad33faf23aaac28506953252dde2afe86db54a4a6427497"
     },
     {
       "file": "22-install-targets.md",

@@ -93,7 +93,7 @@ export function promptSection(data) {
     "",
     "### Persona, one per role",
     "",
-    "There is one command for every role: `/rule-persona <persona> <request>` (ADR 251), where the first",
+    "There is one command for every role: `/rule-persona <persona> <request>` (ADR 249), where the first",
     "word names the role from the table below. The request sets the depth of the run:",
     "",
     "- If the request names a review, the run does the audit and the review.",
