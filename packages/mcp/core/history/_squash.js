@@ -16,10 +16,12 @@
  */
 
 import { rmSync } from "node:fs";
+
+import { verifySquash } from "./_squash-verify.js";
 import { join } from "node:path";
 
 import { lintCommits, lintMessage } from "../commit/index.js";
-import { currentBranch, getFeatureCommitRange, git, gitLines, gitResult, mergeCommits, rewriteSafety, workingTreeState } from "../git/index.js";
+import { currentBranch, getFeatureCommitRange, git, gitResult, mergeCommits, rewriteSafety, workingTreeState } from "../git/index.js";
 import { applyConsolidation } from "./_documents-apply.js";
 import { planConsolidation } from "./_documents-plan.js";
 import { rollback } from "./_verify.js";
@@ -49,32 +51,6 @@ export function proposeSquash(projectDir, options = {}) {
     reasons: safety.reasons,
     untracked: safety.untracked,
     actionable: range.count > 0 && safety.safe && !range.onBaseBranch && range.mergeBase !== "",
-  };
-}
-
-/**
- * What the rewrite produced, and whether it is exactly what was planned.
- *
- * The base travels with the check: a squash on the base branch itself (the
- * case where the feature is everything the remote does not have yet) has a
- * merge base of its own, and reading the default one here counted zero commits
- * and rolled a correct squash back as an "unexpected change".
- */
-function verifySquash(projectDir, { original, consolidation, baseBranch }) {
-  const range = getFeatureCommitRange(projectDir, { baseBranch });
-  const changed = gitLines(projectDir, ["diff", "--name-only", `${original}..HEAD`]);
-  const allowed = new Set(consolidation?.paths);
-  const unexpected = changed.filter((file) => !allowed.has(file));
-
-  return {
-    commits: range.count,
-    violations: lintCommits(range.commits ?? []).violations.length,
-    merges: range.range ? mergeCommits(projectDir, range.range).length : 0,
-    treeUnchanged: changed.length === 0,
-    documentsConsolidated: Boolean(consolidation),
-    changed,
-    unexpected,
-    valid: range.count === 1 && unexpected.length === 0,
   };
 }
 

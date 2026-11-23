@@ -19,12 +19,8 @@ import { HANDOFF_DIR } from "./_documents.js";
 const ADR_INDEX = "ADR.md";
 const HANDOFF_INDEX = "HANDOFF.md";
 
-/** One source document, verbatim, with a marker naming where it came from. */
-function sourceBlock(projectDir, file) {
-  const body = readFileSync(join(projectDir, file), "utf8").trimEnd();
-
-  return ["---", "", `<!-- source: ${file} -->`, "", body, ""];
-}
+/** One source document, verbatim, under a Markdown marker (no HTML: ADR 244). */
+const sourceBlock = (projectDir, file) => ["---", "", `_Source: \`${file}\`_`, "", readFileSync(join(projectDir, file), "utf8").trimEnd(), ""];
 
 /** The merged ADR: one header, then every original verbatim, in order. */
 export function mergedAdrText(projectDir, plan) {

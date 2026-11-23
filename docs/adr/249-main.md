@@ -4,7 +4,7 @@ _Consolidated at the feature close from 6 decisions of this feature (249, 250, 2
 
 ---
 
-<!-- source: docs/adr/249-merge-the-argument-hint-into-the-description-for-hosts-without-an-argument-hint-.md -->
+_Source: `docs/adr/249-merge-the-argument-hint-into-the-description-for-hosts-without-an-argument-hint-.md`_
 
 # 249: Merge the argument hint into the description for hosts without an argument-hint field
 
@@ -38,7 +38,7 @@ opencode accepts an argument-hint field, or renders a hint column of its own: th
 
 ---
 
-<!-- source: docs/adr/250-answer-slash-command-help-without-a-model-turn-where-the-host-allows-it.md -->
+_Source: `docs/adr/250-answer-slash-command-help-without-a-model-turn-where-the-host-allows-it.md`_
 
 # 250: Answer slash-command help without a model turn where the host allows it
 
@@ -73,7 +73,7 @@ opencode exposes an input or prompt interception hook, or its command registry d
 
 ---
 
-<!-- source: docs/adr/251-address-an-area-and-a-persona-through-one-command-each.md -->
+_Source: `docs/adr/251-address-an-area-and-a-persona-through-one-command-each.md`_
 
 # 251: Address an area and a persona through one command each
 
@@ -105,7 +105,7 @@ A host exposes dynamic slash-command arguments, so the id can be a real field in
 
 ---
 
-<!-- source: docs/adr/252-close-out-plan-command-surface-collapse.md -->
+_Source: `docs/adr/252-close-out-plan-command-surface-collapse.md`_
 
 # 252: Close out plan _command-surface-collapse
 
@@ -152,7 +152,7 @@ The work this plan closed returns: a step it dismissed reopens, and this ADR no 
 
 ---
 
-<!-- source: docs/adr/253-close-out-review-privacy.md -->
+_Source: `docs/adr/253-close-out-review-privacy.md`_
 
 # 253: Close out review privacy
 
@@ -179,7 +179,7 @@ The work this review closed returns: a step it dismissed reopens, and this ADR n
 
 ---
 
-<!-- source: docs/adr/254-close-out-audit-privacy.md -->
+_Source: `docs/adr/254-close-out-audit-privacy.md`_
 
 # 254: Close out audit privacy
 
