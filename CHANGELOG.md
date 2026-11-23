@@ -17,6 +17,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **docs**: give a scrolling code block a tab stop (`c93a0ad`)
 - **docs**: stack the home page and cap the prose measure (`2e18e1d`)
 
 ### Documentation
