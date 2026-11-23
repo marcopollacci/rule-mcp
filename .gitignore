@@ -25,7 +25,7 @@ playwright-report/
 
 coverage/
 
-# Local working papers: kept on disk, never published
-docs/plans/
-docs/audits/
-docs/reviews/
+# Working papers are committed on purpose: the plans, the audits and the reviews
+# show where the project is going, and a reader who lands on the repository can
+# follow the argument. They stay off the published site: `packages/docs/_collect.mjs`
+# excludes them, so the repository grows and the site keeps only the chapters.

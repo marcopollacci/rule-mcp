@@ -57,6 +57,34 @@ export function staleSpecifier(root, file, version) {
 }
 
 /**
+ * Move the SECURITY.md support table onto the minor this version opens.
+ *
+ * The row is the released line, not the exact patch, and the docs gate derives
+ * it from the manifest: a release that forgets it leaves a red gate on the very
+ * commit that publishes the version.
+ *
+ * @param {string} root
+ * @param {string} version
+ * @returns {void}
+ */
+function stampSupportedVersions(root, version) {
+  const file = join(root, "SECURITY.md");
+
+  if (!existsSync(file)) {
+    return;
+  }
+
+  const [major, minor] = version.split(".");
+  const line = `${major}.${minor}.x`;
+  const text = readFileSync(file, "utf8");
+  const next = text.replace(/^\|\s*\d+\.\d+\.x\s*\|\s*:white_check_mark:\s*\|$/mu, `| ${line}   | :white_check_mark: |`);
+
+  if (next !== text) {
+    writeFileSync(file, next);
+  }
+}
+
+/**
  * Write the version into every manifest that carries it, and refresh the
  * lockfile when a specifier moved.
  *
@@ -92,6 +120,8 @@ export function stampEverywhere(root, version) {
     stamped += 1;
     specifiers = specifiers || /"workspace:[^"]+"/u.test(text);
   }
+
+  stampSupportedVersions(root, version);
 
   if (!specifiers) {
     return { stamped, specifiers, ok: true };

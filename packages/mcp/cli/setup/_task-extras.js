@@ -74,7 +74,7 @@ export const commandsTask = (force, agents = [], selection = null) => ({
 export const skillsTask = () => ({
   id: "skills",
   title: "Bundled rule-mcp-* skills",
-  detail: "~/.agents/skills",
+  detail: "the ~60 bundled skills into ~/.agents/skills",
   run: async ({ dryRun }) => {
     if (dryRun) {
       return { status: "ok", summary: "would install to ~/.agents/skills" };

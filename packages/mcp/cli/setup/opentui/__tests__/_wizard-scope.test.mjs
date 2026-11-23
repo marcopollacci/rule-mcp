@@ -18,13 +18,17 @@ const base = ["next", "standard", ["claude"]];
 
 test("a global answer records the scope and writes no project", async () => {
   reset();
-  const screen = fakeScreen([...base, SCOPE_ANSWER, "auto", "stdio", "standard", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen([...base, SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "no", "run", "close"]);
 
   await runInstallWizard({ screen });
 
   assert.ok(
     screen.asks.some((ask) => ask.title === "Where does this install write?"),
     "the scope is asked once",
+  );
+  assert.ok(
+    screen.asks.some((ask) => ask.title === "Copy the bundled skill catalog?"),
+    "a global install can decline the catalog copy",
   );
   const plan = globalThis.__wizardStub.plans.at(-1);
 
@@ -38,7 +42,7 @@ test("a global answer records the scope and writes no project", async () => {
 
 test("a project answer asks for the roots and the kind, and plans the project installs", async () => {
   reset();
-  const screen = fakeScreen([...base, "project", ["cwd"], "shared", "auto", "stdio", "standard", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen([...base, "project", ["cwd"], "shared", "stdio", "standard", ...FEATURE_ANSWERS, "run", "close"]);
 
   await runInstallWizard({ screen });
 
@@ -53,19 +57,24 @@ test("a project answer asks for the roots and the kind, and plans the project in
     false,
     "and does not write a global agent config",
   );
+  assert.equal(
+    screen.asks.some((ask) => ask.title === "Copy the bundled skill catalog?"),
+    false,
+    "a project install does not offer the global catalog",
+  );
 });
 
 test("the rails and the orders are pure data", () => {
-  assert.deepEqual(INSTALL_STEPS, ["Preflight", "Profile", "Agents", "Scope", "Depth", "Transport", "Surface", "Features", "Review", "Install", "Done"]);
+  assert.deepEqual(INSTALL_STEPS, ["Preflight", "Profile", "Agents", "Scope", "Transport", "Surface", "Features", "Review", "Install", "Done"]);
   assert.deepEqual(UNINSTALL_STEPS, ["Select", "Purge", "Review", "Remove", "Done"]);
-  assert.deepEqual(installOrder(), ["preflight", "profile", "agents", "scope", "depth", "transport", "surface", "features", "review"]);
+  assert.deepEqual(installOrder(), ["preflight", "profile", "agents", "scope", "transport", "surface", "features", "review"]);
   assert.deepEqual(uninstallOrder({ hasPurge: true }), ["select", "purge", "review"]);
   assert.deepEqual(uninstallOrder(), ["select", "review"]);
 });
 test("a typed path comes from the path field, not from a free-text answer", async () => {
   reset();
   const root = resolve(process.cwd(), "src");
-  const screen = fakeScreen([...base, "project", ["p"], root, "shared", "auto", "stdio", "standard", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen([...base, "project", ["p"], root, "shared", "stdio", "standard", ...FEATURE_ANSWERS, "run", "close"]);
 
   await runInstallWizard({ screen });
 

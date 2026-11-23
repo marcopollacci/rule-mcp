@@ -15,16 +15,16 @@ import { openItems } from "./_open-items.js";
  */
 export function parseHandoff(body) {
   const spans = codeSpans(body);
-  const rangeMatch = body.match(/\b([0-9a-f]{7,40})\.\.(HEAD|[0-9a-f]{7,40})\b/);
+  const rangeMatch = /\b([0-9a-f]{7,40})\.\.(HEAD|[0-9a-f]{7,40})\b/.exec(body);
   // `**Branch**:` and `**Branch:**` are both written in this repository, so the
   // colons may sit inside or outside the bold. Reading only the second form left
   // `declared` undefined on every handoff in docs/handoff/, which is why the only
   // branches left were the ones mentioned in prose - the trunk among them.
-  const declared = body.match(/\*\*Branch:?\*\*:?\s*`?([\w./-]+)`?/)?.[1];
+  const declared = /\*\*Branch:?\*\*:?\s*`?([\w./-]+)`?/.exec(body)?.[1];
   // The trunk the work was cut from is a fact about history, not a claim about
   // where the work is: counted as a branch it said the session ran on `main`, and
   // firstMove then sent the reader to a branch the handoff never worked on.
-  const base = body.match(/\*\*Base:?\*\*:?\s*`?([\w./-]+)`?/)?.[1];
+  const base = /\*\*Base:?\*\*:?\s*`?([\w./-]+)`?/.exec(body)?.[1];
 
   const branches = [...new Set([declared, ...spans.filter((span) => looksLikeBranch(span) && span !== base)].filter(Boolean))];
   const files = spans.filter((span) => looksLikePath(span));
@@ -86,8 +86,8 @@ export function parseHandoff(body) {
   }
 
   return {
-    title: body.match(/^#\s+(.+)$/m)?.[1] ?? "",
-    date: body.match(/\*\*Date:\*\*\s*`?([\d-]+)`?/)?.[1] ?? "",
+    title: /^#\s+(.+)$/m.exec(body)?.[1] ?? "",
+    date: /\*\*Date:\*\*\s*`?([\d-]+)`?/.exec(body)?.[1] ?? "",
     branches,
     declaredBranch: declared,
     range: rangeMatch ? { start: rangeMatch[1], end: rangeMatch[2] } : undefined,

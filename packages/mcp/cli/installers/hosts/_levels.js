@@ -66,12 +66,12 @@ export function ceilingOf(levels) {
  * What each rung writes, in words rather than in codes.
  *
  * `L0..L4` is the vocabulary of `--level` and of the ceiling table in
- * `docs/06-integration-levels.md`, and it stays: a flag needs a short spelling. What a
- * reader of the wizard needs is the other half - a screen that says "server,
- * rules and commands" instead of asking them to remember what `L2` was.
+ * `docs/06-integration-levels.md`. A flag needs the short spelling. The wizard
+ * does not ask: it installs each host up to its ceiling, and the agent row
+ * says that ceiling in words (`server, rules and commands`) rather than `L2`.
  *
- * `title` names the rung in full, for a row label; `adds` names only what that
- * rung contributes over the one below it, for the note beside the label.
+ * `title` names the rung in full; `adds` names only what that rung contributes
+ * over the one below it.
  */
 export const RUNG_WORDS = {
   L0: { title: "Server only", adds: "the MCP entry" },

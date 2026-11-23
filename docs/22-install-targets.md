@@ -18,7 +18,7 @@ The other hosts get the MCP configuration and use the same prompts through the s
 | `cline`       | yes: workflow (global, project) | stdio                 |                                                                                                                           |
 | `roo`         | yes: plain (global, project)    | stdio                 |                                                                                                                           |
 | `zed`         | no                              | stdio                 | Zed stores its rules/prompt library in profile storage, not in discoverable per-command files.                            |
-| `opencode`    | yes: args (global, project)     | stdio                 |                                                                                                                           |
+| `opencode`    | yes: opencode (global, project) | stdio                 |                                                                                                                           |
 | `antigravity` | no                              | stdio                 | No published custom-command file location; MCP prompts remain the entry point.                                            |
 | `devin`       | no                              | stdio                 | Devin runs commands in its own workspace runtime, not from local slash-command files; MCP prompts remain the entry point. |
 | `pi`          | yes: args (global)              | stdio, daemon, docker |                                                                                                                           |

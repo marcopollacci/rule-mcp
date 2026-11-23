@@ -4,20 +4,30 @@ This chapter tells what the installer writes and removes. The tables come from r
 
 ## What setup does
 
-`rule-mcp setup` has ten steps. Add `--dry-run` to preview them. A dry run writes nothing.
+`rule-mcp setup` has nine steps, and two opt-in ones. Add `--dry-run` to preview them. A dry run writes nothing.
 
-| Step              | Result                                                                    |
-| ----------------- | ------------------------------------------------------------------------- |
-| Runtime home      | Creates `~/.rule-mcp/` with `state/`, `data/`, `projects/`, `config/`     |
-| Launcher copy     | Copies the server to `~/.rule-mcp/launcher/<version>/` (about 80 MB)      |
-| Global shim       | Writes the `rule-mcp` command in `$PNPM_HOME/bin`                         |
-| Configure agent   | Adds the MCP entry to the agent configuration                             |
-| Instruction files | Adds the rules block to the instruction file of the agent                 |
-| Slash commands    | Writes the `/rule-*` command files                                        |
-| Bundled skills    | Copies the skills only with `--skills`, and removes old copies without it |
-| Global CLI        | Runs `rule-mcp --version`, `tools list`, and `doctor`                     |
-| Install manifest  | Writes `~/.rule-mcp/config/install.json`                                  |
-| Health check      | Runs `rule-mcp doctor`                                                    |
+| Step              | Result                                                                |
+| ----------------- | --------------------------------------------------------------------- |
+| Runtime home      | Creates `~/.rule-mcp/` with `state/`, `data/`, `projects/`, `config/` |
+| Launcher copy     | Copies the server to `~/.rule-mcp/launcher/<version>/` (about 80 MB)  |
+| Global shim       | Writes the `rule-mcp` command in `$PNPM_HOME/bin`                     |
+| Configure agent   | Adds the MCP entry to the agent configuration                         |
+| Instruction files | Adds the rules block to the instruction file of the agent             |
+| Slash commands    | Writes the 16 `/rule-*` command files                                 |
+| Global CLI        | Runs `rule-mcp --version`, `tools list`, and `doctor`                 |
+| Install manifest  | Writes `~/.rule-mcp/config/install.json`                              |
+| Health check      | Runs `rule-mcp doctor`                                                |
+
+Two steps run only when the run asks for them. The wizard asks on its own screens; a script sets them with a flag.
+
+| Opt-in step       | Flag                  | Result                                                                                               |
+| ----------------- | --------------------- | ---------------------------------------------------------------------------------------------------- |
+| Shell completions | `--completions <ids>` | Writes the completion script where the login shell reads it, and nothing when the flag is absent     |
+| Bundled skills    | `--skills`            | Copies the ~60 catalog skills into `~/.agents/skills`; `--no-skills` and no flag both leave them out |
+
+The completions step offers one row per destination it detected: `zsh (oh-my-zsh custom)` writes `$ZSH_CUSTOM/completions/_rule-mcp`, a plain zsh writes `~/.zsh/completions/_rule-mcp`, bash uses `~/.local/share/bash-completion/completions/rule-mcp`, and fish uses `~/.config/fish/completions/rule-mcp.fish`. With oh-my-zsh, the step prefers the custom tree: `oh-my-zsh.sh` puts it on `fpath` before `compinit` runs, and the file survives an update of oh-my-zsh. `--completions detect` resolves the same rows for a script, and `--no-completions` writes none.
+
+Codex has no slash-command file format, so its 16 commands are written as `SKILL.md` directories in `~/.agents/skills`. They belong to the Slash commands step, not to Bundled skills. Declining the catalog leaves those 16 files in place, and the count tells them apart.
 
 For a run with no prompts, use `rule-mcp setup --no-wizard --no-interactive`. Add `--agent <name>` for one agent. Claude also gets the guard hooks and the guard daemon. Add `--no-service` to skip the platform service.
 

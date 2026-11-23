@@ -164,7 +164,10 @@ export const COMMAND_TARGETS = [
   {
     agent: "opencode",
     label: "opencode",
-    format: "args",
+    // opencode decodes a command against template|description|agent|model|subagent|subtask:
+    // the field is not there, so `argument-hint` is dropped and the hint has to
+    // ride in the description its completion popup renders.
+    format: "opencode",
     scope: "global",
     namespacedPrompts: false,
     detect: (ctx) => ctx.exists(join(ctx.home, ".config", "opencode")),
@@ -173,7 +176,7 @@ export const COMMAND_TARGETS = [
   {
     agent: "opencode",
     label: "opencode project",
-    format: "args",
+    format: "opencode",
     scope: "project",
     namespacedPrompts: false,
     detect: (ctx) => ctx.exists(join(ctx.cwd, ".opencode")),

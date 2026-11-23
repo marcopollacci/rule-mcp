@@ -17,6 +17,15 @@ function memberRoutingList(members) {
   return pairs.length > shown.length ? `${shown.join(", ")}, and ${pairs.length - shown.length} more` : shown.join(", ");
 }
 
+/**
+ * The area name capitalized for prose. The slug stays lowercase everywhere it is
+ * an id; only the description, which leads the slash-command hint, reads as a
+ * sentence.
+ */
+function areaLabel(area) {
+  return `${area.charAt(0).toUpperCase()}${area.slice(1)}`;
+}
+
 /** The lines every area hub prompt shares: route leaves from free text, check, commit. */
 function hubPromptLines(area, hub, members) {
   const evidence = members.length > 0 ? `the hub \`${hub}\` and whichever leaf skills the request names: ${memberRoutingList(members)}` : `the \`${hub}\` skill`;
@@ -53,7 +62,7 @@ export function listAreaPrompts() {
       skill: entry.hub,
       area,
       members,
-      description: `${area} work: route free text to the right ${area} leaf skills/tools`,
+      description: `${areaLabel(area)} work: route free text to the right ${area} leaf skills/tools`,
       text: hubPromptLines(area, entry.hub, members),
       arguments: [{ name: "request", description: `A ${area} task, in free text (name leaves like rspack/pnpm/react when known)`, required: true }],
     });
@@ -62,7 +71,60 @@ export function listAreaPrompts() {
   return prompts;
 }
 
-/** The prompt text for an area command name, or undefined. */
-export function areaPromptText(name) {
-  return listAreaPrompts().find((prompt) => prompt.name === name)?.text;
+/** The one area command: the id is the first word of the request (ADR 251). */
+export const AREA_DISPATCH_NAME = "rule-area";
+
+/** The area ids, in the order the dispatcher lists them. */
+export function areaIds() {
+  return [...skillAreas().keys()].sort((a, b) => a.localeCompare(b));
+}
+
+/**
+ * The single `/rule-area` prompt.
+ *
+ * It replaces the 11 per-area hubs: a slash template substitutes text, so the
+ * id travels as the first argument instead of in the command name, and one file
+ * per host carries the whole vocabulary.
+ *
+ * @returns {{ name: string, description: string, text: string, arguments: object[] }}
+ */
+export function areaDispatcherPrompt() {
+  const ids = areaIds();
+  const lines = skillAreas();
+
+  return {
+    name: AREA_DISPATCH_NAME,
+    description: `Route a request to one area: ${ids.join(", ")}`,
+    text: [
+      `Area ids: ${[...lines.entries()].map(([area, entry]) => `${area} (hub \`${entry.hub}\`, ${entry.members.length} leaf skills)`).join("; ")}.`,
+      "",
+      "Read the area from the first word of the request; the rest is the task.",
+      "When the first word names no area, infer it from the task and say which one you used.",
+      "Baseline: write failing tests first (TDD) and cover a11y (WCAG 2.2 AA) where applicable; if the request has no test or a11y surface, ask the user what to cover.",
+      "Finish by proposing a conventional commit message with a mandatory scope.",
+    ].join("\n"),
+    arguments: [
+      { name: "area", description: `One of: ${ids.join(", ")}. First word of the request.`, required: true },
+      { name: "request", description: "The task, in free text (name leaves like rspack/pnpm/react when known)", required: true },
+    ],
+  };
+}
+
+/**
+ * The task text for one area request, or undefined for an unknown id.
+ *
+ * @param {string} area
+ * @param {string} [request]
+ * @returns {string|undefined}
+ */
+export function areaRequestText(area, request = "") {
+  const entry = skillAreas().get(`${area ?? ""}`.toLowerCase());
+
+  if (!entry) {
+    return;
+  }
+
+  const members = [...entry.members].sort((a, b) => a.localeCompare(b));
+
+  return [`Area: ${area} (hub \`${entry.hub}\`)`, "", `Request: ${request}`, "", hubPromptLines(area, entry.hub, members)].join("\n");
 }

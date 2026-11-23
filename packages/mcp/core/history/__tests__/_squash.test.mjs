@@ -91,3 +91,22 @@ test("a feature that contains a merge still squashes to one commit", () => {
   assert.equal(result.verification.treeUnchanged, true, "with the tree intact");
   remove(root);
 });
+
+test("a squash on the base branch closes the range its own base names", () => {
+  // The feature is everything the base branch does not have yet: the caller
+  // passes the base explicitly, and the verification has to read the same one.
+  // It used to re-derive the default base, count zero commits and roll the
+  // correct squash back as an unexpected change.
+  const root = makeRepo();
+
+  run(root, "checkout", "-q", "-b", "feat/base-close");
+  commit(root, "a.txt", "a\n", "feat(x): first");
+  commit(root, "b.txt", "b\n", "feat(x): second");
+
+  const result = applySquash(root, { baseBranch: "main", message: "feat(x): the whole feature", confirm: true });
+
+  assert.equal(result.applied, true, `the squash ran: ${result.reason ?? ""}`);
+  assert.equal(listCommits(root).filter((entry) => entry.subject.startsWith("feat(x)")).length, 1, "one feature commit is left");
+
+  remove(root);
+});

@@ -71,6 +71,13 @@ function fakeScreen(script) {
   screen.ask = async (spec) => {
     screen.asks.push(spec);
 
+    // The Shell completions step is a checklist with no single scripted value:
+    // it answers "write none" unless a test names a destination, so the step
+    // exists in the rail without every script having to carry a slot for it.
+    if (spec.title === "Shell completions") {
+      return [];
+    }
+
     return take(spec);
   };
   // The path field is its own port call: a fake that only knew `ask` left the

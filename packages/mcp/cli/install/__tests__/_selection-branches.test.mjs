@@ -12,24 +12,24 @@ test("an unknown preset and family are reported as problems", () => {
   assert.ok(commands.includes(ROUTER_COMMAND), "the router is always written");
 });
 
-test("hubs-only drops leaf area commands but keeps the hub", () => {
-  const { commands, problems } = resolveSelection({ families: ["areas"], hubsOnly: true });
+test("the areas family is one command, whatever hubsOnly says", () => {
+  for (const hubsOnly of [true, false]) {
+    const { commands, problems } = resolveSelection({ families: ["areas"], hubsOnly });
 
-  assert.deepEqual(problems, []);
-  assert.ok(commands.includes(ROUTER_COMMAND));
-  assert.ok(commands.some((name) => name.startsWith("rule-area-")));
-  assert.ok(commands.every((name) => name === ROUTER_COMMAND || name.startsWith("rule-area-")));
+    assert.deepEqual(problems, []);
+    assert.deepEqual(commands, [ROUTER_COMMAND, "rule-area"], `hubsOnly=${hubsOnly}: router plus the dispatcher`);
+  }
 });
 
-test("a skill filter keeps matching leaves when hubsOnly is off", () => {
-  const { commands } = resolveSelection({
+test("a skill filter no longer selects a file, because leaves are tools", () => {
+  const { commands, problems } = resolveSelection({
     families: ["areas"],
     hubsOnly: false,
     skills: ["rule-frontend-react"],
   });
 
-  assert.ok(commands.includes(ROUTER_COMMAND));
-  assert.ok(commands.some((name) => name.includes("frontend") || name.startsWith("rule-area-")));
+  assert.deepEqual(problems, [], "the skill name is still validated");
+  assert.deepEqual(commands, [ROUTER_COMMAND, "rule-area"]);
 });
 
 test("an unknown area and skill are reported", () => {

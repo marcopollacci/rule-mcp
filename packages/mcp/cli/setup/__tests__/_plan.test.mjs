@@ -14,8 +14,8 @@ import { runPlan, tally } from "../_run-plan.js";
 
 const ids = (plan) => plan.map((task) => task.id);
 
-test("a minimal install plan is the runtime home, the skills reconcile, the cli check and the manifest", () => {
-  assert.deepEqual(ids(buildInstallPlan({})), ["runtime-home", "launcher", "skills", "cli", "manifest"]);
+test("a minimal install plan is the runtime home, the cli check and the manifest", () => {
+  assert.deepEqual(ids(buildInstallPlan({})), ["runtime-home", "launcher", "cli", "manifest"]);
 });
 
 test("building a plan touches no filesystem", () => {
@@ -29,15 +29,18 @@ test("building a plan touches no filesystem", () => {
 test("every selected agent gets its own row", () => {
   const plan = buildInstallPlan({ agents: ["claude", "cursor", "pi"] });
 
-  assert.deepEqual(ids(plan), ["runtime-home", "launcher", "agent:claude", "agent:cursor", "agent:pi", "skills", "cli", "manifest"]);
+  assert.deepEqual(ids(plan), ["runtime-home", "launcher", "agent:claude", "agent:cursor", "agent:pi", "cli", "manifest"]);
 });
 
-test("the skills row installs when selected and reconciles when not", () => {
+test("the skills row is copied only when the step is selected", () => {
   const install = buildInstallPlan({ extras: { skills: true } }).find((task) => task.id === "skills");
-  const reconcile = buildInstallPlan({ extras: {} }).find((task) => task.id === "skills");
+  const skipped = buildInstallPlan({ extras: {} }).find((task) => task.id === "skills");
+  const declined = buildInstallPlan({ extras: { skills: false } }).find((task) => task.id === "skills");
 
-  assert.match(install.detail, /^~\/\.agents\/skills$/, "the selected step copies the catalog");
-  assert.match(reconcile.detail, /\.claude\/skills/, "the declined step removes what an earlier install copied");
+  assert.match(install.detail, /bundled skills/, "the selected step copies the catalog");
+  assert.match(install.detail, /agents\/skills/, "into the shared agent skills directory");
+  assert.equal(skipped, undefined, "saying nothing does not copy or delete the catalog");
+  assert.equal(declined, undefined, "declining does not copy or delete the catalog");
 });
 
 test("the service step only appears in daemon mode", () => {

@@ -98,9 +98,8 @@ export function removeInstalledSkillsFrom(dirs, { dryRun = false } = {}) {
  * Remove the skills the installer copied, from every global directory an install
  * could have written into (or the project's own `.agents/skills`).
  *
- * This is what makes the install's "Bundled rule-mcp-* skills" choice two-way: a run
- * that does not select the step reconciles the copied directories away instead
- * of leaving them for the host to discover (`/skill:rule-mcp-*` in pi and Claude).
+ * Install does not call this. Declining the catalog copy leaves an earlier
+ * copy in place; uninstall and `rule-mcp skills uninstall` are what remove it.
  *
  * @param {{ scope?: string, dryRun?: boolean }} [options]
  * @returns {Array<{ dir: string, removed: string[] }>}

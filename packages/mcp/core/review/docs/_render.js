@@ -5,7 +5,10 @@ import { REVIEW_COLUMNS, table } from "./_table.js";
 
 /** The header every document of the trio opens with; a scoped run names its scope. */
 function header(title, role, version, date, scope) {
-  return [`# ${title}`, "", `- **Role**: ${role} v${version}`, `- **Date**: ${date}`, ...(scope ? [`- **Scope**: ${scope}`] : []), ""];
+  // A plan under docs/plans/ has to carry the ADR 146 `Status:` line, and the
+  // header is the only place that knows the document is a plan: the trio shares
+  // one shape, so the line rides here for all three.
+  return [`# ${title}`, "", `- **Role**: ${role} v${version}`, `- **Date**: ${date}`, ...(scope ? [`- **Scope**: ${scope}`] : []), "", "Status: `in-progress`.", ""];
 }
 
 /** Render the audit skeleton: header plus the empty evidence table. */

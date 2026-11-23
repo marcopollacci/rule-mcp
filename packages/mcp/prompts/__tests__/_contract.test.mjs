@@ -13,11 +13,16 @@ test("every listed prompt has a getPrompt implementation with messages", () => {
   }
 });
 
-test("refactor: areas are rule-area-*, removed commands gone", () => {
+test("refactor: one dispatcher per area and persona family, removed commands gone", () => {
   const names = new Set(listPrompts().map((p) => p.name));
-  // The area prompts live under the rule-area-* namespace now.
-  for (const area of AREA_PROMPTS) {
-    assert.ok(names.has(area), `${area} must exist`);
+  // ADR 251: the id travels as the first argument, so the families are two
+  // prompts, not 30.
+  for (const name of AREA_PROMPTS) {
+    assert.ok(names.has(name), `${name} must exist`);
+  }
+  for (const name of names) {
+    assert.ok(!name.startsWith("rule-area-"), `${name} must not be a per-area prompt`);
+    assert.ok(!name.startsWith("rule-persona-"), `${name} must not be a per-role prompt`);
   }
   for (const removed of [
     "rule-mcp-a11y-audit",
@@ -53,9 +58,16 @@ test("refactor: areas are rule-area-*, removed commands gone", () => {
 
 // ── Content rules (commit scope + TDD/a11y baselines) ────────────
 
-test("every prompt exposes exactly one argument", () => {
+test("every prompt exposes one free-form primary, plus the dispatcher id", () => {
   for (const p of prompts) {
-    assert.equal(p.arguments.length, 1, `${p.name} must expose exactly one argument (the free-form primary)`);
+    const dispatcher = p.name === "rule-area" || p.name === "rule-persona";
+    const expected = dispatcher ? 2 : 1;
+
+    assert.equal(p.arguments.length, expected, `${p.name} must expose ${expected} argument(s)`);
+
+    if (dispatcher) {
+      assert.ok(p.arguments[0].required, `${p.name}: the id is required`);
+    }
   }
 });
 
@@ -68,7 +80,7 @@ test("every prompt supports /<name> help as an instant assistant message", () =>
       assert.equal(full.messages.length, 1, `${p.name}: help must be a single message`);
       assert.equal(full.messages[0].role, "assistant", `${p.name}: ${token} help must be an assistant message (shown instantly, no model call)`);
       const text = full.messages[0].content.text;
-      assert.match(text, /^Usage: \/rule-/, `${p.name}: ${token} must start with the usage line`);
+      assert.match(text, /^RuleMCP Help: command `\/rule-[^`]+`\n\nUsage: \/rule-/, `${p.name}: ${token} must open with the heading and the usage line`);
       assert.ok(!/Do NOT call/i.test(text), `${p.name}: ${token} help must be pure content, no meta-instruction`);
     }
   }

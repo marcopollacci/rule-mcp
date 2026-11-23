@@ -20,10 +20,10 @@ test("registry covers workflow, area, one-shot, and persona prompts", () => {
   for (const expected of [...EXPECTED, ...ONE_SHOT_PROMPTS]) {
     assert.ok(names.includes(expected), `missing prompt ${expected}`);
   }
-  // 1 workflow (handoff) + area prompts + the one-shot prompts
-  // + one persona prompt per active role (ADR 120). Flight is directive-only (ADR 114).
-  // process-handoff/compression areas removed (ADR 115).
-  assert.equal(names.length, EXPECTED.length + ONE_SHOT_PROMPTS.length + activeRoles().length, "no unexpected prompts");
+  // 1 workflow (handoff) + the two family dispatchers (ADR 251) + the one-shot
+  // prompts. Flight is directive-only (ADR 114).
+  assert.equal(names.length, EXPECTED.length + ONE_SHOT_PROMPTS.length, "no unexpected prompts");
+  assert.ok(activeRoles().length > 1, "the persona catalog still drives the dispatcher vocabulary");
 });
 
 test("strict argument schema on every prompt", () => {

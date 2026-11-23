@@ -1,9 +1,9 @@
 /** The prompt registry: static definitions plus generated persona prompts. */
 import { suppressesPrompts } from "./_client-suppression.js";
-import { activeRoles, personaCommandName } from "../core/review/roles/index.js";
+import { activeRoles } from "../core/review/roles/index.js";
 import { ADR_FEATURE_PROMPTS, isAdrFeatureOff } from "../core/runtime/features/_adr-gate.js";
 import { PROMPT_DEFS } from "./_defs.data.js";
-import { listAreaPrompts } from "./_areas.js";
+import { areaDispatcherPrompt } from "./_areas.js";
 
 /**
  * List all available prompts with their descriptions and argument schemas.
@@ -11,8 +11,10 @@ import { listAreaPrompts } from "./_areas.js";
  * @returns {Array<{ name: string, description: string, arguments: Array<{ name: string, description: string, required?: boolean }> }>}
  */
 export function listPrompts() {
-  // The area prompts are one per area hub (ADR 109); leaf skills keep tools only.
-  const areas = listAreaPrompts().map(({ name, description, arguments: args }) => ({ name, description, arguments: args }));
+  // One area prompt, not one per hub (ADR 251): the id is the first word of the
+  // request, so 11 files collapse into one and leaf skills keep tools only.
+  const { name: areaName, description: areaDescription, arguments: areaArguments } = areaDispatcherPrompt();
+  const areas = [{ name: areaName, description: areaDescription, arguments: areaArguments }];
   const all = [...PROMPT_DEFS, ...areas, ...rolePrompts()].sort((left, right) => left.name.localeCompare(right.name));
 
   if (!isAdrFeatureOff()) {
@@ -34,19 +36,37 @@ export function listPrompts() {
  *
  * @returns {Array<{ name: string, description: string, arguments: object[] }>}
  */
+export const PERSONA_DISPATCH_NAME = "rule-persona";
+
+/**
+ * The one persona prompt (ADR 251).
+ *
+ * 19 role commands were 19 copies of one body with a different constant. The
+ * role id is the first word of the request; `rule_tool_plan` still takes the
+ * same `role` parameter, so nothing downstream changes.
+ *
+ * @returns {Array<{ name: string, description: string, arguments: object[] }>}
+ */
 function rolePrompts() {
-  return activeRoles().map((role) => ({
-    name: personaCommandName(role.id),
-    description: `Audit, review and plan as a ${role.role} with ${role.yearsOfExperience} years of experience - the request decides how deep the run goes`,
-    arguments: [
-      {
-        name: "topic",
-        description:
-          "Free-text request for this run (what to look at, e.g. a component, a directory, a concern). Naming a review or a plan in it raises the run to audit+review or audit+review+plan; default: audit only, over the whole project.",
-        required: false,
-      },
-    ],
-  }));
+  const roles = activeRoles()
+    .map((role) => role.id)
+    .sort((a, b) => a.localeCompare(b));
+
+  return [
+    {
+      name: PERSONA_DISPATCH_NAME,
+      description: `Audit, review and plan as one specialist persona: ${roles.join(", ")}`,
+      arguments: [
+        { name: "persona", description: `One of: ${roles.join(", ")}. First word of the request.`, required: true },
+        {
+          name: "topic",
+          description:
+            "Free-text request for this run (what to look at, e.g. a component, a directory, a concern). Naming a review or a plan in it raises the run to audit+review or audit+review+plan; default: audit only, over the whole project.",
+          required: false,
+        },
+      ],
+    },
+  ];
 }
 
 /**

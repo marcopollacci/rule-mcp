@@ -14,7 +14,7 @@
  */
 
 import { DIMENSIONS, resolveProfile } from "../../install/_profiles.js";
-import { depthItems, modeItems } from "./_items-depth.js";
+import { modeItems } from "./_items-depth.js";
 import { readManifest } from "../../install/_manifest.js";
 import { agentRows } from "../_agent-rows.js";
 
@@ -46,7 +46,8 @@ import {
   attributionItems,
 } from "./_items.js";
 
-import { askFeatures } from "./_wizard-features.js";
+import { askBundledSkills, askFeatures } from "./_wizard-features.js";
+import { askCompletions } from "./_wizard-completions.js";
 import { askReview } from "./_wizard-review.js";
 import { askScope } from "./_wizard-scope.js";
 import { INSTALL_RAIL, UNINSTALL_RAIL } from "./_wizard-steps.js";
@@ -93,6 +94,9 @@ export async function runInstallWizard({ screen, defaults = {} }) {
     agents: defaults.agents ?? catalog.detected,
     mode: defaults.mode ?? "stdio",
     surface: defaults.surface ?? null,
+    skills: defaults.skills === true || (Array.isArray(defaults.extras) && defaults.extras.includes("skills")),
+    // Absent leaves the step to its own detection; a flag replaces it.
+    completions: Array.isArray(defaults.completions) ? defaults.completions : null,
     selection: defaults.selection ?? null,
     features: { ...flaggedFeatures },
     adrPolicy: defaults.adrPolicy ?? null,
@@ -194,25 +198,6 @@ export async function runInstallWizard({ screen, defaults = {} }) {
         return outcome;
       }
 
-      case "depth": {
-        const level = await screen.ask({
-          title: "How deep should each agent go?",
-          help: ["A cap on the rungs: L0 MCP entry, L1 rules, L2 commands, L3 hooks,", "L4 a handler. A host stops at its own ceiling, listed below."],
-          items: depthItems(answers.agents),
-          mode: "radio",
-          initial: [answers.level ?? "auto"],
-          height: 6,
-        });
-
-        if (level === CANCEL || level === BACK) {
-          return level;
-        }
-
-        answers.level = level;
-
-        return;
-      }
-
       case "transport": {
         const mode = await screen.ask({
           title: "How do the agents reach the server?",
@@ -235,7 +220,11 @@ export async function runInstallWizard({ screen, defaults = {} }) {
       case "features": {
         const outcome = await askFeatures({ screen, answers });
 
-        return outcome;
+        if (outcome === CANCEL || outcome === BACK) {
+          return outcome;
+        }
+
+        return askBundledSkills({ screen, answers });
       }
 
       case "surface": {
@@ -293,6 +282,10 @@ export async function runInstallWizard({ screen, defaults = {} }) {
         answers.selection = selectionFromSurface(answers.surface);
 
         return;
+      }
+
+      case "completions": {
+        return askCompletions({ screen, answers });
       }
 
       case "review": {

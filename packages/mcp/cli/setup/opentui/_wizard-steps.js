@@ -5,13 +5,13 @@ import { buildInstallPlan } from "../_plan-install.js";
 import { buildProjectInstallPlan } from "../_plan-project.js";
 
 /** The rail labels, in the order the wizard lights them. */
-export const INSTALL_STEPS = ["Preflight", "Profile", "Agents", "Scope", "Depth", "Transport", "Surface", "Features", "Review", "Install", "Done"];
+export const INSTALL_STEPS = ["Preflight", "Profile", "Agents", "Scope", "Transport", "Surface", "Features", "Completions", "Review", "Install", "Done"];
 
 /** The uninstall rail, in the same order. */
 export const UNINSTALL_STEPS = ["Select", "Purge", "Review", "Remove", "Done"];
 
 /** Where each install step sits on that rail. */
-export const INSTALL_RAIL = { preflight: 0, profile: 1, agents: 2, scope: 3, depth: 4, transport: 5, surface: 6, features: 7, review: 8, install: 9, done: 10 };
+export const INSTALL_RAIL = { preflight: 0, profile: 1, agents: 2, scope: 3, transport: 4, surface: 5, features: 6, completions: 7, review: 8, install: 9, done: 10 };
 
 /** Where each uninstall step sits on that rail. */
 export const UNINSTALL_RAIL = { select: 0, purge: 1, review: 2, remove: 3, done: 4 };
@@ -20,12 +20,16 @@ export const UNINSTALL_RAIL = { select: 0, purge: 1, review: 2, remove: 3, done:
  * The install steps, always the same order.
  *
  * Surface is the only place that picks a tier: the slash-command files follow
- * that answer, so there is no separate Commands screen (ADR 169).
+ * that answer, so there is no separate Commands screen (ADR 169). Depth is not
+ * a step either: every host is installed up to its own ceiling.
+ *
+ * Shell completions is its own step: it is the only one that writes into a
+ * shell's own tree, and the destination is a choice, not a constant.
  *
  * @returns {string[]}
  */
 export function installOrder() {
-  return ["preflight", "profile", "agents", "scope", "depth", "transport", "surface", "features", "review"];
+  return ["preflight", "profile", "agents", "scope", "transport", "surface", "features", "completions", "review"];
 }
 
 /**
@@ -60,13 +64,16 @@ export const installPlan = ({ answers, context, force }) => {
   return buildInstallPlan({
     agents: answers.dimensions.includes("server") ? answers.agents : [],
     mode: answers.mode,
+    completions: answers.completions ?? [],
     extras: {
       rules: answers.dimensions.includes("rules"),
       commands: answers.dimensions.includes("commands"),
-      // A level below L3 does not ask for hooks, and the dimension list cannot
-      // put one back: the confirmation is the level, not the checkbox.
-      hooks: answers.dimensions.includes("hooks") && (answers.level === "auto" || answers.level === undefined || Number(answers.level.slice(1)) >= 3),
+      // The install always goes to the host ceiling. The profile decides whether
+      // hooks are part of that write; a host with no hook file skips them.
+      hooks: answers.dimensions.includes("hooks"),
       doctor: answers.dimensions.includes("doctor"),
+      // The catalog copy is its own answer. A profile does not imply it.
+      skills: answers.skills === true,
       // The platform service belongs to daemon mode and is automatic there.
       service: answers.mode === "daemon",
     },

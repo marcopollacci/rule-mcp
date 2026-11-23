@@ -63,3 +63,55 @@ export async function askFeatures({ screen, answers }) {
 
   return;
 }
+
+/**
+ * Ask whether this run copies the bundled catalog.
+ *
+ * Global only. Project scope never writes `~/.agents/skills`, and the server
+ * already serves the same files, so the default is to leave the directories
+ * alone. An earlier copy stays until uninstall removes that group.
+ *
+ * @param {{ screen: object, answers: object }} context
+ * @returns {Promise<unknown>}
+ */
+export async function askBundledSkills({ screen, answers }) {
+  if (answers.scope === "project") {
+    answers.skills = false;
+
+    return;
+  }
+
+  const choice = await screen.ask({
+    title: "Copy the bundled skill catalog?",
+    help: [
+      "Agents that read SKILL.md discover these on their own.",
+      "The server already serves the same catalog. No leaves those directories alone.",
+      // Codex has no slash-command file format, so its /rule-* commands are
+      // written as SKILL.md directories in the same folder under the Commands
+      // dimension. Without this line, a No here looks ignored.
+      "Codex writes its /rule-* commands there as SKILL.md files too; those belong to Commands, not to this question.",
+    ],
+    items: [
+      {
+        id: "no",
+        label: "No",
+        note: "default",
+        detail: ["Do not copy skills into ~/.agents/skills or ~/.claude/skills.", "An earlier copy stays until uninstall removes it."],
+      },
+      {
+        id: "yes",
+        label: "Yes",
+        note: "~/.agents/skills",
+        detail: ["Copy every bundled skill, and mirror them where Claude discovers skills."],
+      },
+    ],
+    mode: "radio",
+    initial: [answers.skills ? "yes" : "no"],
+  });
+
+  if (choice === CANCEL || choice === BACK) {
+    return choice;
+  }
+
+  answers.skills = choice === "yes";
+}

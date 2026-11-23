@@ -8,10 +8,43 @@
  * `pnpm report:startup`.
  */
 
-import { HELP_TEXT } from "../_help-text.js";
+import { renderHelpText } from "../_help-text.js";
+import { commandHelp, listAgentCommands } from "../../core/agents/commands/index.js";
 import { entrypoint, print } from "./_shared.js";
-function helpCommand() {
-  print(HELP_TEXT);
+
+/**
+ * `rule-mcp help [command]`.
+ *
+ * Bare, it prints the whole guide. With an argument it prints that command's own
+ * usage: a slash command's block (the same text `/rule-<command> help` prints, and
+ * the same text the Pi extension and opencode plugin embed), or a CLI command's
+ * `--help` output.
+ *
+ * @param {string} [target]
+ * @param {import("commander").Command} program
+ */
+function helpCommand(target, program) {
+  if (!target) {
+    print(renderHelpText(program));
+
+    return;
+  }
+
+  if (listAgentCommands().some((command) => command.name === target)) {
+    print(commandHelp(target));
+
+    return;
+  }
+
+  const cli = program.commands.find((command) => command.name() === target);
+
+  if (cli) {
+    print(cli.helpInformation().trimEnd());
+
+    return;
+  }
+
+  throw new Error(`Unknown command "${target}". Run \`rule-mcp help\` for the command list.`);
 }
 
 /**

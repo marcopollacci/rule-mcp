@@ -52,9 +52,16 @@ export function proposeSquash(projectDir, options = {}) {
   };
 }
 
-/** What the rewrite produced, and whether it is exactly what was planned. */
-function verifySquash(projectDir, { original, consolidation }) {
-  const range = getFeatureCommitRange(projectDir);
+/**
+ * What the rewrite produced, and whether it is exactly what was planned.
+ *
+ * The base travels with the check: a squash on the base branch itself (the
+ * case where the feature is everything the remote does not have yet) has a
+ * merge base of its own, and reading the default one here counted zero commits
+ * and rolled a correct squash back as an "unexpected change".
+ */
+function verifySquash(projectDir, { original, consolidation, baseBranch }) {
+  const range = getFeatureCommitRange(projectDir, { baseBranch });
   const changed = gitLines(projectDir, ["diff", "--name-only", `${original}..HEAD`]);
   const allowed = new Set(consolidation?.paths);
   const unexpected = changed.filter((file) => !allowed.has(file));
@@ -130,7 +137,7 @@ export function applySquash(projectDir, options = {}) {
   }
 
   const commit = gitResult(projectDir, ["commit", "-q", "--no-verify", "-m", message], { timeout: 30_000 });
-  const verification = verifySquash(projectDir, { original, consolidation });
+  const verification = verifySquash(projectDir, { original, consolidation, baseBranch: options.baseBranch });
   const tree = workingTreeState(projectDir);
   const clean = commit.ok && verification.valid && tree.clean;
 

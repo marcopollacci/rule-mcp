@@ -25,12 +25,13 @@ test.after(() => rmSync(process.env.RULE_MCP_HOME, { recursive: true, force: tru
 
 test("a standard install asks every step and plans the whole profile", async () => {
   reset();
-  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "auto", "stdio", "standard", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "no", "run", "close"]);
 
   const outcome = await runInstallWizard({ screen });
 
   assert.equal(outcome.dryRun, false);
-  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "rules", "commands", "skills", "cli", "manifest", "doctor"]);
+  assert.equal(screen.asks.find((ask) => ask.title === "Copy the bundled skill catalog?").initial[0], "no");
+  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "rules", "commands", "cli", "manifest", "doctor"]);
   assert.deepEqual(screen.steps, [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], "the rail lights once per step, in order");
   assert.match(screen.confirms.at(-1).title, /Complete/u);
   assert.ok(
@@ -46,7 +47,7 @@ test("a standard install asks every step and plans the whole profile", async () 
 
 test("the surface defaults to the one the profile implies", async () => {
   reset();
-  const screen = fakeScreen(["next", "full", ["claude"], SCOPE_ANSWER, "auto", "stdio", "full", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen(["next", "full", ["claude"], SCOPE_ANSWER, "stdio", "full", ...FEATURE_ANSWERS, "no", "run", "close"]);
 
   await runInstallWizard({ screen });
 
@@ -55,7 +56,7 @@ test("the surface defaults to the one the profile implies", async () => {
 
 test("back from the agents screen re-asks the profile and has no commands step", async () => {
   reset();
-  const screen = fakeScreen(["next", "standard", BACK, "minimal", ["claude"], SCOPE_ANSWER, "auto", "stdio", "minimal", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen(["next", "standard", BACK, "minimal", ["claude"], SCOPE_ANSWER, "stdio", "minimal", ...FEATURE_ANSWERS, "no", "run", "close"]);
 
   await runInstallWizard({ screen });
 
@@ -65,26 +66,36 @@ test("back from the agents screen re-asks the profile and has no commands step",
     false,
     "commands ride with Surface, they are not a second screen",
   );
-  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "commands", "skills", "cli", "manifest"]);
+  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "commands", "cli", "manifest"]);
 });
 
 test("a custom profile asks for its dimensions and uses them", async () => {
   reset();
-  const screen = fakeScreen(["next", "custom", ["server", "commands"], ["claude"], SCOPE_ANSWER, "auto", "stdio", "full", ...FEATURE_ANSWERS, "run", "close"]);
+  const screen = fakeScreen(["next", "custom", ["server", "commands"], ["claude"], SCOPE_ANSWER, "stdio", "full", ...FEATURE_ANSWERS, "no", "run", "close"]);
 
   await runInstallWizard({ screen });
 
   assert.ok(screen.asks.some((ask) => ask.title === "What should this install write?"));
-  assert.ok(
+  assert.equal(
     screen.asks.some((ask) => ask.title === "How deep should each agent go?"),
-    "the depth step says what it caps",
+    false,
+    "depth is not a step: every host is installed to its ceiling",
   );
-  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "commands", "skills", "cli", "manifest"]);
+  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "commands", "cli", "manifest"]);
+});
+
+test("yes on the bundled skills question copies the catalog", async () => {
+  reset();
+  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "yes", "run", "close"]);
+
+  await runInstallWizard({ screen });
+
+  assert.deepEqual(globalThis.__wizardStub.plans.at(-1), [...GLOBAL_PLAN_HEAD, "rules", "commands", "skills", "cli", "manifest", "doctor"]);
 });
 
 test("the review can arm a dry run before the plan runs", async () => {
   reset();
-  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "auto", "stdio", "standard", ...FEATURE_ANSWERS, "dry", "run", "close"]);
+  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "no", "dry", "run", "close"]);
 
   const outcome = await runInstallWizard({ screen });
 
@@ -131,4 +142,27 @@ test("an uninstall with nothing to remove says so and stops", async () => {
   assert.deepEqual(outcome.results, []);
   assert.match(screen.confirms[0].title, /Nothing to remove/u);
   assert.deepEqual(globalThis.__wizardStub.plans, []);
+});
+
+test("the completions step writes the destinations it was given", async () => {
+  reset();
+  const screen = fakeScreen(["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "no", "run", "close"]);
+
+  // The step is a checklist: this one run ticks a destination and must reach the plan.
+  const ask = screen.ask;
+
+  screen.ask = async (spec) => {
+    const answer = await ask(spec);
+
+    return spec.title === "Shell completions" ? ["zsh-oh-my-zsh"] : answer;
+  };
+
+  await runInstallWizard({ screen });
+
+  assert.ok(globalThis.__wizardStub.plans.at(-1).includes("completions"), "a ticked destination adds the task");
+  assert.equal(
+    screen.asks.some((spec) => spec.title === "Shell completions"),
+    true,
+    "the step is asked",
+  );
 });

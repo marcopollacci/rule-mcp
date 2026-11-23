@@ -15,7 +15,7 @@
  * configuration and leaving the other hosts without it (ADR 082).
  */
 
-import { existsSync, mkdirSync, readdirSync, rmSync, statSync } from "node:fs";
+import { existsSync, lstatSync, mkdirSync, readdirSync, rmSync } from "node:fs";
 import { join } from "node:path";
 
 import { homedir } from "node:os";
@@ -34,18 +34,42 @@ const ruleGalaxyHome = () => getRuntimePaths().homeDir;
 /** Subdirectories the runtime expects to find under the home root. */
 const SUBDIRS = ["state", "data", "projects", "config"];
 
-/** Count files under a directory, recursively. Missing directory counts zero. */
+/**
+ * Count files under a directory, recursively.
+ *
+ * `lstat` does not follow links. A purge tree holds the launcher and its
+ * `node_modules`, and a dangling link there used to throw `ENOENT` out of the
+ * uninstall scan: the alternate screen opened, the throw closed it, and the
+ * wizard never appeared. A link counts as one entry. A missing path counts zero.
+ *
+ * @param {string} dir
+ * @returns {number}
+ */
 export function countFiles(dir) {
-  if (!existsSync(dir)) {
+  let stats;
+
+  try {
+    stats = lstatSync(dir);
+  } catch {
+    return 0;
+  }
+
+  if (!stats.isDirectory()) {
+    return 1;
+  }
+
+  let entries;
+
+  try {
+    entries = readdirSync(dir);
+  } catch {
     return 0;
   }
 
   let total = 0;
 
-  for (const entry of readdirSync(dir)) {
-    const full = join(dir, entry);
-
-    total += statSync(full).isDirectory() ? countFiles(full) : 1;
+  for (const entry of entries) {
+    total += countFiles(join(dir, entry));
   }
 
   return total;

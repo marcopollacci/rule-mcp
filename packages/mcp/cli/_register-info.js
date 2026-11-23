@@ -14,9 +14,8 @@ export function registerHelpCommand(program) {
   program
     .command("help")
     .description("Show the full usage guide")
-    .action(async () => {
-      (await import("./commands/_help.js")).helpCommand();
-    });
+    .argument("[command]", "a CLI command, or a slash command such as rule-handoff")
+    .action(async (target) => (await import("./commands/_help.js")).helpCommand(target, program));
 }
 
 /** Register the `tools` command. */

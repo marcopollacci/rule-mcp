@@ -53,7 +53,7 @@ The server reads skills from three layers. The last layer that defines a name wi
 - **Local first.** Skills are on disk. The core features need no network.
 - **Model-agnostic.** There is no LLM inside the server.
 - **Registry-driven.** The census and the agent commands read the same registries.
-- **Area hubs.** A leaf skill has no slash command. An area hub reaches it.
+- **One command per family.** A leaf skill has no slash command. `/rule-area <area> <request>` names the hub and reaches its leaves. `/rule-persona <persona> <request>` names the role. A new area or role never adds a file to a host directory.
 
 ## Related pages
 

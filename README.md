@@ -8,8 +8,8 @@ rule-mcp is an MCP server. It sends a free-text request to the correct skill. It
 - **82 skills**
 - **105 tools**
 - **172 resources**
-- **41 prompts**
-- **44 slash commands**
+- **13 prompts**
+- **16 slash commands**
 
 [Documentation site](https://pixu1980.github.io/rule-mcp/) [Get started](docs/01-getting-started.md) [Browse reference](docs/README.md)
 

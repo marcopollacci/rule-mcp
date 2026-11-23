@@ -10,7 +10,7 @@ export function registerAgentCommandsCommand(program) {
     .command("agent-commands")
     .description("Registry-driven agent slash-command management")
     .option("--dir <path>", "write commands to this directory")
-    .option("--format <f>", "args (default), workflow, gemini, prompt, plain")
+    .option("--format <f>", "args (default), opencode, workflow, gemini, prompt, plain, skill")
     .option("--list", "list command names")
     .option("--targets", "print resolved target directories")
     .option("--sync", "write to EVERY detected agent dir")

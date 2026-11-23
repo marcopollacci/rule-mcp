@@ -106,7 +106,7 @@ test("rule-handoff help returns the usage list as an instant assistant message",
   const full = getPrompt("rule-handoff", { options: "help" });
   assert.equal(full.messages[0].role, "assistant", "handoff help must be an assistant message (no model call)");
   const text = full.messages[0].content.text;
-  assert.match(text, /^Usage: \/rule-handoff/, "help message must start with the usage line");
+  assert.match(text, /^RuleMCP Help: command `\/rule-handoff`\n\nUsage: \/rule-handoff/, "help message must open with the heading and the usage line");
   assert.match(text, /close-session/, "usage block must list close-session");
   assert.match(text, /close-feature.*squash/i, "usage must explain the implicit squash");
   assert.match(text, /no-compress/, "usage block must show a no-compress example");

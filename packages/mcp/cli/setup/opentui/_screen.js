@@ -198,7 +198,11 @@ export async function openScreen({ title, subtitle = "", steps = [] }) {
         const labelTone = item.disabled ? COLORS.muted : active ? COLORS.info : null;
 
         row.add(text(`${active ? GLYPHS.pointer : " "} `, { fg: active ? COLORS.info : COLORS.muted }));
-        row.add(text(`${GLYPHS[markOf(isSelected, mode)]} `, { fg: item.disabled ? COLORS.muted : isSelected ? COLORS.ok : COLORS.muted }));
+        // One tone decision, read once: the nested ternary inside the call was
+        // the same choice written twice, and unicorn 80 rejects the shape.
+        const markTone = item.disabled || !isSelected ? COLORS.muted : COLORS.ok;
+
+        row.add(text(`${GLYPHS[markOf(isSelected, mode)]} `, { fg: markTone }));
         row.add(text(item.label, { ...(labelTone && { fg: labelTone }), ...(active && { attributes: bold }) }));
 
         if (item.note) {

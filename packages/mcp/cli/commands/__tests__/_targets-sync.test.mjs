@@ -68,7 +68,7 @@ test("a real sync writes the whole command set into the target", () => {
     written.every((name) => /^rule[-.]/.test(name)),
     `every file belongs to the rule namespace: ${written.join(", ")}`,
   );
-  assert.ok(written.includes("rule-persona-security.md"), "a persona command is part of the set");
+  assert.ok(written.includes("rule-persona.md"), "the persona dispatcher is part of the set");
   assert.ok(written.includes("rule.md"), "so is the root routing command");
 });
 
@@ -83,7 +83,7 @@ test("a normal sync purges the folded persona commands", () => {
   out(() => syncCommandTargets({ agent: "claude" }));
 
   const written = readdirSync(directory);
-  assert.ok(written.includes("rule-persona-security.md"), "the current command is there");
+  assert.ok(written.includes("rule-persona.md"), "the current command is there");
   assert.ok(!written.includes("rule-persona-security-audit.md"), "the old per-operation command is swept");
   assert.ok(!written.includes("rule-persona-security-plan.md"), "including the plan sibling");
 });
@@ -145,7 +145,7 @@ test("a comma-separated agent list writes every named agent", () => {
   assert.match(text, /across 2 directory/, "both named agents are covered in one call");
   assert.ok(readdirSync(claude).includes("rule.md"), "claude receives the router");
   assert.ok(readdirSync(pi).includes("rule.md"), "pi receives the router too");
-  assert.ok(readdirSync(pi).includes("rule-persona-security.md"), "and the rest of the clean set");
+  assert.ok(readdirSync(pi).includes("rule-persona.md"), "and the rest of the clean set");
 });
 
 test("a nested skill target writes <name>/SKILL.md and remove sweeps those dirs", () => {
@@ -155,7 +155,7 @@ test("a nested skill target writes <name>/SKILL.md and remove sweeps those dirs"
   out(() => syncCommandTargets({ agent: "copilot" }));
 
   assert.ok(existsSync(join(skills, "rule", "SKILL.md")), "router skill lands as rule/SKILL.md");
-  assert.ok(existsSync(join(skills, "rule-persona-security", "SKILL.md")), "persona skills nest the same way");
+  assert.ok(existsSync(join(skills, "rule-persona", "SKILL.md")), "the persona dispatcher nests the same way");
 
   writeFileSync(join(skills, "keep-me.md"), "foreign\n");
   const text = out(() => syncCommandTargets({ agent: "copilot", remove: true }));

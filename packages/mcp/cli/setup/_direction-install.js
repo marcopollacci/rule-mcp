@@ -99,6 +99,7 @@ export async function install(options) {
     context,
     selection: options.selection,
     surface: options.surface,
+    completions: options.completions,
     features: options.features,
     adrPolicy: options.adrPolicy,
     attribution: options.attribution,

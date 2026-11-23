@@ -1,105 +1,41 @@
-// Auto-extracted from packages/mcp/cli/commands/index.js - help/usage text.
-
 /**
- * The help text shown by the top-level CLI command.
+ * @module cli/help-text
+ *
+ * The `rule-mcp help` guide, rendered from the live commander program.
+ *
+ * It used to be a hand-maintained string tagged "auto-extracted" with no
+ * generator and no parity test: 12 of the 28 commands (feature, project, handon,
+ * cache, roles, guard, update, agent-commands, reinstall, commit-lint, secrets,
+ * init) had silently dropped out of it, and the descriptions it did carry had
+ * drifted from the ones the program declares. Rendering the programs' own
+ * `usage()`, `description()` and options removes the second source of truth, so
+ * a new command or flag cannot fail to appear.
  */
-export const HELP_TEXT = `rule-mcp - MCP server for the rule-mcp-* skill ecosystem.
+
+/** The guide's opening; everything after the command list is prose. */
+const HELP_HEADER = `rule-mcp - MCP server for the rule-mcp-* skill ecosystem.
 
 Usage:
   rule-mcp <command> [options]
 
-Commands:
-  serve [opts]           Start MCP server (stdio or SSE)
-    --transport <type>     Transport type: stdio (default) or sse
-    --ssl-cert <path>      TLS certificate (requires --ssl-key)
-    --ssl-key <path>       TLS private key (requires --ssl-cert)
+Commands:`;
 
-  dev [opts]           Start MCP server (stdio)
-                        On-demand from repo: pnpm dev
-                        Agent spawns via mcp.json -> no pre-start needed
-                        Prints mcp.json config for agent setup
-
-  up [opts]            Start SSE server (alias for \`serve --transport sse\`)
-                        On-demand HTTP daemon: pnpm up
-                        Pre-start, then connect agent to http://127.0.0.1:{port}/sse
-
-  daemon <action>        Manage daemon (process or native service)
-    start|stop|status|logs           Process-based daemon
-    install|uninstall|enable|disable Native service (macOS: LaunchAgent)
-    Port: dynamic (first free port in range 3000-6000)
-
-  install --agent <n>    Install into agent/IDE config (Terminal UI by default)
-    --agent <name>         One of: claude, codex, cursor, copilot, gemini,
-                           cline, roo, zed, opencode, antigravity, kilo,
-                           kimi, vibe, vscode, devin, pi
-    --mode <name>          stdio (default), daemon (SSE), or docker
-    --global               Use clean command (requires global install)
-    --force                Override existing config
-    --dry-run              Preview without writing
-    --json                 Print machine-readable JSON
-
-  uninstall --agent <n>  Remove from agent/IDE config (Terminal UI by default)
-    --agent <name>         Agent name (same as install)
-    --dry-run              Preview without removing
-    --json                 Print machine-readable JSON
-
-  config [opts]          Print mcp.json config snippet
-    --mode <name>          stdio (default), daemon (SSE), or docker
-    --global               Uses clean \`rule-mcp\` command
-
-  tools <sub> [args]     List or call MCP tools
-    tools list             List all registered tools as Terminal UI
-    tools list --json      Export registered tools as JSON
-    tools call <name> --json '{...}'   Call a tool directly
-
-  doctor [opts]         System health check (Terminal UI by default)
-    --json                 Print machine-readable JSON
-    --json-out <path>      Export JSON to a file and keep Terminal UI
-    --telemetry            Include anonymous usage stats
-
-  skills <action>        Manage skills
-    skills install          Interactive installer (checkbox UI)
-    skills list             List available skills as Terminal UI
-    skills list --json      Export available skills as JSON
-    skills reload           Reload skills from disk (flush cache)
-
-  adr <action> <args>    Architecture Decision Records
-    adr new "<title>"       Create a new ADR
-      --status <s>          proposed | accepted (default) | deprecated | superseded
-      --context "..."       Context forcing factors
-      --decision "..."      Decision made and why
-      --consequences "..."  Positive/negative outcomes
-      --tags "tag1,tag2"    Comma-separated tags (default: architecture)
-
-  fix [opts]             Validate and auto-fix file tree structure
-    --dir <path>           Project root (default: .)
-    --src-dir <path>       Source directory (default: src)
-    --mode <m>             lint (default) | fix | generate
-    --dry-run              Preview fixes without applying
-
-  handoff [opts]         Generate LLM context handoff summary
-    --dir <path>           Project root (default: .)
-    --format <f>           full (default) | brief | minimal
-    --compress             Aggressively compress output
-
-  completions [opts]     Generate shell completion script
-    --shell <s>            zsh (default) | bash | fish
-
-  help |-h | --help      Show this help message
-
-Aliases:
+/** The prose after the generated command list. */
+const HELP_FOOTER = String.raw`Aliases:
   rule-mcp <command> --help    Show per-command help
+  rule-mcp help <command>      Print one command's usage block, CLI or slash
 
 Examples:
   rule-mcp help
-  pnpm start / pnpm dev           # STDIO - spawnable by IDE/agent via mcp.json
-  pnpm up                          # SSE - on-demand HTTP daemon from repo
+  rule-mcp help rule-handoff         # the same block /rule-handoff help prints
+  pnpm start / pnpm dev              # STDIO - spawnable by IDE/agent via mcp.json
+  pnpm up                            # SSE - on-demand HTTP daemon from repo
   rule-mcp serve --transport sse
   rule-mcp tools list
   rule-mcp doctor --telemetry
   rule-mcp adr new "Use PostgreSQL" --status accepted --tags database
   rule-mcp handoff --compress | pbcopy
-  rule-mcp completions --shell zsh > ~/.zsh/completions/_rule-mcp
+  rule-mcp install --completions detect        # or tick them in the Shell completions step
   rule-mcp config --global
 
 Install modes:
@@ -112,4 +48,38 @@ Universal installer:
   ./scripts/install.sh --help      Full options
 
 Windows:
-  .\\scripts\\install.ps1          Auto-detect + configure all agents`;
+  .\scripts\install.ps1          Auto-detect + configure all agents`;
+
+/** Commander's own generated flags are not part of the guide. */
+const isHelpOption = (option) => option.flags.includes("--help");
+
+/**
+ * Render the full guide for one program.
+ *
+ * @param {import("commander").Command} program
+ * @returns {string}
+ */
+export function renderHelpText(program) {
+  const lines = [HELP_HEADER, ""];
+
+  for (const command of program.commands) {
+    const usage = command.usage();
+    const label = `  ${command.name()}${usage ? ` ${usage}` : ""}`;
+
+    lines.push(`${label.padEnd(34)}${command.description()}`);
+
+    const documented = command.options.filter((entry) => !isHelpOption(entry));
+
+    for (const option of documented) {
+      lines.push(`    ${option.flags.padEnd(28)}${option.description}`);
+    }
+
+    for (const subcommand of command.commands) {
+      lines.push(`    ${`${subcommand.name()}`.padEnd(26)}${subcommand.description()}`);
+    }
+
+    lines.push("");
+  }
+
+  return [lines.join("\n").trimEnd(), "", HELP_FOOTER].join("\n");
+}

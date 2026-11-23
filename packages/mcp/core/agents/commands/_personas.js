@@ -28,6 +28,49 @@ export function personaTarget(name) {
 }
 
 /**
+ * Body for the one `/rule-persona` command (ADR 251).
+ *
+ * Same contract as the 19 per-role commands, with the role read from the first
+ * word of the request instead of from the command name.
+ *
+ * @param {Array<{ id: string, role: string }>} roles
+ * @returns {string}
+ */
+export function personaDispatchBody(roles = []) {
+  return [
+    "Audit, review and plan as a specialist persona: $ARGUMENTS",
+    "",
+    "Read the persona from the first word of the request; the rest of that text is the request. When the first",
+    "word names no persona, infer it from the request and say which one you used.",
+    `Personas: ${roles.map((entry) => `${entry.id} (${entry.role})`).join(", ")}.`,
+    "",
+    "Pass that same request text through unchanged as `topic`; it is this run's binding scope. With no",
+    "request after the persona, omit topic and the scope is the whole project.",
+    "",
+    "Depth intent: decide the operation from the request before doing anything else, matching whole tokens",
+    "case-insensitively.",
+    `- A request that names a plan (${PLAN_INTENT_KEYWORDS_LIST}) runs \`operation=plan\`: audit, then review, then plan.`,
+    `- Otherwise, a request that names a review (${REVIEW_INTENT_KEYWORDS_LIST}) runs \`operation=review\`: audit, then review.`,
+    "- Otherwise, run `operation=audit`: the audit only.",
+    "",
+    "1. Call `rule_tool_plan` with `role=<the persona id>`, the `operation` you just decided and `topic`.",
+    "2. Load the evidence skills the contract names and treat them as source of truth; never invent",
+    "   APIs, files, dependencies, commands, or requirements not in the evidence.",
+    "3. Perform the operation the contract describes and gather what it needs - measure rather",
+    "   than assume, and quote commands and their output for every number.",
+    "4. Call `rule_tool_impersonation` with the same `role`, the findings and, when a request was given,",
+    "   the same text as `scope` - it writes/refreshes the trio bookkeeping (headers, tables, statuses)",
+    "   and leaves findings outside the scope untouched. Fill in the evidence, the finding wording and the steps.",
+    "5. If a decision belongs to the user, stop and ask instead of guessing.",
+    `6. ${STE100_WRITING_LINE}`,
+    `7. ${DEVELOPMENT_PLAN_SHAPE_GUIDE}`,
+    "8. Responses are compressed automatically by the server: keep it factual and free of filler.",
+    "9. Finish by proposing a conventional commit with a mandatory scope for the documents this run",
+    "   wrote, e.g. `docs(<persona>): audit`.",
+  ].join("\n");
+}
+
+/**
  * Body for a persona command: it routes through the tools, not a hand-written
  * recap. The depth of the run is read from `$ARGUMENTS` with the same whole-token
  * intent the prompt resolver uses (ADR 112): a plan ask runs the audit, the
@@ -42,7 +85,7 @@ export function personaBody(target) {
   return [
     `Audit, review and plan as a ${target.roleName}: $ARGUMENTS`,
     "",
-    "Depth intent: decide the operation from $ARGUMENTS before doing anything else, matching whole tokens",
+    "Depth intent: decide the operation from the request before doing anything else, matching whole tokens",
     "case-insensitively.",
     `- A request that names a plan (${PLAN_INTENT_KEYWORDS_LIST}) runs \`operation=plan\`: audit, then review, then plan.`,
     `- Otherwise, a request that names a review (${REVIEW_INTENT_KEYWORDS_LIST}) runs \`operation=review\`: audit, then review.`,

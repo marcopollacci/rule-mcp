@@ -31,6 +31,19 @@ export function promptExamples(name) {
 }
 
 /**
+ * The first line of every help block.
+ *
+ * It names the surface and the command, so a block pasted into a chat is not
+ * mistaken for the answer of the task the command runs.
+ *
+ * @param {string} name
+ * @returns {string}
+ */
+export function helpHeading(name) {
+  return `RuleMCP Help: command \`/${name}\``;
+}
+
+/**
  * Build the generic `/rule-mcp-* help` message for a prompt definition.
  *
  * @param {string} name - prompt name
@@ -40,7 +53,8 @@ export function promptExamples(name) {
  */
 export function buildHelpMessage(name, def, examples = []) {
   const argumentList = def.arguments.map((a) => (a.required ? `<${a.name}>` : `[${a.name}]`)).join(" ");
-  const lines = [`Usage: /${name} ${argumentList}`, "", def.description, "", ...def.arguments.map((a) => `  ${a.name}  ${a.description}`)];
+  const usage = argumentList ? `Usage: /${name} ${argumentList}` : `Usage: /${name}`;
+  const lines = [usage, "", def.description, "", ...def.arguments.map((a) => `  ${a.name}  ${a.description}`)];
 
   if (examples.length > 0) {
     lines.push("", "Examples:", ...examples.map((e) => `  ${e}`));

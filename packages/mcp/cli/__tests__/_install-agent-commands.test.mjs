@@ -60,10 +60,10 @@ try {
   // The full registry set lands, not just the router: an area command, a
   // one-shot, rule-check, and a persona command. ADR 116: no area *-check siblings.
   const piPrompts = join(home, ".pi", "agent", "prompts");
-  for (const expected of ["rule-area-frontend.md", "rule-check.md", "rule-persona-security.md", "rule-handoff.md"]) {
+  for (const expected of ["rule-area.md", "rule-check.md", "rule-persona.md", "rule-handoff.md"]) {
     assert.ok(existsSync(join(piPrompts, expected)), `missing registry command: ${expected}`);
   }
-  assert.ok(!existsSync(join(piPrompts, "rule-area-frontend-check.md")), "area check siblings are not installed");
+  assert.ok(!existsSync(join(piPrompts, "rule-area-frontend.md")), "the per-area files are gone (ADR 251)");
 
   // Renamed/deleted commands never surface: the installer is registry-driven.
   const legacyRouter = ["p", "i", "x", ".md"].join("");
@@ -81,7 +81,7 @@ try {
     "rule-area-process-flight.md",
     "rule-mcp-adr.md",
     "rule-process-check.md",
-    "rule-area-frontend-check.md",
+    "rule-area-frontend.md",
     "rule-area-frontend-react.md",
     "rule-area-toolchain-rspack.md",
     "rule-mcp-audit-security.md",
@@ -128,8 +128,8 @@ try {
   const written = readdirSync(join(chainHome, ".claude", "commands"));
 
   assert.ok(written.includes("rule.md"), "the router command is not optional");
-  assert.ok(written.includes("rule-area-frontend.md"), "minimal keeps the area hubs");
-  assert.ok(!written.includes("rule-area-frontend-react.md"), `minimal writes no command per skill: ${written.length} files`);
+  assert.ok(written.includes("rule-area.md"), "minimal keeps the one area command");
+  assert.ok(!written.includes("rule-area-frontend.md"), `minimal writes no per-area file: ${written.length} files`);
 
   console.log(`  ✅ install.sh --commands-preset minimal wrote ${written.length} command files`);
 } finally {

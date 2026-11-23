@@ -12,6 +12,7 @@
 import { normalizeInstallMode } from "../installers/index.js";
 import { selectionOf } from "../install/_selection-flags.js";
 import { surfaceOf } from "../install/_surface-flags.js";
+import { completionTargets } from "../completions/_targets.js";
 import { canRunPlainWizard } from "./_version-floor.js";
 
 export { WIZARD_NODE_MIN, atLeast, canRenderWizard, canRunPlainWizard, versionParts, wizardRuntimeNote } from "./_version-floor.js";
@@ -43,6 +44,43 @@ export function resolveExtras(options = {}) {
   toggle("service", options.service ?? options.mode === "daemon");
 
   return [...extras];
+}
+
+/**
+ * The completion destinations a flag asked for.
+ *
+ * `--completions detect` resolves through the same detection the wizard's step
+ * shows, so a scripted install lands on the path zsh actually reads instead of
+ * the one the old docs assumed. An unknown id is dropped rather than written
+ * somewhere arbitrary.
+ *
+ * @param {string|boolean|undefined} value
+ * @returns {string[]}
+ */
+export function resolveCompletionTargets(value) {
+  if (value === true) {
+    return completionTargets()
+      .filter((target) => target.detected && target.shell === "zsh")
+      .map((target) => target.id);
+  }
+
+  if (typeof value !== "string" || value.trim() === "") {
+    return [];
+  }
+
+  const asked = value
+    .split(",")
+    .map((entry) => entry.trim())
+    .filter(Boolean);
+  const known = new Set(completionTargets().map((target) => target.id));
+
+  if (asked.length === 1 && asked[0] === "detect") {
+    return completionTargets()
+      .filter((target) => target.detected)
+      .map((target) => target.id);
+  }
+
+  return asked.filter((id) => known.has(id));
 }
 
 /**
@@ -79,6 +117,10 @@ export function resolveSetupOptions(options = {}) {
     // `--agent <name>` narrows the run to one target; absent means "whatever
     // detection found", which the caller resolves.
     agents: options.agent && options.agent !== "all" ? [options.agent] : null,
+    // Shell completions are opt-in and per destination: absent writes nothing,
+    // and `detect` means "wherever this login shell reads them". An empty list
+    // is a real answer too - the wizard's step can be answered with no ticks.
+    completions: resolveCompletionTargets(options.completions),
     extras: resolveExtras(projectOptions),
     // Null means no flag narrowed the command surface, which the plan reads as
     // "every command" - what an install wrote before the surface grew one per

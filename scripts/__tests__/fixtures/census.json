@@ -11,15 +11,15 @@
     },
     {
       "file": "15-prompts.md",
-      "sha256": "a636e67aaedd0494f3a753a17f15795329249fbb426d24ea5c3cd88996684377"
+      "sha256": "24a58b01148d8486286795fd189376692fb05635f84d77e4cc9bcca2e6d8f2f8"
     },
     {
       "file": "16-instructions.md",
-      "sha256": "751aab4324cd1a1fccaf6dd8cbb6e240f9555babc926746ad62b67f4748cb54d"
+      "sha256": "1ff6047b73af57e66f462b0cb38cd6069d80bb9b6e9878ab372a0630b72870b1"
     },
     {
       "file": "17-cli.md",
-      "sha256": "7c7adfebec7308c6d4b2092e9e1d9eec1a6875f9f1b004df1589a45477dc61ff"
+      "sha256": "22df6a87024eb3c22144e407969ad21ea2974c06439ae047b0965fb3191520c9"
     },
     {
       "file": "18-personas.md",
@@ -35,11 +35,11 @@
     },
     {
       "file": "21-surface-map.md",
-      "sha256": "4854f3269b0ca5fefffe207a4fa4b76675a3b5b8fa0b6e8a331215b4977f6507"
+      "sha256": "5af7fee417c72b16a84f8dd6863b70faef8ea40ab6688a7471c1604621956515"
     },
     {
       "file": "22-install-targets.md",
-      "sha256": "6851845ddeb52c3850428850631e6393b9d783fee93bd30525d0b5047c640e82"
+      "sha256": "8c1552f054d77315966cc6c4d30dd2374c290c54e7d92bbd4ee025d764920431"
     },
     {
       "file": "23-env-readers.md",

@@ -4,7 +4,7 @@ import { test } from "node:test";
 
 import { BACK, CANCEL, FEATURE_ANSWERS, SCOPE_ANSWER, fakeScreen, reset, runInstallWizard, runUninstallWizard } from "./_wizard.fixture.mjs";
 
-const INSTALL = ["next", "standard", ["claude"], SCOPE_ANSWER, "auto", "stdio", "standard", ...FEATURE_ANSWERS];
+const INSTALL = ["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "standard", ...FEATURE_ANSWERS, "no"];
 
 for (let step = 1; step <= INSTALL.length; step += 1) {
   test(`install: cancel after ${step} answer(s) writes nothing`, async () => {
@@ -25,7 +25,7 @@ for (let step = 1; step <= INSTALL.length; step += 1) {
 test("a custom surface asks for the areas and the skills, and each can stop the flow", async () => {
   for (const leave of [CANCEL, BACK]) {
     reset();
-    const head = ["next", "standard", ["claude"], SCOPE_ANSWER, "auto", "stdio", "custom"];
+    const head = ["next", "standard", ["claude"], SCOPE_ANSWER, "stdio", "custom"];
 
     await runInstallWizard({ screen: fakeScreen([...head, leave, CANCEL]) });
     await runInstallWizard({ screen: fakeScreen([...head, ["frontend"], leave, CANCEL]) });

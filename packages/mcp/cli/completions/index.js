@@ -14,10 +14,14 @@ import { generateZsh } from "./_zsh.js";
  *   rule-mcp completions --shell bash
  *   rule-mcp completions --shell fish
  *
- * Install:
- *   rule-mcp completions --shell zsh > ~/.zsh/completions/_rule-mcp
- *   rule-mcp completions --shell bash | source   # or add to .bashrc
- *   rule-mcp completions --shell fish > ~/.config/fish/completions/rule.fish
+ * Installing is a step of its own: `rule-mcp install` asks where the script
+ * goes, with one row per detected shell (`cli/completions/targets.js`). Redirecting
+ * the output needs a directory that already exists and is already on the shell's
+ * `fpath`: `~/.zsh/completions` is not, which is why the old one-liner failed on
+ * every oh-my-zsh machine. A scripted install answers the same question:
+ *
+ *   rule-mcp install --completions detect        # wherever the login shell reads them
+ *   rule-mcp install --completions zsh-oh-my-zsh # $ZSH_CUSTOM/completions
  */
 
 export function generateCompletions(shell = "zsh") {

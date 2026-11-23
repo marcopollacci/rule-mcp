@@ -70,6 +70,6 @@ Several clients read one shared `.mcp.json` file, so a switch in that file appli
 
 ## Minimal tool surface
 
-A client that limits the tool list takes the `standard` surface instead of the full one. Set `RULE_MCP_SURFACE=standard` in the server configuration, or answer the Surface step that way. The area hubs stay reachable, and `rule_tool_search` loads the rest on demand.
+A client that limits the tool list takes the `standard` surface instead of the full one. Set `RULE_MCP_SURFACE=standard` in the server configuration, or answer the Surface step that way. `/rule-area` stays reachable and carries every area id, and `rule_tool_search` loads the rest on demand.
 
 [Environment variables](./10-env-variables.md) lists all settings.

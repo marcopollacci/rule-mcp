@@ -13,6 +13,7 @@
  */
 
 import { commandNames, ROUTER_COMMAND } from "../../core/agents/commands/index.js";
+import { AREA_COMMAND, PERSONA_COMMAND } from "../../core/agents/commands/_dispatchers.js";
 import { areaOf, skillAreas } from "../../prompts/_areas.js";
 
 /** The families a command belongs to, in the order a picker shows them. */
@@ -28,11 +29,13 @@ function familyOf(name) {
     return "router";
   }
 
-  if (name.startsWith("rule-area-")) {
+  // One command per family since ADR 251: the area and the persona are the
+  // first word of the request, not the command name.
+  if (name === AREA_COMMAND) {
     return "areas";
   }
 
-  return name.startsWith("rule-persona-") ? "personas" : "tasks";
+  return name === PERSONA_COMMAND ? "personas" : "tasks";
 }
 
 /**
@@ -47,16 +50,6 @@ export const PRESETS = {
   standard: { families: ["areas", "personas", "tasks"], hubsOnly: true, label: "Standard", hint: "area hubs, personas and tasks" },
   full: { families: ["areas", "personas", "tasks"], hubsOnly: true, label: "Full", hint: "area hubs plus every persona and task (no leaf area slash)" },
 };
-
-/** The hub command name of every area. */
-function hubNames() {
-  return new Set([...skillAreas().keys()].map((area) => `rule-area-${area}`));
-}
-
-/** The area a `rule-area-*` command belongs to. */
-function areaOfCommand(name) {
-  return areaOf(`rule-${name.slice("rule-area-".length)}`)?.area;
-}
 
 /**
  * The commands a selection resolves to.
@@ -104,7 +97,6 @@ export function resolveSelection(selection = {}) {
     }
   }
 
-  const hubs = hubNames();
   const commands = commandNames().filter((name) => {
     if (name === ROUTER_COMMAND) {
       return true;
@@ -116,25 +108,15 @@ export function resolveSelection(selection = {}) {
       return false;
     }
 
-    if (family !== "areas") {
+    // The area command carries the whole vocabulary, so a narrowed area list
+    // no longer has a file to remove; `areas` and `skills` stay accepted and are
+    // validated, and a narrowing that would leave nothing says so instead of
+    // silently writing the whole family.
+    if (family === "areas" && (areas || skills)) {
       return true;
     }
 
-    const area = areaOfCommand(name);
-
-    if (areas && !areas.has(area)) {
-      return false;
-    }
-    // A hub keeps its area reachable, so it survives a per-skill narrowing.
-    if (hubs.has(name)) {
-      return true;
-    }
-
-    if (preset?.hubsOnly ?? selection.hubsOnly) {
-      return false;
-    }
-
-    return !skills || skills.has(`rule-${name.slice("rule-area-".length)}`);
+    return true;
   });
 
   return { commands, problems };

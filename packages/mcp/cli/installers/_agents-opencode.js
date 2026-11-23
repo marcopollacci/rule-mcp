@@ -17,6 +17,7 @@ import { commandConfig } from "./_env-command.js";
 import { removeJsonServer } from "./_writers-json.js";
 import { appendInstruction, removeInstruction } from "./_writers-text.js";
 import { upsertOpencode, removeOpencode } from "./_writers-opencode.js";
+import { opencodeHelpPlugin } from "./_help-emit.js";
 
 /**
  * Sweep this server from a file an older install wrote, deleting it when
@@ -55,6 +56,8 @@ const installOpencode = ({ entrypoint, dryRun = false, global = false, mode = "s
   const dir = join(HOME, ".config", "opencode");
   const file = join(dir, "opencode.json");
   const instructionsFile = join(dir, "instructions.md");
+  // One plugin command answers `/rule-help [command]` without a model turn.
+  const helpFile = join(dir, "plugins", "rule-mcp-help.js");
   const results = [
     writeText({
       file,
@@ -62,6 +65,7 @@ const installOpencode = ({ entrypoint, dryRun = false, global = false, mode = "s
       dryRun,
     }),
     writeText({ file: instructionsFile, content: appendInstruction(readText(instructionsFile)), dryRun }),
+    writeText({ file: helpFile, content: opencodeHelpPlugin(), dryRun }),
   ];
   const legacy = sweepJsonServer(join(dir, "mcp.json"), dryRun);
 
@@ -83,7 +87,14 @@ const uninstallOpencode = ({ dryRun }) => {
   const dir = join(HOME, ".config", "opencode");
   const file = join(dir, "opencode.json");
   const instructionsFile = join(dir, "instructions.md");
+  const helpFile = join(dir, "plugins", "rule-mcp-help.js");
   const results = [writeText({ file, content: removeOpencode(readText(file), instructionsFile), dryRun })];
+
+  if (!dryRun) {
+    removeFile(helpFile);
+  }
+
+  results.push(helpFile);
 
   if (existsSync(instructionsFile)) {
     const stripped = removeInstruction(readText(instructionsFile));

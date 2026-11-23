@@ -43,14 +43,19 @@ test("coverage: one clean command per prompt, plus the router, plus /rule-check 
   );
 });
 
-test("area and router bodies fold check intent via keywords; rule-check stays dedicated", () => {
-  const area = listAgentCommands().find((c) => c.name === "rule-area-frontend");
-  assert.ok(area, "rule-area-frontend must exist");
+test("the area dispatcher and the router fold check intent via keywords; rule-check stays dedicated", () => {
+  const area = listAgentCommands().find((c) => c.name === "rule-area");
+  assert.ok(area, "the one area command must exist (ADR 251)");
   assert.match(area.body, /Check intent/i);
   assert.match(area.body, /controlla/);
   assert.match(area.body, /rule_tool_check/);
-  assert.match(area.body, /rule-frontend/, "area check path binds the hub skill");
-  assert.match(area.body, /rule_tool_frontend_react|Leaf skills/, "hub lists leaf tools for routing");
+  assert.match(area.body, /hub skill of the named area/, "the check path binds the named area's hub");
+  assert.match(area.body, /Areas: /, "the body carries the area vocabulary");
+  assert.equal(
+    listAgentCommands().every((c) => !c.name.startsWith("rule-area-")),
+    true,
+    "no per-area file is left",
+  );
 
   const router = listAgentCommands().find((c) => c.name === ROUTER_COMMAND);
   assert.match(router.body, /Check intent/i);

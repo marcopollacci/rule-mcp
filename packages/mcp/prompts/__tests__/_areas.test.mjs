@@ -67,6 +67,7 @@ test("one prompt per area hub only (ADR 117)", () => {
 
   for (const prompt of prompts) {
     assert.ok(prompt.description.length > 0, `${prompt.name}: a prompt says what it is for`);
+    assert.match(prompt.description, /^[A-Z]/, `${prompt.name}: the description leads the slash-command hint, so it starts capitalized`);
     assert.equal(prompt.arguments.length, 1, `${prompt.name}: one free-text request`);
     assert.ok(Array.isArray(prompt.members), `${prompt.name}: members listed for routing`);
   }

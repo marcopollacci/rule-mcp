@@ -13,41 +13,10 @@ import { agentInstallTask, runtimeHomeTask, shimTask } from "./_task-core.js";
 import { launcherTask } from "./_task-launcher.js";
 import { commandsTask, dockerTask, doctorTask, manifestTask, rulesTask, serviceTask, skillsTask } from "./_task-extras.js";
 import { featuresTask } from "./_task-features.js";
-import { skillsRemovalTask } from "./_task-remove.js";
 import { cliVerifyTask } from "./_task-cli.js";
-import { allAgents } from "../installers/index.js";
+import { completionsTask } from "./_task-completions.js";
 
-/**
- * Refuse an agent list the plan cannot act on.
- *
- * The wizard's own list once carried a row whose id was `measured:none`, a note
- * about the study rather than a product, so ticking it put a task in the plan
- * that could only fail with `Unsupported agent`. The screen is fixed; this is
- * the boundary that keeps the next one from reintroducing it, because a plan
- * entry that cannot run is not a warning to report later - it is a broken plan.
- *
- * @param {string[]} agents
- * @returns {string[]}
- */
-const checkedAgents = (agents) => {
-  const known = new Set(allAgents);
-  const unknown = agents.filter((agent) => !known.has(agent));
-
-  if (unknown.length > 0) {
-    throw new Error(`Not an agent name: ${unknown.map((agent) => `"${agent}"`).join(", ")}. A plan can only install into known agents.`);
-  }
-
-  return agents;
-};
-
-/** The dimensions a flag-driven install wrote, when no profile answered. */
-const dimensionsOf = (extras, agents) => ({
-  server: agents.length > 0,
-  rules: Boolean(extras.rules),
-  commands: Boolean(extras.commands),
-  hooks: Boolean(extras.hooks),
-  doctor: Boolean(extras.doctor),
-});
+import { checkedAgents, dimensionsOf } from "./_plan-install-guards.js";
 
 /**
  * @param {{ agents?: string[], mode?: string, extras?: object, force?: boolean, context?: object, selection?: object|null, surface?: object|null, profile?: string|null, dimensions?: object|null, features?: Array<{ id: string, level: string }>|string[], adrPolicy?: string|null }} answers
@@ -67,6 +36,7 @@ export function buildInstallPlan({
   adrPolicy = null,
   attribution = null,
   attributionAgents = [],
+  completions = [],
 } = {}) {
   const targets = checkedAgents(agents);
   const plan = [runtimeHomeTask()];
@@ -105,14 +75,17 @@ export function buildInstallPlan({
     plan.push(commandsTask(force, agents, selection));
   }
 
-  if (extras.skills) {
+  // Opt-in and selected per destination: a completion file is the only artifact
+  // that lands in a shell's own tree, so nothing is written without an answer.
+  if (completions.length > 0) {
+    plan.push(completionsTask({ targets: completions }));
+  }
+
+  // Opt-in. The server already serves this catalog, so a run that did not
+  // ask for the copy leaves ~/.agents/skills alone. Uninstall still removes
+  // a copy when that group is selected.
+  if (extras.skills === true) {
     plan.push(skillsTask());
-  } else {
-    // The step owns the skill directories, so not selecting it means absent:
-    // reconcile away whatever an earlier install copied, or the host keeps
-    // discovering `/skill:rule-mcp-*` the user did not ask for. The task reports
-    // "nothing to remove" when there is nothing to reconcile.
-    plan.push(skillsRemovalTask());
   }
 
   if (mode === "daemon" && extras.service) {

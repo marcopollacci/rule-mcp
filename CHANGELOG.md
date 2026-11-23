@@ -13,6 +13,37 @@ dependency bump is one nobody reads. All of them are in `git log`.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **agent-commands**: render opencode commands with the hint folded into the description (`a0ac8c6`)
+- **completions**: install shell completions where the shell reads them (`245a1bb`)
+- **help**: render the guide from the program and answer slash help without a turn (`706f264`)
+
+### Changed
+
+- **setup**: install each host to its ceiling instead of asking for a level (`ac3d45c`)
+- **cli**: keep the install plan, the bodies and the help surface under the file budget (`0c26a03`)
+- **agent-commands**: address an area and a persona through one command each (`cfbba41`)
+
+### Fixed
+
+- **history**: verify a squash against the base the caller named (`4411fe4`)
+- **setup**: count a purge tree with a broken link instead of throwing (`ad8d180`)
+- **lint**: keep the gate green under the unicorn 80 rules (`9cc7ac4`)
+- **version**: move the supported-versions row with the release (`91e7fce`)
+- **agent-commands**: name the request in prose instead of interpolating the placeholder (`12ddde7`)
+- **setup**: stop implying the skills question owns the Codex command files (`3cf4522`)
+
+### Documentation
+
+- **repo**: commit the plans, the audits and the reviews (`66e6dcf`)
+- **security**: support the line the manifests ship (`4158638`)
+- **release**: bring the chapters in line with the current surface (`bac0006`)
+- **cli**: list every agent-commands format in the option help (`a297a70`)
+- **adr**: record 249 on the argument hint and the description (`156bb47`)
+
 ## [0.1.3]
 
 ### Fixed

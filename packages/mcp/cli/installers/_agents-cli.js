@@ -125,25 +125,5 @@ const installGemini = ({ entrypoint, dryRun = false, global = false }) => {
   ];
 };
 
-/**
- * Installs rule-mcp into Pi coding agent.
- * @param {{ entrypoint: string, dryRun?: boolean, global?: boolean, mode?: string }} opts
- * @returns {Array<{ file: string, action: string }>}
- */
-const installPi = ({ entrypoint, dryRun = false, global = false, mode = "stdio" }) => {
-  // Pi uses $PI_CODING_AGENT_DIR/mcp.json or ~/.pi/agent/mcp.json
-  const piDir = process.env.PI_CODING_AGENT_DIR ? join(process.env.PI_CODING_AGENT_DIR) : join(HOME, ".pi", "agent");
-  const file = join(piDir, "mcp.json");
-  const promptFile = join(piDir, "prompts", "rule.md");
-
-  return [
-    writeText({
-      file,
-      content: upsertJsonServer(readText(file), commandConfig(entrypoint, { global, mode, agentName: "pi" })),
-      dryRun,
-    }),
-    writeText({ file: promptFile, content: commandTemplate(), dryRun }),
-  ];
-};
-
-export { installClaude, installCodex, installCursor, installCopilot, installGemini, installPi };
+export { installPi } from "./_agents-pi.js";
+export { installClaude, installCodex, installCursor, installCopilot, installGemini };

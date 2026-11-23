@@ -107,6 +107,8 @@ export function registerSetupCommand(program) {
     .option("--minimal", "minimal server tool surface (--no-minimal for full)")
     .option("--no-minimal", "full server tool surface")
     .option("--surface <spec>", "server tool surface: minimal, standard, full, areas:<a,b> or skills:<s,...>")
+    .option("--completions <list>", "shell completions to write: detect, or comma-separated ids (zsh-oh-my-zsh, zsh-user, bash-user, fish-user)")
+    .option("--no-completions", "write no shell completion scripts")
     .option("--service", "register the platform daemon service")
     .option("--no-service", "skip the platform daemon service")
     .option("--doctor", "run the health check at the end")

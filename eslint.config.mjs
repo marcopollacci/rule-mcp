@@ -58,6 +58,11 @@ export default defineConfig([
       // is a one-line block comment, so enforce that direction instead of it.
       "unicorn/single-line-block-comment-style": ["error", "single-line"],
       "unicorn/no-array-sort": "off", // sort sites already pass explicit comparators
+      // unicorn 80 adds this one, and it fires 34 times on the printer and helper
+      // signatures that take an optional positional argument (`write(file, text, dryRun)`).
+      // Converting those to options objects is a refactor of the internal API, not a
+      // bug fix, so the rule waits for its own change instead of blocking a release.
+      "unicorn/prefer-options-parameter": "off",
       "unicorn/require-array-sort-compare": "off", // lexical sort is correct for string keys
       "unicorn/no-break-in-nested-loop": "off",
       "unicorn/prefer-simple-condition-first": "off",

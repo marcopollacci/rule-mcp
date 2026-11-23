@@ -4,21 +4,19 @@ import test from "node:test";
 
 import { activeRoles, getPrompt, listAgentCommands, listPrompts } from "./_surfaces.fixture.mjs";
 
-test("every active role has one persona prompt", () => {
+test("one persona prompt addresses every active role", () => {
   const names = new Set(listPrompts().map((prompt) => prompt.name));
 
-  for (const role of activeRoles()) {
-    assert.ok(names.has(`rule-persona-${role.id}`), `missing prompt for ${role.id}`);
+  assert.ok(names.has("rule-persona"), "the dispatcher addresses the whole catalog (ADR 251)");
 
-    for (const operation of ["audit", "review", "plan"]) {
-      assert.equal(names.has(`rule-persona-${role.id}-${operation}`), false, `the old ${role.id}-${operation} prompt must be gone`);
-    }
+  for (const role of activeRoles()) {
+    assert.equal(names.has(`rule-persona-${role.id}`), false, `the per-role ${role.id} prompt must be gone`);
   }
 });
 
 test("the request decides how deep the run goes", () => {
   const sectionOf = (topic) => {
-    const prompt = getPrompt("rule-persona-security", topic === undefined ? {} : { topic });
+    const prompt = getPrompt("rule-persona", { persona: "security", ...(topic !== undefined && { topic }) });
     const text = prompt.messages.map((message) => message.content.text).join("\n");
 
     assert.ok(!text.includes("{{"), "no placeholder reaches the client");
@@ -51,24 +49,26 @@ test("the request decides how deep the run goes", () => {
 });
 
 test("a role prompt takes an optional topic and makes it the binding scope", () => {
-  const prompt = getPrompt("rule-persona-privacy", { topic: "the flight recorder exports" });
+  const prompt = getPrompt("rule-persona", { persona: "privacy", topic: "the flight recorder exports" });
   const text = prompt.messages.map((message) => message.content.text).join("\n");
 
   assert.match(text, /the flight recorder exports/);
   assert.match(text, /## Scope: binding/, "the topic is a scope, not a suggestion");
 });
 
-test("every active role has one agent command", () => {
+test("one agent command addresses every active role", () => {
   const commands = new Set(listAgentCommands().map((command) => command.name));
 
+  assert.ok(commands.has("rule-persona"), "the dispatcher is the persona command (ADR 251)");
+
   for (const role of activeRoles()) {
-    assert.ok(commands.has(`rule-persona-${role.id}`), `missing command for ${role.id}`);
+    assert.ok(!commands.has(`rule-persona-${role.id}`), `the per-role ${role.id} command must be gone`);
   }
 });
 
 test("persona command bodies route through the tools and carry the depth intent", () => {
   for (const command of listAgentCommands()) {
-    if (!command.name.startsWith("rule-persona-")) {
+    if (command.name !== "rule-persona") {
       continue;
     }
 
@@ -82,27 +82,27 @@ test("persona command bodies route through the tools and carry the depth intent"
     // The request typed after the command is the run's focus: it must be
     // forwarded into rule_tool_plan as `topic` (handoff-style pass-through).
     assert.match(command.body, /\$ARGUMENTS/, `${command.name}: body must carry the request placeholder`);
-    assert.match(command.body, /typed after this command passed through unchanged as `topic`/, `${command.name}: body must forward the request as topic`);
+    assert.match(command.body, /unchanged as `topic`/, `${command.name}: body must forward the request as topic`);
     assert.match(command.body, /binding scope/, `${command.name}: body must call the request the binding scope`);
   }
 });
 
-test("persona prompts and commands accept a free-form request like every other prompt", () => {
-  const personaDefs = listPrompts().filter((p) => p.name.startsWith("rule-persona-"));
+test("the persona dispatcher accepts the id and a free-form request", () => {
+  const personaDefs = listPrompts().filter((p) => p.name === "rule-persona");
 
   for (const prompt of personaDefs) {
-    assert.equal(prompt.arguments.length, 1, `${prompt.name}: exactly one argument, the free-form request`);
-    assert.equal(prompt.arguments[0].name, "topic", `${prompt.name}: the argument is the request`);
-    assert.match(prompt.arguments[0].description, /request/, `${prompt.name}: the argument description must call it a request`);
+    assert.equal(prompt.arguments.length, 2, `${prompt.name}: the id plus the request`);
+    assert.equal(prompt.arguments[0].name, "persona", `${prompt.name}: the id comes first`);
+    assert.equal(prompt.arguments[1].name, "topic", `${prompt.name}: the argument is the request`);
+    assert.match(prompt.arguments[1].description, /request/, `${prompt.name}: the argument description must call it a request`);
   }
 
   // Help surfaces an invocation example, so the user sees how the request slots in.
-  const help = getPrompt("rule-persona-security", { topic: "help" });
+  const help = getPrompt("rule-persona", { persona: "help" });
   const helpText = help.messages[0].content.text;
 
-  assert.match(helpText, /^Usage: \/rule-persona-security/, "persona help must start with the usage line");
-  assert.match(helpText, /Examples:/, "persona help must show a request example");
-  assert.match(helpText, /plan the SSE daemon auth fix/, "the help shows how a plan ask deepens the run");
+  assert.match(helpText, /^RuleMCP Help: command `\/rule-persona`\n\nUsage: \/rule-persona/, "the dispatcher answers /rule-persona help with its own block");
+  assert.match(helpText, /persona|topic/, "the usage block names the argument the command takes");
 
   // The request reaches the model: a persona prompt with a topic must say so.
   const withRequest = getPrompt("rule-persona-security", { topic: "the SSE daemon token handling" });

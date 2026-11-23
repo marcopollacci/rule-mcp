@@ -115,8 +115,7 @@ export function agentRows() {
     noteTone: entry.configured ? "ok" : entry.present ? "info" : undefined,
     // An array, never a bare string: the detail panel iterates lines, and a
     // string would be drawn one character per row. The second line is the
-    // integration ceiling, so the depth screen never offers a level this host
-    // cannot reach without the reader having seen why.
+    // ceiling this install will reach. The wizard does not ask for less.
     detail: [entry.configFile ?? "no config file on this machine yet", ceilingLine(entry.name)],
   });
 

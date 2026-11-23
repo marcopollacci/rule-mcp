@@ -7,7 +7,7 @@
 
 import { AREA_SUBJECT } from "./_areas.data.mjs";
 import { firstSentence, table, toolOf } from "./_format.mjs";
-import { COMMAND_TARGETS, HOOK_EVENTS, activeRoles, cliCommands, getSkillMetadata, personaCommandName } from "./_registries.mjs";
+import { COMMAND_TARGETS, HOOK_EVENTS, activeRoles, cliCommands, getSkillMetadata } from "./_registries.mjs";
 
 /** The counted summary, and the one number that needs explaining. */
 export function summarySection(data) {
@@ -93,17 +93,18 @@ export function promptSection(data) {
     "",
     "### Persona, one per role",
     "",
-    "There is one command per role. The request sets the depth of the run:",
+    "There is one command for every role: `/rule-persona <persona> <request>` (ADR 251), where the first",
+    "word names the role from the table below. The request sets the depth of the run:",
     "",
     "- If the request names a review, the run does the audit and the review.",
     "- If the request names a plan, the run does the audit, the review and the plan.",
     "- In all other cases, the run does the audit only.",
     "",
-    "Each command accepts an optional free-text `topic`. The topic sets the focus of the run.",
+    "The rest of the request is the optional free-text `topic`, which sets the focus of the run.",
     "",
     ...table(
       ["Role", "Command"],
-      activeRoles().map((role) => [`\`${role.id}\``, `\`/${personaCommandName(role.id)}\``]),
+      activeRoles().map((role) => [`\`${role.id}\``, `\`/rule-persona ${role.id} <request>\``]),
     ),
     "",
   ];

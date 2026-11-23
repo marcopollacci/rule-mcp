@@ -1,8 +1,8 @@
 # Integration levels
 
-An install has two axes. The profile sets how much of the catalog is available: `minimal`, `standard`, `full`, or `custom`. The level sets how deep one host goes.
+An install writes every rung a host supports, up to that host's ceiling. The wizard does not ask how deep to go. The profile still chooses how much of the catalog is reachable: `minimal`, `standard`, `full`, or `custom`.
 
-Use `install --agent <id> --level <Lx>` to set the level. If the level is above the ceiling of the host, the install refuses and gives the reason.
+A script can set a lower cap with `install --agent <id> --level <Lx>`. If the level is above the ceiling of the host, the install refuses and gives the reason.
 
 | Level | Writes                               | Needs                           |
 | ----- | ------------------------------------ | ------------------------------- |
@@ -12,7 +12,7 @@ Use `install --agent <id> --level <Lx>` to set the level. If the level is above 
 | `L3`  | `L2` and the guard hooks             | A documented hook file          |
 | `L4`  | `L3` and a native handler            | A documented handler API        |
 
-A host installs each level that it supports, up to the level that you ask for. The install skips a level that the host does not support and gives the reason. For example, Kiro has a hook file but no command files.
+A host installs each level that it supports, up to its ceiling. A scripted `--level` stops earlier. The install skips a level that the host does not support. For example, Kiro has a hook file but no command files.
 
 [Install targets](./22-install-targets.md) gives the ceiling of each host. `rule-mcp doctor` prints the state, for example `L2 of L3, next L3`.
 

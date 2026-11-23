@@ -1,17 +1,14 @@
 /**
  * @module cli/setup/opentui/items-depth
  *
- * The two screens that ask how the server reaches an agent and how much of it
- * is written: the transport, and the depth.
+ * The transport screen: how the server reaches an agent.
  *
  * Split out of `items.js`, which is past the 150-line cap and may only shrink
- * (ADR 053, ADR 177). The depth screen owns a vocabulary of its own - the rungs
- * in words - so it is a concern, not a slice of one.
+ * (ADR 053, ADR 177). Depth is not a screen: every host is installed up to its
+ * own ceiling, so this module no longer asks how much to write.
  */
 
 import { remoteModeAgents } from "../../installers/index.js";
-import { hostRecord } from "../../installers/hosts/index.js";
-import { RUNG_WORDS, rungWords } from "../../installers/hosts/_levels.js";
 
 /** The three transports, with what each one costs the user. */
 const MODE_ITEMS = [
@@ -31,53 +28,6 @@ const MODE_ITEMS = [
     detail: ["The SSE service in a container via compose.", "Needs Docker Compose v2 and a daemon token."],
   },
 ];
-
-/**
- * The transport rows for the agents on the previous screen.
- *
- * Daemon and docker are discouraged, never removed, when someone selected
- * cannot use them: the row names who, so the reason travels with the choice
- * instead of arriving later as a per-agent failure.
- *
- * @param {string[]} [agents]
- */
-/** The integration levels, with what each one writes and what it costs. */
-const LEVEL_ITEMS = [
-  { id: "auto", label: "Everything each host supports", note: "recommended" },
-  { id: "L0", label: RUNG_WORDS.L0.title, note: RUNG_WORDS.L0.adds },
-  { id: "L1", label: RUNG_WORDS.L1.title, note: RUNG_WORDS.L1.adds },
-  { id: "L2", label: RUNG_WORDS.L2.title, note: RUNG_WORDS.L2.adds },
-  { id: "L3", label: RUNG_WORDS.L3.title, note: RUNG_WORDS.L3.adds },
-  { id: "L4", label: RUNG_WORDS.L4.title, note: RUNG_WORDS.L4.adds },
-];
-
-/**
- * The depth choices, with the ceilings of the hosts the user just picked.
- *
- * The ceiling belongs on this screen because the choice is a cap, not a
- * promise: picking the deepest row with Zed selected writes the server entry
- * and stops there, and the row says so before the user commits to it. The
- * per-host lines are words, not rungs: `zed: server only` answers the question
- * the reader has, and `zed: L0` answers it only for someone who has read the
- * table in the operations guide.
- */
-export function depthItems(agents = []) {
-  const ceilings = [...new Set(agents.map((agent) => hostRecord(agent)?.ceiling).filter(Boolean))].sort();
-  const perHost = agents.length > 0 ? agents.map((agent) => `${agent}: ${rungWords(hostRecord(agent)?.ceiling ?? "L0")}`) : ["No host selected yet."];
-
-  return LEVEL_ITEMS.map((item) => ({
-    ...item,
-    note: item.id === "auto" ? (ceilings.length > 0 ? "no cap" : "recommended") : item.note,
-    detail: [
-      item.id === "auto"
-        ? "No cap: every selected host writes every part it supports, and the review lists what each one wrote."
-        : "A cap, not a promise: a host that stops lower says so below, and the review lists what each one wrote.",
-      item.id === "auto" ? "" : `Scripted installs name this row as --level ${item.id}.`,
-      "",
-      ...perHost,
-    ],
-  }));
-}
 
 /**
  * The transport rows for the agents on the previous screen.
