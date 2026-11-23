@@ -8,6 +8,7 @@ them by `handoff doctor`, so editing it by hand is work the next run throws away
 
 | #                                                                  | Title                                                                          | Date       | Branch                    |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ---------- | ------------------------- |
+| [61](61-collapsed-surface-and-release-prep.md)                     | Collapsed surface, completions, and the release prep                           | 2026-11-23 | main                      |
 | [60](60-docs-site-chrome-prose-and-the-ste100-gate.md)             | the site chrome, the closing prose, and the STE100 gate                        | 2026-11-10 | main                      |
 | [59](59-the-header-that-fits-a-phone.md)                           | the header that fits a phone, and the checks that keep it                      | 2026-11-07 | main                      |
 | [58](58-brand-kit-visual-gates-and-the-pages-deploy.md)            | the brand kit on the site, and the visual gates that keep it                   | 2026-11-07 | main                      |
