@@ -104,7 +104,7 @@ regression shows up.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
+| 0.2.x   | :white_check_mark: |
 | < 0.1.0 | :x:                |
 
 Only the latest minor `0.x` line receives security fixes until `1.0.0` ships.
