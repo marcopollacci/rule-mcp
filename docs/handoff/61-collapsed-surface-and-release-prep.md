@@ -36,17 +36,17 @@ Consequence: the CHANGELOG now carries one entry for the whole feature instead o
 
 ## Verification (commands actually run)
 
-| Check | Outcome |
-| --- | --- |
-| `prettier --check '**/*.{js,mjs,json,md}'` | clean, including the 93 newly tracked files under `docs/` |
-| `eslint bin/ packages/ scripts/__tests__/ --max-warnings 50` | 0 errors, 42 warnings |
-| `pnpm census:check` | current |
-| `node scripts/build/version/index.mjs --check` | `0.1.3 in sync (7 places)` |
-| `pnpm test:e2e:docs-site` | 23 passed, axe WCAG 2.2 AA included |
-| Suites touched this session | `cli`, `cli/setup`, `cli/commands`, `cli/install`, `cli/completions`, `cli/installers`, `core/agents/commands`, `core/history`, `core/review/personas`, `core/review/docs`, `prompts`, `tools/handon`, `scripts/__tests__/docs`, `scripts/__tests__/plans` all green |
-| `rule_tool_check` | All 7 project checks pass |
-| Docs site | 24 pages, `http://localhost:3000/` answers 200 |
-| `pnpm release --dry-run` | `0.1.3 -> 0.2.0 (minor)`, tag `v0.2.0`, tag free, branch `main` |
+| Check                                                        | Outcome                                                                                                                                                                                                                                                              |
+| ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `prettier --check '**/*.{js,mjs,json,md}'`                   | clean, including the 93 newly tracked files under `docs/`                                                                                                                                                                                                            |
+| `eslint bin/ packages/ scripts/__tests__/ --max-warnings 50` | 0 errors, 42 warnings                                                                                                                                                                                                                                                |
+| `pnpm census:check`                                          | current                                                                                                                                                                                                                                                              |
+| `node scripts/build/version/index.mjs --check`               | `0.1.3 in sync (7 places)`                                                                                                                                                                                                                                           |
+| `pnpm test:e2e:docs-site`                                    | 23 passed, axe WCAG 2.2 AA included                                                                                                                                                                                                                                  |
+| Suites touched this session                                  | `cli`, `cli/setup`, `cli/commands`, `cli/install`, `cli/completions`, `cli/installers`, `core/agents/commands`, `core/history`, `core/review/personas`, `core/review/docs`, `prompts`, `tools/handon`, `scripts/__tests__/docs`, `scripts/__tests__/plans` all green |
+| `rule_tool_check`                                            | All 7 project checks pass                                                                                                                                                                                                                                            |
+| Docs site                                                    | 24 pages, `http://localhost:3000/` answers 200                                                                                                                                                                                                                       |
+| `pnpm release --dry-run`                                     | `0.1.3 -> 0.2.0 (minor)`, tag `v0.2.0`, tag free, branch `main`                                                                                                                                                                                                      |
 
 Not run, because they only execute on a tag: `pnpm audit:gate`, `pnpm build` (tarball and SBOM), the publish job.
 
