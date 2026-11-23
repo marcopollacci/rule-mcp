@@ -62,7 +62,9 @@ test("a prompt body is compressed and booked as its own source", async () => {
   registerPromptHandlers({ setRequestHandler: (schema, handler) => handlers.set(schema.shape?.method?.value ?? handlers.size, handler) });
 
   const get = [...handlers.values()].at(-1);
-  const name = listPrompts().find((prompt) => prompt.name.startsWith("rule-area-")).name;
+  // One area command carries the whole vocabulary since ADR 249: the prompt
+  // surface to compress is `rule-area`, not one per hub.
+  const name = "rule-area";
   const before = getPrompt(name, {}).messages[0].content.text;
   const after = (await get({ params: { name } })).messages[0].content.text;
 
