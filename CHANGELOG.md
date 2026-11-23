@@ -19,6 +19,16 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - **cli**: collapse the command surface and answer help without a turn (`e230228`)
 
+### Fixed
+
+- **history**: name the source of a consolidated ADR in Markdown (`78241e7`)
+
+### Documentation
+
+- **cli**: state what the code does, with no history in the comments (`519b8a3`)
+- **census**: recount the surface after the feature close (`cd7fb40`)
+- **adr**: point the close-out references at the consolidated record (`1ad480c`)
+
 ## [0.1.3]
 
 ### Fixed
