@@ -21,6 +21,11 @@
     --font-mono: "IBM Plex Mono", "SF Mono", ui-monospace, monospace;
     --font-ui: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
     --content-width: 112ch;
+    /* Reading measure for prose, in em so it follows the text size: the guide
+       pages set a smaller body size and would otherwise buy extra characters
+       per line from the same box. Uncapped, a line reached 121 characters at
+       1280px, past the 75 a reader tracks. */
+    --measure: 37em;
     --gutter: clamp(1rem, 3vw, 2rem);
     /* Inset shared by header, subnav and footer: it reproduces exactly where
        `main` starts, so every band begins on the same x at every width. */
@@ -367,6 +372,11 @@
   body > header nav a {
     min-height: 2.75rem;
     font-weight: 600;
+    /* Base is the phone: a smaller label and a tighter inset keep both
+       destinations on one line at 320px. The wider widths add the larger
+       inset and the inherited size back. */
+    padding-inline: var(--space-2);
+    font-size: 1.06rem;
   }
 
   body > header nav a:hover,
@@ -399,6 +409,23 @@
     max-width: min(var(--content-width), calc(100% - 2 * var(--gutter)));
     margin-inline: auto;
     padding-block: var(--space-5) var(--space-7);
+  }
+
+  /* Text blocks take the reading measure; tables, code and the page's own
+     sections keep the full container so a wide table is not squeezed into a
+     column of prose. */
+  main > p,
+  main > ul,
+  main > ol,
+  main > dl,
+  main > blockquote,
+  main > h1,
+  main > h2,
+  main > h3,
+  main > h4,
+  main > h5,
+  main > h6 {
+    max-inline-size: var(--measure);
   }
 
   footer {
@@ -457,13 +484,13 @@
     font-size: 1.02rem;
     font-weight: 700;
     /* The body line box is taller than the circle, so a centered line box put
-       the digit off-centre. One line, one em, then the em box is the digit. */
+       the digit off-center. One line, one em, then the em box is the digit. */
     line-height: 1;
     font-variant-numeric: tabular-nums;
     display: grid;
     place-items: center;
-    /* A digit's ink sits right of its advance centre and above the em centre,
-       so the centred box leaves the numeral visibly off the circle's centre.
+    /* A digit's ink sits right of its advance center and above the em center,
+       so the centered box leaves the numeral visibly off the circle's center.
        Both nudges are in em: they hold when the badge size changes. */
     text-indent: -0.05em;
     padding-block-start: 0.06em;
@@ -507,6 +534,11 @@
   body > header details[data-part="prefs"] summary {
     display: inline-flex;
     align-items: center;
+    /* Base is the phone: the trigger owns the row, so the whole width is the
+       target and the chevron sits at the far end. The wide layout shrinks it
+       back to the pill that sits beside the destinations. */
+    justify-content: space-between;
+    width: 100%;
     gap: var(--space-2);
     min-height: 2.75rem;
     padding: var(--space-1) var(--space-4);
@@ -570,14 +602,17 @@
      invisible box over the nav and the content, which ate clicks and read as
      overlapping text. No transition is allowed on this site, so `display` is
      the honest switch. */
+  /* Base is the phone: the panel takes the full width and pushes the page
+     down, because a panel beside the header would cover the title. From 56rem
+     there is room, so it floats under its trigger instead. */
   body > header details[data-part="prefs"] summary + menu {
     display: none;
     z-index: 99;
-    position: absolute;
-    right: 0;
+    position: static;
+    width: 100%;
+    min-width: 0;
     flex-direction: column;
     gap: var(--space-3);
-    min-width: 16rem;
     margin: var(--space-2) 0 0;
     padding: var(--space-3);
     border: 1px solid var(--border);
@@ -587,7 +622,7 @@
     box-shadow: 0 0.9rem 1.6rem color-mix(in srgb, #000 24%, transparent);
     list-style: none;
     opacity: 0;
-    transform: scaleY(0.96);
+    transform: none;
     transform-origin: top right;
   }
 
@@ -650,34 +685,11 @@
         "brand prefs"
         "nav nav";
     }
-  }
 
-  /* A 320px phone fits both destinations on one line at this size, and two
-     stacked rows of menu is a header taller than the content it introduces. */
-  @media (max-width: 23.999rem) {
-    body > header nav {
-      font-size: 1.06rem;
-    }
-
+    /* Above 320px the room exists for the larger label and the wider inset. */
     body > header nav a {
-      padding-inline: var(--space-2);
-    }
-  }
-
-  /* Below the wide breakpoint the panel takes the full width and pushes the
-     page down instead of covering its title. */
-  @media (max-width: 55.999rem) {
-    body > header details[data-part="prefs"] summary {
-      width: 100%;
-      justify-content: space-between;
-    }
-
-    body > header details[data-part="prefs"][open] summary + menu {
-      position: static;
-      width: 100%;
-      min-width: 0;
-      margin-block-start: var(--space-2);
-      transform: none;
+      padding-inline: var(--space-3);
+      font-size: inherit;
     }
   }
 
@@ -688,6 +700,21 @@
       grid-template-areas: "brand nav prefs";
       gap: var(--space-2) var(--space-5);
       padding-block: var(--space-3);
+    }
+
+    /* The panel floats under its trigger, and the trigger shrinks back to the
+       pill that shares the row with the destinations. */
+    body > header details[data-part="prefs"] summary {
+      width: auto;
+      justify-content: normal;
+    }
+
+    body > header details[data-part="prefs"] summary + menu {
+      position: absolute;
+      right: 0;
+      width: auto;
+      min-width: 16rem;
+      transform: scaleY(0.96);
     }
 
     body > header > p,
@@ -708,20 +735,37 @@
 /* Home page */
 
 @layer home {
-  /* The home page is two columns: the hero owns the left half, the flow and the
-     cards stack on the right. Named areas are the documented reason to reach
-     for grid over flex here (rule-styleguide-css: css-flex-first). */
+  /* Mobile first: one column on a phone, in reading order. Every area the
+     sections name is declared here too, because an area a template does not
+     list opens an implicit track: `closing` did, and the two-column template
+     squeezed the cards into a sliver at 320px. */
   body[data-page="home"] main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "head head"
-      "hero flow"
-      "hero cards"
-      "closing closing";
+      "head"
+      "hero"
+      "flow"
+      "cards"
+      "closing";
     align-content: start;
-    column-gap: var(--space-6);
     row-gap: var(--space-5);
+  }
+
+  /* From the wide breakpoint the home page is two columns: the hero owns the
+     left half, the flow and the cards stack on the right. Named areas are the
+     documented reason to reach for grid over flex here (rule-styleguide-css:
+     css-flex-first). */
+  @media (min-width: 56rem) {
+    body[data-page="home"] main {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      grid-template-areas:
+        "head head"
+        "hero flow"
+        "hero cards"
+        "closing closing";
+      column-gap: var(--space-6);
+    }
   }
 
   body[data-page="home"] main > h1 {
@@ -825,19 +869,6 @@
     grid-area: cards;
   }
 
-  /* Below the two-column width the same blocks stack in reading order. */
-  @media (max-width: 56rem) {
-    body[data-page="home"] main {
-      grid-template-columns: minmax(0, 1fr);
-      grid-template-areas:
-        "head"
-        "hero"
-        "flow"
-        "cards"
-        "foot";
-    }
-  }
-
   body[data-page="home"] ul[data-part="stats"] {
     display: flex;
     flex-wrap: wrap;
@@ -923,13 +954,13 @@
     font-size: 1.02rem;
     font-weight: 700;
     /* The body line box is taller than the circle, so a centered line box put
-       the digit off-centre. One line, one em, then the em box is the digit. */
+       the digit off-center. One line, one em, then the em box is the digit. */
     line-height: 1;
     font-variant-numeric: tabular-nums;
     display: grid;
     place-items: center;
-    /* A digit's ink sits right of its advance centre and above the em centre,
-       so the centred box leaves the numeral visibly off the circle's centre.
+    /* A digit's ink sits right of its advance center and above the em center,
+       so the centered box leaves the numeral visibly off the circle's center.
        Both nudges are in em: they hold when the badge size changes. */
     text-indent: -0.05em;
     padding-block-start: 0.06em;
