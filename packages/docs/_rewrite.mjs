@@ -123,6 +123,21 @@ export function wrapTables(html) {
 }
 
 /**
+ * Make a scrolling code block reachable from the keyboard.
+ *
+ * A `pre` wider than the viewport scrolls sideways on a phone, and a scrollable
+ * box with no tab stop cannot be scrolled without a pointer (WCAG 2.1.1; axe
+ * reports it as `scrollable-region-focusable`). The attribute is added once, so
+ * a second pass over the same HTML changes nothing.
+ *
+ * @param {string} html
+ * @returns {string}
+ */
+export function focusCodeBlocks(html) {
+  return html.replaceAll(/<pre(?![^>]*\btabindex=)/gu, '<pre tabindex="0"');
+}
+
+/**
  * Drop the `NN - ` chapter prefix from the first heading of a rendered page.
  *
  * The generated inventories carry it in their H1 (`# 13 - Personas`) because the

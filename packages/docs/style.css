@@ -170,10 +170,15 @@
     color: var(--accent);
   }
 
+  /* Every keyboard stop shows where it went. A code block and a wide table
+     scroll on a phone, so both are tab stops (WCAG 2.1.1) and both take the
+     same ring as a link. */
   a:focus-visible,
   summary:focus-visible,
   input:focus-visible,
-  button:focus-visible {
+  button:focus-visible,
+  pre:focus-visible,
+  [data-part="table-scroll"]:focus-visible {
     outline: 3px solid var(--focus);
     outline-offset: 2px;
   }
