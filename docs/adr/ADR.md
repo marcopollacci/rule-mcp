@@ -8,6 +8,7 @@ this directory are the source of truth; this index is generated from them by
 
 | #                                                                                                                       | Title                                                                                                     | Date       | Status     | Tags                                                                                |
 | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ----------------------------------------------------------------------------------- |
+| [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md)                                      | Ship the help guard only to hosts that cannot answer help themselves                                      | 2026-11-24 | accepted   | cli, agent-commands, surface                                                        |
 | [249](249-main.md)                                                                                                      | main                                                                                                      | 2026-11-23 | accepted   | agent-commands, opencode, pi, slash-commands                                        |
 | [248](248-close-out-plan-install-surface-depth-skills.md)                                                               | Close out plan _install-surface-depth-skills                                                              | 2026-11-10 | accepted   | docs, closeout, plan                                                                |
 | [247](247-the-wizard-asks-its-questions-as-prompts-when-the-renderer-cannot-run.md)                                     | The wizard asks its questions as prompts when the renderer cannot run                                     | 2026-11-07 | accepted   | wizard, runtime, cli                                                                |
@@ -265,6 +266,7 @@ file. Where a line stops short the rest is in the ADR.
 
 | ADR                                                                                                                     | Decision                                                                                                                                                                                                                        | Consequence                                                                                                                                                                                                                     |
 | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md)                                      | The guard travels with a per-target flag.                                                                                                                                                                                       | Positive: the transcript shows only the task on Pi and opencode, and every non-help invocation carries no usage block.                                                                                                          |
 | [249](249-main.md)                                                                                                      | FORMATS gains a per-format hint strategy: frontmatter writes argument-hint, description folds it into the description in the same hint-then-description order Pi renders, none drops it.                                        | opencode users now see an argument hint in the completion popup, at the cost of a slightly longer description line; the hint text is duplicated between the description and the existing Usage prose in rule-handoff until...   |
 | [248](248-close-out-plan-install-surface-depth-skills.md)                                                               | Fold the record into this ADR and the session handoff, then delete the source file.                                                                                                                                             | docs/plans/_install-surface-depth-skills.md is gone from the tree; this ADR keeps what it delivered and the handoff of this session names it.                                                                                   |
 | [247](247-the-wizard-asks-its-questions-as-prompts-when-the-renderer-cannot-run.md)                                     | The flow talks to a six-method port - setStep, ask, askPath, confirm, progress, close - and the renderer is one adapter behind it.                                                                                              | A Node 24 terminal gets the same questions, defaults and review as the full-screen wizard, printed as prompts.                                                                                                                  |
@@ -829,6 +831,26 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [073](073-mcp-registry-identity-is-the-github-owner-not-a-claimed-brand.md) MCP registry identity is the GitHub owner, not a claimed brand
 - [040](040-v100-release-and-docs-accuracy-guard.md) v1.0.0 release and the docs-accuracy guard
 
+### cli
+
+- [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md) Ship the help guard only to hosts that cannot answer help themselves
+- [247](247-the-wizard-asks-its-questions-as-prompts-when-the-renderer-cannot-run.md) The wizard asks its questions as prompts when the renderer cannot run
+- [228](228-the-launcher-owns-a-copy-outside-the-checkout.md) The launcher owns a copy outside the checkout
+- [180](180-hook-install-starts-the-guard-daemon-and-writers-use-send.md) Hook install starts the guard daemon and writers use --send
+- [179](179-guard-daemon-on-a-unix-socket-with-a-thin-send-client.md) Guard daemon on a Unix socket with a thin --send client
+- [178](178-guard-skips-core-tool-bootstrap-optional-persistent-loop.md) Guard skips core-tool bootstrap; optional persistent --loop
+- [177](177-baseline-the-cli-file-size-debt-in-the-ratchet.md) Baseline the CLI file-size debt in the ratchet
+- [100](100-the-handoff-family-gets-a-generated-index-and-the-root-handoff-summary-retires.md) The handoff family gets a generated index, and the root HANDOFF summary retires
+- [097](097-opencode-gets-a-dedicated-installer-writing-its-own-config-shape.md) opencode gets a dedicated installer writing its own config shape
+- [094](094-reinstall-is-one-shell-script-behind-three-entry-points.md) Reinstall is one shell script behind three entry points
+- [093](093-accept-a-comma-separated-agent-list-in-agent-commands.md) Accept a comma-separated agent list in agent-commands
+- [082](082-the-setup-wizard-is-the-installer-and-it-asks-which-commands-to-write.md) The setup wizard is the installer, and it asks which commands to write
+- [072](072-one-installer-a-node-wizard-with-shell-bootstraps.md) One installer, a Node wizard with shell bootstraps
+- [066](066-the-cli-entry-point-loads-no-command-handler-it-has-not-been-asked-for.md) The CLI entry point loads no command handler it has not been asked for
+- [053](053-one-global-shim-and-hermetic-pnpm-home-in-script-tests.md) One global shim, and hermetic PNPM_HOME in script tests
+- [038](038-installer-self-heals-global-shim-surfaces-failures-gates-tui-rendering.md) Installer self-heals its global shim, surfaces failures, and gates TUI rendering
+- [025](025-registry-driven-clean-slash-commands-for-every-agent-and-ide.md) Registry-driven clean slash commands for every agent and IDE
+
 ### breaking
 
 - [145](145-retire-the-rule-mcp-platform-agent-skill.md) Retire the rule-platform-agent skill
@@ -847,25 +869,6 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [107](107-map-tools-slash-commands-and-skills-into-one-surface.md) Map tools, slash commands, and skills into one surface
 - [106](106-flight-is-process-area-guidance-injected-on-every-prompt-not-a-slash-command.md) Flight is process-area guidance injected on every prompt, not a slash command
 - [105](105-rename-the-command-surface-under-process-and-persona-namespaces.md) Rename the command surface under process and persona namespaces
-
-### cli
-
-- [247](247-the-wizard-asks-its-questions-as-prompts-when-the-renderer-cannot-run.md) The wizard asks its questions as prompts when the renderer cannot run
-- [228](228-the-launcher-owns-a-copy-outside-the-checkout.md) The launcher owns a copy outside the checkout
-- [180](180-hook-install-starts-the-guard-daemon-and-writers-use-send.md) Hook install starts the guard daemon and writers use --send
-- [179](179-guard-daemon-on-a-unix-socket-with-a-thin-send-client.md) Guard daemon on a Unix socket with a thin --send client
-- [178](178-guard-skips-core-tool-bootstrap-optional-persistent-loop.md) Guard skips core-tool bootstrap; optional persistent --loop
-- [177](177-baseline-the-cli-file-size-debt-in-the-ratchet.md) Baseline the CLI file-size debt in the ratchet
-- [100](100-the-handoff-family-gets-a-generated-index-and-the-root-handoff-summary-retires.md) The handoff family gets a generated index, and the root HANDOFF summary retires
-- [097](097-opencode-gets-a-dedicated-installer-writing-its-own-config-shape.md) opencode gets a dedicated installer writing its own config shape
-- [094](094-reinstall-is-one-shell-script-behind-three-entry-points.md) Reinstall is one shell script behind three entry points
-- [093](093-accept-a-comma-separated-agent-list-in-agent-commands.md) Accept a comma-separated agent list in agent-commands
-- [082](082-the-setup-wizard-is-the-installer-and-it-asks-which-commands-to-write.md) The setup wizard is the installer, and it asks which commands to write
-- [072](072-one-installer-a-node-wizard-with-shell-bootstraps.md) One installer, a Node wizard with shell bootstraps
-- [066](066-the-cli-entry-point-loads-no-command-handler-it-has-not-been-asked-for.md) The CLI entry point loads no command handler it has not been asked for
-- [053](053-one-global-shim-and-hermetic-pnpm-home-in-script-tests.md) One global shim, and hermetic PNPM_HOME in script tests
-- [038](038-installer-self-heals-global-shim-surfaces-failures-gates-tui-rendering.md) Installer self-heals its global shim, surfaces failures, and gates TUI rendering
-- [025](025-registry-driven-clean-slash-commands-for-every-agent-and-ide.md) Registry-driven clean slash commands for every agent and IDE
 
 ### commands
 
@@ -1271,6 +1274,13 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [083](083-install-uninstall-rework-keeps-current-stack-steps-and-contents-only.md) Install/uninstall rework keeps current stack, steps and contents only
 - [082](082-the-setup-wizard-is-the-installer-and-it-asks-which-commands-to-write.md) The setup wizard is the installer, and it asks which commands to write
 
+### agent-commands
+
+- [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md) Ship the help guard only to hosts that cannot answer help themselves
+- [249](249-main.md) main
+- [093](093-accept-a-comma-separated-agent-list-in-agent-commands.md) Accept a comma-separated agent list in agent-commands
+- [070](070-compress-agent-command-files-at-write-time.md) Compress agent command files at write time
+
 ### ai
 
 - [234](234-the-adr-guardrails-are-advisory-with-dual-detection-and-a-shrinking-legacy-list.md) The ADR guardrails are advisory with dual detection and a shrinking legacy list
@@ -1326,12 +1336,6 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [122](122-this-server-releases-itself-with-pnpm-release-and-the-push-is-the-release.md) This server releases itself with pnpm release, and the push is the release
 - [089](089-the-release-target-is-v0-1-0-beta-and-the-version-tooling-accepts-a-prerelease.md) The release target is v0.1.0-beta, and the version tooling accepts a prerelease
 - [077](077-reset-the-project-version-to-0-1-0-first-release-will-be-v0-1-0.md) Reset the project version to 0.1.0, first release will be v0.1.0
-
-### agent-commands
-
-- [249](249-main.md) main
-- [093](093-accept-a-comma-separated-agent-list-in-agent-commands.md) Accept a comma-separated agent list in agent-commands
-- [070](070-compress-agent-command-files-at-write-time.md) Compress agent command files at write time
 
 ### code-graph
 
@@ -1410,6 +1414,12 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [054](054-glob-suite-runner-colocated-tests-and-a-branch-coverage-ratchet.md) Glob suite runner, co-located tests, and a branch-coverage ratchet
 - [050](050-one-file-per-rule-with-underscore-barrel-folders-and-a-size-ratchet.md) One file per rule with underscore-barrel folders and a size ratchet
 - [049](049-reorganize-scripts-src-tests-with-150-line-code-splitting.md) Reorganize scripts, src and tests with 150-line code splitting
+
+### surface
+
+- [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md) Ship the help guard only to hosts that cannot answer help themselves
+- [047](047-restructure-the-command-surface-rule-mcp-router-rule-mcp-area-compression-implicit-rule-mcp-process.md) Restructure the command surface: /rule router, rule-area-*, compression implicit, rule-process-tdd skill
+- [046](046-split-review-personas-into-per-operation-commands-plan-audit-review.md) Split review personas into per-operation commands (plan/audit/review)
 
 ### token-efficiency
 
