@@ -31,6 +31,18 @@ Codex has no slash-command file format, so its 16 commands are written as `SKILL
 
 For a run with no prompts, use `rule-mcp setup --no-wizard --no-interactive`. Add `--agent <name>` for one agent. Claude also gets the guard hooks and the guard daemon. Add `--no-service` to skip the platform service.
 
+## Session resume
+
+A resumed session starts with one block. It holds the verified handoff and the step the plan orders next.
+
+| Host        | What receives the block                                                                                                                                                                                                                                                                              |
+| ----------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Claude Code | The `SessionStart` hook answers with `additionalContext`, and that text joins the first prompt                                                                                                                                                                                                       |
+| Pi          | The `rule-mcp-resume.js` extension injects it on the first user turn of a resumed session, with `display: false`, so the model reads it and the transcript stays clean                                                                                                                               |
+| opencode    | Nothing. A server plugin can only call `session.prompt` or `session.synthetic`, and both admit input and wake the model, so the block would cost a turn and the model would answer it. The TUI plugin can draw a dialog but cannot seed the model context. opencode resumes by typing `/rule-handon` |
+
+The block comes from `rule-mcp resume`, which renders the same text on any host. It never throws: a slow or failing read keeps the session silent rather than blocking the first turn.
+
 ## Launcher
 
 The launcher copy lets the command work when the clone moves. `pnpm deploy` makes the copy with its dependencies. The `rule-mcp` shim selects the target in this order:
