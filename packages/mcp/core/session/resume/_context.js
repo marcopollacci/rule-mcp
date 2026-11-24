@@ -2,6 +2,7 @@
 
 import { compressSurfaceText } from "@mcp/core/text/_compression.js";
 import { handon } from "@mcp/tools/handon/index.js";
+import { nextStep } from "@mcp/tools/next/index.js";
 import { markAnnounced } from "./_announced.js";
 
 /** Session sources that mean "the user came back to unfinished work". */
@@ -40,6 +41,7 @@ export function handoffBlock(cwd, occasion) {
   }
 
   const body = report.text.length > MAX_CHARS ? `${report.text.slice(0, MAX_CHARS)}\n\n(truncated: call \`rule_tool_handon\` for the rest)` : report.text;
+  const step = nextStepBlock(cwd);
 
   const block = [
     "## PIX RESUMED SESSION",
@@ -51,6 +53,7 @@ export function handoffBlock(cwd, occasion) {
     "",
     body,
     "",
+    ...(step ? [step, ""] : []),
     "Continue from the suggested first move unless the user asks for something else. Do not restate this back to them.",
   ].join("\n");
 
@@ -59,6 +62,33 @@ export function handoffBlock(cwd, occasion) {
   // the same compression pipeline and guard before it leaves. With compression
   // off the pass returns the input unchanged and books nothing.
   return compressSurfaceText(block, { source: "compression-resume" }).text;
+}
+
+/**
+ * The one step the plan orders next, as a section of the block.
+ *
+ * The handon report proposes; this names one step and stops. A resumed session
+ * that has to choose between proposals spends its first turn choosing.
+ *
+ * @param {string} [cwd]
+ * @returns {string} Markdown section, or "" when no plan has an open step
+ */
+export function nextStepBlock(cwd) {
+  let resolved;
+
+  try {
+    resolved = nextStep(cwd ?? process.cwd());
+  } catch {
+    return "";
+  }
+
+  if (resolved?.status !== "found") {
+    return "";
+  }
+
+  const where = resolved.workstream ? `${resolved.plan} - ${resolved.workstream}` : resolved.plan;
+
+  return ["### The step to take", "", `\`${where}\`, ${resolved.open} open.`, "", "```text", resolved.step, "```"].join("\n");
 }
 
 /**

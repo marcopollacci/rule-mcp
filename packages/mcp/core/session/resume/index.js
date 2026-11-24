@@ -46,3 +46,4 @@
 export * from "./_context.js";
 export * from "./_signal.js";
 export * from "./_announce.js";
+export { nextStepBlock } from "./_context.js";
