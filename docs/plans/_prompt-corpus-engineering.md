@@ -46,7 +46,7 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 
 - [x] WS3-T1 `rule_tool_devserver` read-only half: `status`, `list`, `ports` over the 3000-6000 scan, with the process that owns each port. `start` and `stop` are refused, because a stop that guesses its target can end the editor or the MCP server.
 - [x] WS3-T1b The lifecycle itself: `start`, `stop`, `restart`. Needs an ADR that names how a command claims a port, how a stop proves its target, and what happens to a process whose parent leaves. No code before that ADR.
-- [ ] WS3-T2 Selective stop ("every node process except the MCP servers") with a test on a real process table.
+- [x] WS3-T2 Selective stop ("every node process except the MCP servers") with a test on a real process table.
 - [ ] WS3-T3 Log tail and the first-available-port report, so a run says the URL it opened.
 
 ## WS4 Project state

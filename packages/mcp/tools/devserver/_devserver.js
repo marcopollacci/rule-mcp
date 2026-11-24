@@ -4,20 +4,20 @@
  * The dev-server surface: what runs on this machine, and what the next free
  * port is.
  *
- * `start` and `stop` are refused on purpose. Nothing else in this surface
- * launches a process or sends a signal, and a `stop` that guesses its target is
- * worse than no `stop`: it can end the editor, the MCP server, or a build that
- * was nearly finished. That decision earns its own ADR, so the tool says so
- * instead of acting.
+ * `start` and `restart` are refused: a start has to write the record ADR 251
+ * names, and no step has written that record yet. A stop exists and is narrow.
+ * It needs the pid and the port, it refuses unless that pid really listens on
+ * that port, and it never signals in bulk.
  */
 
 import { listenPorts, scanRange, PORT_RANGE } from "./_scan.js";
+import { stopProcess } from "./_stop.js";
 
 /** Actions the tool answers today. */
 export const READ_ONLY_ACTIONS = ["status", "list", "ports"];
 
-/** Actions that need the ADR before they can exist. */
-export const REFUSED_ACTIONS = ["start", "stop", "restart"];
+/** Actions refused on purpose, with what each one waits for. */
+export const REFUSED_ACTIONS = ["start", "restart"];
 
 /** Render the range as a sentence. */
 const range = `${PORT_RANGE.from}-${PORT_RANGE.to}`;
@@ -37,16 +37,21 @@ function listenerLines(inside) {
  * @param {{ action?: string }} [options]
  * @returns {string} Markdown
  */
-export function devserver({ action = "status" } = {}) {
+export function devserver({ action = "status", pid, port, expect } = {}) {
   const asked = String(action ?? "status")
     .trim()
     .toLowerCase();
+
+  // ADR 251: one listener, named by its port and pid, never a bulk kill.
+  if (asked === "stop") {
+    return stopProcess({ pid, port, expect }).message;
+  }
 
   if (REFUSED_ACTIONS.includes(asked)) {
     return [
       `\`${asked}\` is not implemented.`,
       "",
-      "This tool only reports what runs. Starting or stopping a process from a server needs a decision first: which command owns a port, how a stop proves its target, and what happens to a process whose parent leaves. Until that ADR exists, a run reports, and the caller owns the lifecycle.",
+      "Starting a process needs a record first (ADR 251 names the fields), and no step has written one yet. A stop exists and is narrow: it needs the pid and the port, and it refuses unless that pid really listens there.",
     ].join("\n");
   }
 
@@ -81,6 +86,6 @@ export function devserver({ action = "status" } = {}) {
     "",
     `First free in ${range}: ${scanned.firstFree === null ? "none" : `\`${scanned.firstFree}\``}.`,
     "",
-    "`start` and `stop` are not implemented: this tool reports, the caller owns the lifecycle.",
+    "`stop` needs the pid and the port of one listener. `start` waits for the record ADR 251 names.",
   ].join("\n");
 }

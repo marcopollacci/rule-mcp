@@ -30,6 +30,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Documentation
 
+- **adr**: require a record before a stop signals a dev server (`754f26e`)
 - **install**: say which host receives the resume block, and why opencode cannot (`8d566ef`)
 - **census**: refresh the surface and the changelog after the audit (`7703efb`)
 - **adr**: record that the help guard travels only where the host needs it (`6da61eb`)
