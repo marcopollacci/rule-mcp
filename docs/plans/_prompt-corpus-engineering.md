@@ -40,7 +40,7 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 - [x] WS2-T1 Reuse WS1-T1 to resolve the first open step, and render the resume block the newest handoff already carries.
 - [x] WS2-T2 Pi extension: inject at `session_start` (the help extension is the pattern to copy).
 - [x] WS2-T3 opencode plugin and Claude hook for the same payload, or a documented reason why a host cannot.
-- [ ] WS2-T4 Test that an injected resume is one entry, TUI-only where the host allows it, and never a model turn.
+- [x] WS2-T4 Test that an injected resume is one entry, TUI-only where the host allows it, and never a model turn.
 
 ## WS3 Dev server lifecycle
 

@@ -48,7 +48,9 @@ export default function ruleMcpResume(pi) {
   let injected = false;
 
   pi.on("session_start", (event) => {
-    resumed = event.reason === "resume" || event.reason === "new";
+    // Only a resume has something to resume from. A new or forked session
+    // starts clean, and a block there would be a page the user did not ask for.
+    resumed = event.reason === "resume";
     injected = false;
   });
 
