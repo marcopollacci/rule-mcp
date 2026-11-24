@@ -76,3 +76,23 @@ export function matchStep(text, stepId) {
 
   return firstOpenStep(text, index);
 }
+
+/**
+ * Tick one step in the plan text.
+ *
+ * The replacement is anchored to the step id and the unchecked marker, so a
+ * step already ticked, or a line that merely mentions the id, is never touched.
+ *
+ * @param {string} text
+ * @param {string} stepId
+ * @returns {{ text: string, ticked: boolean }}
+ */
+export function tickStep(text, stepId) {
+  const pattern = new RegExp(String.raw`^(\s*-\s*)\[ \](\s+${stepId}\b)`, "mu");
+
+  if (!pattern.test(text)) {
+    return { text, ticked: false };
+  }
+
+  return { text: text.replace(pattern, "$1[x]$2"), ticked: true };
+}

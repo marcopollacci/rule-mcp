@@ -7,7 +7,7 @@
     },
     {
       "file": "14-tools.md",
-      "sha256": "a0b53110ffe4821b367cec16c88a4722a9fabf3fe1a10136b9fc563a418b9b80"
+      "sha256": "996e3812f6b63acb7ce244607eb3befd41ab04bc8cb599e77a4a6398600f8357"
     },
     {
       "file": "15-prompts.md",
@@ -15,7 +15,7 @@
     },
     {
       "file": "16-instructions.md",
-      "sha256": "1ff6047b73af57e66f462b0cb38cd6069d80bb9b6e9878ab372a0630b72870b1"
+      "sha256": "c9de27a25bc55df3b55902f169203c62bd3dff3099b153670d68e629e7e3bd71"
     },
     {
       "file": "17-cli.md",
@@ -35,7 +35,7 @@
     },
     {
       "file": "21-surface-map.md",
-      "sha256": "6439a45293a389846ba856a5f85ca6f8674a2535436cb0dc96a6a51d2d4c26c6"
+      "sha256": "1fbae5aef966f508b854a0b9117a33855042d6c6fba4e625db7ff09edce1eb20"
     },
     {
       "file": "22-install-targets.md",

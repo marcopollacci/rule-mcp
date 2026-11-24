@@ -32,8 +32,8 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 
 - [x] WS1-T1 `rule_tool_next`: resolve the plan by slug or id (`fase N`, `Phase N`, `M6`, `WS2-T3`), read its open steps, and return the step verbatim with its workstream.
 - [x] WS1-T2 Accept a bare "vai": infer the plan from the newest handoff, then its first open step, and say which plan and step it chose.
-- [ ] WS1-T3 Tick the executed step and report the plan delta, instead of leaving the checkbox to a human edit.
-- [ ] WS1-T4 `/rule-next` slash command, plus the tool in the surface, with a test per branch (named id, bare "vai", ambiguous plan, closed plan).
+- [x] WS1-T3 Tick the executed step and report the plan delta, instead of leaving the checkbox to a human edit.
+- [x] WS1-T4 `/rule-next` slash command, plus the tool in the surface, with a test per branch (named id, bare "vai", ambiguous plan, closed plan).
 
 ## WS2 Resume on session start
 

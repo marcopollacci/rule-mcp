@@ -15,7 +15,7 @@ test("the families partition the command surface, with nothing left over", () =>
   const everything = resolveSelection({ preset: "full" }).commands;
 
   assert.deepEqual(new Set(all), new Set(everything), "selecting every family is the same as asking for everything");
-  assert.equal(all.length, 16, `one area, one persona and the tasks: ${all.length}`);
+  assert.equal(all.length, 17, `one area, one persona and the tasks: ${all.length}`);
   assert.ok(
     all.every((name) => !/^rule-(area|persona)-[a-z]/.test(name)),
     "no per-area or per-role file",

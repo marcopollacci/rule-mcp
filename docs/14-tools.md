@@ -265,12 +265,14 @@ Verify the last session handoff before you resume: check its branch, commit rang
 
 ### rule_tool_next
 
-Resolve plan step request names, or one resumed session should take, and return it verbatim with its workstream. Read-only: caller executes step and ticks its checkbox.
+Resolve plan step request names, or one resumed session should take, and return it verbatim with its workstream. With complete + evidence, tick it against file that exists and report plan delta. Read-only without complete.
 
-| Parameter    | Type   | Required | Default | Description                                                                                                                                       |
-| ------------ | ------ | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `projectDir` | string | no       | `"."`   | Project root directory                                                                                                                            |
-| `want`       | string | no       | -       | What the user typed, verbatim: a plan slug, a step id such as "WS1-T1", a phase ("fase 4"), or nothing for the plan a resumed session should take |
+| Parameter    | Type    | Required | Default | Description                                                                                                                                       |
+| ------------ | ------- | -------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `projectDir` | string  | no       | `"."`   | Project root directory                                                                                                                            |
+| `want`       | string  | no       | -       | What the user typed, verbatim: a plan slug, a step id such as "WS1-T1", a phase ("fase 4"), or nothing for the plan a resumed session should take |
+| `complete`   | boolean | no       | `false` | Tick the resolved step, but only against evidence this tool can check                                                                             |
+| `evidence`   | string  | no       | -       | With complete: a project-relative path that exists once the step is done. The plan is never ticked on a claim alone                               |
 
 ### rule_tool_handoff
 

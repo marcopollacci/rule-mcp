@@ -39,3 +39,20 @@ export function renderNext(result) {
 export function next(projectDir, options = {}) {
   return renderNext(nextStep(projectDir, options));
 }
+
+/** Render a tick, or the reason it did not happen. */
+export function renderComplete(result) {
+  if (result.status !== "ticked") {
+    return `Not ticked: ${result.message}${result.plan ? `\n\nPlan: \`${result.plan}\`${result.id ? `, step ${result.id}` : ""}` : ""}`;
+  }
+
+  return [
+    `# Ticked ${result.id} in ${result.plan}`,
+    "",
+    `${result.was} open before, ${result.open} after.`,
+    "",
+    "---",
+    "",
+    result.next ? `Next: ${result.next}` : "Nothing open is left in this plan.",
+  ].join("\n");
+}

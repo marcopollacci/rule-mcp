@@ -88,6 +88,18 @@ export const USAGE_BODY = [
   "3. Finish by proposing a conventional commit with a mandatory scope only if a tracked file changed.",
 ].join("\n");
 
+/** /rule-next -> rule_tool_next, then execute the step it returns. */
+export const NEXT_BODY = [
+  "Advance the plan: $ARGUMENTS",
+  "",
+  "1. Call `rule_tool_next` with `want` set to the arguments verbatim: a plan slug, a step id such as `WS1-T1`, a phase such as `fase 4`, or empty for the plan a resumed session should take.",
+  "2. The tool answers with the step, its workstream and how many steps stay open. Execute that step and nothing else: the plan orders the work.",
+  "3. When the step produced something a path can prove, call `rule_tool_next` again with `complete: true` and `evidence` set to that project-relative path. The tool ticks the checkbox only when the path exists.",
+  "4. Report what changed and what the plan says comes next. If the step cannot be done, say why and leave the checkbox open.",
+  `5. ${STE100_WRITING_LINE}`,
+  "6. Finish by proposing a conventional commit with a mandatory scope if the tree changed.",
+].join("\n");
+
 /** /rule-adr -> rule_tool_process_adr then /rule-keep. */
 export const ADR_BODY = [
   "Record an architecture decision and keep it: $ARGUMENTS",

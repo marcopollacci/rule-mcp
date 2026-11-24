@@ -6,8 +6,9 @@ import { buildHelpMessage, helpHeading } from "@mcp/prompts/_help.js";
 import { areaIds, AREA_DISPATCH_NAME, skillAreas } from "@mcp/prompts/_areas.js";
 import { ROUTER, generalCheckBody, generalFixBody } from "./_bodies.js";
 import { areaBody, areaDispatchBody } from "./_bodies-area.js";
-import { ADR_BODY, COMPRESS_BODY, EXPORT_BODY, GIT_BODY, HANDOFF_BODY, HANDON_BODY, INIT_BODY, KEEP_BODY, STATS_BODY, USAGE_BODY } from "./_bodies-session.js";
-import { commandNames, ROUTER_COMMAND, CHECK_COMMAND, FIX_COMMAND } from "./_names.js";
+import { ADR_BODY, COMPRESS_BODY, EXPORT_BODY, GIT_BODY, HANDOFF_BODY, HANDON_BODY, INIT_BODY, KEEP_BODY, NEXT_BODY, STATS_BODY, USAGE_BODY } from "./_bodies-session.js";
+import { commandNames, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND } from "./_names.js";
+import { generalCommand } from "./_general-commands.js";
 import { personaBody, personaDispatchBody, personaTarget } from "./_personas.js";
 import { PERSONA_DISPATCH_NAME } from "@mcp/prompts/_registry.js";
 import { activeRoles } from "../../review/roles/index.js";
@@ -19,26 +20,10 @@ import { activeRoles } from "../../review/roles/index.js";
  * @returns {{ name: string, description: string, argumentHint: string, body: string }}
  */
 export function commandDefinition(name) {
-  if (name === ROUTER_COMMAND) {
-    return { name, description: ROUTER.description, argumentHint: ROUTER.argumentHint, body: ROUTER.body };
-  }
+  const general = generalCommand(name);
 
-  if (name === CHECK_COMMAND) {
-    return {
-      name,
-      description: "Auto-detect area from context and run rule-mcp guardrails validation",
-      argumentHint: "[target]",
-      body: generalCheckBody,
-    };
-  }
-
-  if (name === FIX_COMMAND) {
-    return {
-      name,
-      description: "Apply the deterministic guardrail fixes of every skill to the changed files",
-      argumentHint: "[target]",
-      body: generalFixBody,
-    };
+  if (general) {
+    return general;
   }
 
   if (name === AREA_DISPATCH_NAME) {
@@ -114,6 +99,11 @@ const GENERAL_HELP_ARGUMENTS = {
   [FIX_COMMAND]: {
     name: "target",
     description: "Paths or files to fix. Default: the files the current git diff touches, then the whole project.",
+    required: false,
+  },
+  [NEXT_COMMAND]: {
+    name: "want",
+    description: "A plan slug, a step id such as WS1-T1, a phase such as fase 4, or nothing for the plan a resumed session should take.",
     required: false,
   },
 };
