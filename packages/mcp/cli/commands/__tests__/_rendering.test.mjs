@@ -108,6 +108,23 @@ test("the help guard keeps the host's own argument token", () => {
   assert.ok(!renderAgentCommand(command, "prompt").includes("$ARGUMENTS"), "prompt files have no substitution, guard included");
 });
 
+test("a host that answers help itself renders no guard", () => {
+  // Pi stops `/<command> help` in its input hook and opencode in its plugin, so
+  // the block there is text the user reads in the transcript and the model
+  // never uses. Both targets declare `helpGuard: "none"`.
+  for (const command of listAgentCommands()) {
+    const out = renderAgentCommand(command, "args", { helpGuard: "none" });
+
+    assert.ok(!out.includes("print the block below verbatim"), `${command.name}: no guard line`);
+    assert.ok(!out.includes(commandHelp(command.name)), `${command.name}: no embedded usage block`);
+    const [firstLine] = command.body.split("\n", 1);
+    const opening = firstLine.split("$ARGUMENTS", 1)[0].trim();
+
+    assert.ok(out.includes(opening), `${command.name}: the task starts the body`);
+    assert.ok(!out.includes("\n".repeat(3)), `${command.name}: no blank block left behind`);
+  }
+});
+
 test("the guard names the text it tests instead of interpolating the placeholder", () => {
   // The host substitutes every occurrence of its token, so a guard written with
   // `$ARGUMENTS` in it rendered as "If ui check this HTML is exactly help" - a

@@ -25,8 +25,8 @@ export function syncCommandTargets(opts) {
 
   let files = 0;
 
-  for (const { label, format, dir } of targets) {
-    const rendered = renderAgentCommandFiles(format, opts.only ?? undefined);
+  for (const { label, format, dir, helpGuard } of targets) {
+    const rendered = renderAgentCommandFiles(format, opts.only ?? undefined, { helpGuard });
 
     if (!opts.dryRun && !opts.remove) {
       mkdirSync(dir, { recursive: true });

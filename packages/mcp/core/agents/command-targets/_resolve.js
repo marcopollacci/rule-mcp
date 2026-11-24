@@ -53,7 +53,7 @@ const requestedAgents = (agent) => {
  * @param {string} [options.platform] @param {object} [options.env]
  * @param {(path: string) => boolean} [options.exists]
  * @param {(path: string) => string[]} [options.listDir]
- * @returns {Array<{ agent: string, label: string, format: string, scope: string, dir: string }>}
+ * @returns {Array<{ agent: string, label: string, format: string, scope: string, dir: string, helpGuard?: "block"|"none" }>}
  */
 export function resolveCommandTargets(options = {}) {
   const base = { ...defaultContext(), ...options };
@@ -74,7 +74,7 @@ export function resolveCommandTargets(options = {}) {
     }
 
     for (const dir of target.dirs(ctx)) {
-      resolved.push({ agent: target.agent, label: target.label, format: target.format, scope: target.scope, dir, legacy: false });
+      resolved.push({ agent: target.agent, label: target.label, format: target.format, scope: target.scope, dir, legacy: false, helpGuard: target.helpGuard });
     }
 
     // A legacy target is only ever swept: writing there again would put every

@@ -71,6 +71,9 @@ export const COMMAND_TARGETS = [
     agent: "pi",
     label: "Pi",
     format: "args",
+    // Pi stops `/<command> help` in its input hook, so the block here is text
+    // the user would read in the transcript and the model would never use.
+    helpGuard: "none",
     scope: "global",
     // Pi is configured with toolPrefix "none", so its MCP prompts are already
     // bare `/rule-mcp-*` - keep them and add the files.
@@ -168,6 +171,9 @@ export const COMMAND_TARGETS = [
     // the field is not there, so `argument-hint` is dropped and the hint has to
     // ride in the description its completion popup renders.
     format: "opencode",
+    // Pi stops `/<command> help` in its input hook, so the block here is text
+    // the user would read in the transcript and the model would never use.
+    helpGuard: "none",
     scope: "global",
     namespacedPrompts: false,
     detect: (ctx) => ctx.exists(join(ctx.home, ".config", "opencode")),
@@ -177,6 +183,9 @@ export const COMMAND_TARGETS = [
     agent: "opencode",
     label: "opencode project",
     format: "opencode",
+    // Pi stops `/<command> help` in its input hook, so the block here is text
+    // the user would read in the transcript and the model would never use.
+    helpGuard: "none",
     scope: "project",
     namespacedPrompts: false,
     detect: (ctx) => ctx.exists(join(ctx.cwd, ".opencode")),

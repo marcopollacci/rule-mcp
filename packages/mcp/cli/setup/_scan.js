@@ -44,9 +44,9 @@ export const dirtyProfiles = (home = homedir()) => profilePaths(home).filter((fi
  */
 export function installedCommandFiles() {
   return resolveCommandTargets({ detectedOnly: true })
-    .map(({ dir, format }) => ({
+    .map(({ dir, format, helpGuard }) => ({
       dir,
-      files: renderAgentCommandFiles(format)
+      files: renderAgentCommandFiles(format, undefined, { helpGuard })
         .map(({ filename }) => join(dir, filename))
         .filter((file) => existsSync(file)),
     }))

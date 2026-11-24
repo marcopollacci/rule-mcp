@@ -18,10 +18,19 @@ import { ARGUMENTS_PROSE, FORMAT_EXT, FORMATS, quoted } from "./_formats.js";
  * the host substitutes every occurrence, so `$ARGUMENTS` here would render as
  * "If ui check this HTML is exactly help" - a condition no reader can apply.
  *
+ * The guard travels only where the host cannot answer help itself. A host with
+ * an input hook (Pi) or a plugin (opencode) already stops the command before a
+ * model turn, and there the block is noise the user reads in the transcript.
+ *
  * @param {{ name: string }} command
- * @returns {string}
+ * @param {"block"|"none"} [mode]
+ * @returns {string} the guard, or "" when the host answers help on its own
  */
-function helpGuard(command) {
+function helpGuard(command, mode = "block") {
+  if (mode === "none") {
+    return "";
+  }
+
   return [
     "If the text typed after this command is only help, --help or -h (with or without a leading area or persona id), print the block below verbatim and stop: it is the whole answer, do not run the task.",
     "",
@@ -36,7 +45,7 @@ function helpGuard(command) {
  *
  * @param {{ name: string, description: string, argumentHint: string, body: string }} command
  * @param {"args"|"opencode"|"workflow"|"gemini"|"prompt"|"plain"|"skill"} format
- * @param {{ compress?: boolean }} [options]
+ * @param {{ compress?: boolean, helpGuard?: "block"|"none" }} [options]
  * @returns {string}
  */
 export function renderAgentCommand(command, format, options = {}) {
@@ -53,7 +62,8 @@ export function renderAgentCommand(command, format, options = {}) {
   // block below verbatim and stop: it is the whole answer" into a sentence a
   // model may paraphrase.
   const taskBody = options.compress ? compressText(rawBody) : rawBody;
-  const body = [helpGuard(command), taskBody].join("\n\n").replaceAll("$ARGUMENTS", placeholder);
+  const guard = helpGuard(command, options.helpGuard);
+  const body = [guard, taskBody].filter(Boolean).join("\n\n").replaceAll("$ARGUMENTS", placeholder);
 
   if (spec.frontmatter === "toml") {
     return [`description = ${quoted(description)}`, 'prompt = """', body, '"""', ""].join("\n");
@@ -96,9 +106,11 @@ export function renderAgentCommand(command, format, options = {}) {
  * code-shaped and pass untouched; the guard guarantees structure - ADR 070).
  *
  * @param {"args"|"workflow"|"gemini"} format
+ * @param {string[]} [only] - the resolved selection
+ * @param {{ helpGuard?: "block"|"none" }} [options]
  * @returns {Array<{ name: string, filename: string, content: string }>}
  */
-export function renderAgentCommandFiles(format, only) {
+export function renderAgentCommandFiles(format, only, options = {}) {
   const ext = FORMAT_EXT[format];
 
   if (!ext) {
@@ -116,6 +128,6 @@ export function renderAgentCommandFiles(format, only) {
     .map((command) => ({
       name: command.name,
       filename: `${command.name}${ext}`,
-      content: renderAgentCommand(command, format, { compress }),
+      content: renderAgentCommand(command, format, { compress, helpGuard: options.helpGuard }),
     }));
 }
