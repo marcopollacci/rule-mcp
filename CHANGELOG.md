@@ -15,6 +15,10 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
+### Added
+
+- **audits**: read the prompt corpus across the three agent stores (`f93891e`)
+
 ### Fixed
 
 - **agent-commands**: drop the help guard where the host answers help itself (`e542a8b`)
