@@ -8,6 +8,7 @@ this directory are the source of truth; this index is generated from them by
 
 | #                                                                                                                       | Title                                                                                                     | Date       | Status     | Tags                                                                                |
 | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ----------------------------------------------------------------------------------- |
+| [251](251-signal-a-dev-server-only-against-a-record-it-can-prove.md)                                                    | Signal a dev server only against a record it can prove                                                    | 2026-11-24 | accepted   | cli, devserver, process                                                             |
 | [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md)                                      | Ship the help guard only to hosts that cannot answer help themselves                                      | 2026-11-24 | accepted   | cli, agent-commands, surface                                                        |
 | [249](249-main.md)                                                                                                      | main                                                                                                      | 2026-11-23 | accepted   | agent-commands, opencode, pi, slash-commands                                        |
 | [248](248-close-out-plan-install-surface-depth-skills.md)                                                               | Close out plan _install-surface-depth-skills                                                              | 2026-11-10 | accepted   | docs, closeout, plan                                                                |
@@ -266,6 +267,7 @@ file. Where a line stops short the rest is in the ADR.
 
 | ADR                                                                                                                     | Decision                                                                                                                                                                                                                        | Consequence                                                                                                                                                                                                                     |
 | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [251](251-signal-a-dev-server-only-against-a-record-it-can-prove.md)                                                    | A start records what it launched in the runtime state directory: the port, the pid, the command line, the working directory and the start time.                                                                                 | Positive: every stop is auditable, and a stale record refuses instead of killing a stranger.                                                                                                                                    |
 | [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md)                                      | The guard travels with a per-target flag.                                                                                                                                                                                       | Positive: the transcript shows only the task on Pi and opencode, and every non-help invocation carries no usage block.                                                                                                          |
 | [249](249-main.md)                                                                                                      | FORMATS gains a per-format hint strategy: frontmatter writes argument-hint, description folds it into the description in the same hint-then-description order Pi renders, none drops it.                                        | opencode users now see an argument hint in the completion popup, at the cost of a slightly longer description line; the hint text is duplicated between the description and the existing Usage prose in rule-handoff until...   |
 | [248](248-close-out-plan-install-surface-depth-skills.md)                                                               | Fold the record into this ADR and the session handoff, then delete the source file.                                                                                                                                             | docs/plans/_install-surface-depth-skills.md is gone from the tree; this ADR keeps what it delivered and the handoff of this session names it.                                                                                   |
@@ -833,6 +835,7 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 
 ### cli
 
+- [251](251-signal-a-dev-server-only-against-a-record-it-can-prove.md) Signal a dev server only against a record it can prove
 - [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md) Ship the help guard only to hosts that cannot answer help themselves
 - [247](247-the-wizard-asks-its-questions-as-prompts-when-the-renderer-cannot-run.md) The wizard asks its questions as prompts when the renderer cannot run
 - [228](228-the-launcher-owns-a-copy-outside-the-checkout.md) The launcher owns a copy outside the checkout
@@ -919,6 +922,21 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [148](148-shadow-the-decision-cache-gate-before-replaying.md) Shadow the decision-cache gate before replaying
 - [147](147-keep-bm25-and-gate-a-local-decision-model-as-a-second-opinion.md) Keep BM25 and gate a local decision model as a second opinion
 
+### process
+
+- [251](251-signal-a-dev-server-only-against-a-record-it-can-prove.md) Signal a dev server only against a record it can prove
+- [167](167-drop-the-spdx-file-headers.md) Drop the SPDX file headers
+- [166](166-orchestrate-the-plan-catalog-with-a-staged-dependency-graph.md) Orchestrate the plan catalog with a staged dependency graph
+- [164](164-drop-the-dco-sign-off-requirement.md) Drop the DCO sign-off requirement
+- [163](163-retire-closed-plans-into-adrs-and-one-handoff.md) Retire closed plans into ADRs and one handoff
+- [159](159-insert-a-quick-start-chapter-and-shift-the-handbook-numbering.md) Insert a quick-start chapter and shift the handbook numbering
+- [141](141-choose-one-sdd-framework-per-repository-instead-of-peer-methodology-skills.md) Choose one SDD framework per repository instead of peer methodology skills
+- [140](140-merge-simplicity-english-and-fingerprint-into-rule-mcp-process-ai.md) Merge simplicity, English and fingerprint into rule-process-ai
+- [137](137-move-the-readme-skill-from-styleguide-to-process.md) Move the README skill from styleguide to process
+- [095](095-every-handoff-mode-sweeps-completed-working-papers-and-closeout-false-is-the-rea.md) Every handoff mode sweeps completed working papers, and closeout false is the read-only run
+- [090](090-develop-merges-into-main-by-area-and-stays-as-an-integration-branch.md) develop merges into main by area, and stays as an integration branch
+- [079](079-session-close-archives-completed-audits-reviews-and-plans.md) Session close archives completed audits, reviews and plans
+
 ### prompts
 
 - [229](229-restore-rule-adr-because-it-binds-adr-write-to-decision-cache-keep.md) Restore rule-adr because it binds ADR write to decision-cache keep
@@ -990,20 +1008,6 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 - [146](146-every-plan-carries-a-status-line-a-dependency-graph-and-checkbox-steps.md) Every plan carries a status line, a dependency graph and checkbox steps
 - [052](052-plans-carry-nested-sub-steps-and-an-exhaustiveness-mandate.md) Plans carry nested sub-steps and an exhaustiveness mandate
 - [051](051-persona-plans-are-checklists-with-marks-that-survive-the-sync.md) Persona plans are checklists with marks that survive the sync
-
-### process
-
-- [167](167-drop-the-spdx-file-headers.md) Drop the SPDX file headers
-- [166](166-orchestrate-the-plan-catalog-with-a-staged-dependency-graph.md) Orchestrate the plan catalog with a staged dependency graph
-- [164](164-drop-the-dco-sign-off-requirement.md) Drop the DCO sign-off requirement
-- [163](163-retire-closed-plans-into-adrs-and-one-handoff.md) Retire closed plans into ADRs and one handoff
-- [159](159-insert-a-quick-start-chapter-and-shift-the-handbook-numbering.md) Insert a quick-start chapter and shift the handbook numbering
-- [141](141-choose-one-sdd-framework-per-repository-instead-of-peer-methodology-skills.md) Choose one SDD framework per repository instead of peer methodology skills
-- [140](140-merge-simplicity-english-and-fingerprint-into-rule-mcp-process-ai.md) Merge simplicity, English and fingerprint into rule-process-ai
-- [137](137-move-the-readme-skill-from-styleguide-to-process.md) Move the README skill from styleguide to process
-- [095](095-every-handoff-mode-sweeps-completed-working-papers-and-closeout-false-is-the-rea.md) Every handoff mode sweeps completed working papers, and closeout false is the read-only run
-- [090](090-develop-merges-into-main-by-area-and-stays-as-an-integration-branch.md) develop merges into main by area, and stays as an integration branch
-- [079](079-session-close-archives-completed-audits-reviews-and-plans.md) Session close archives completed audits, reviews and plans
 
 ### personas
 

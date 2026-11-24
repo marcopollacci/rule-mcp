@@ -102,6 +102,15 @@ test("a step id resolves to that step, and a closed one says so", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+test("a step id may carry a letter suffix", () => {
+  const suffixed = PLAN.replace("- [ ] WS1-T3 after it.", "- [ ] WS1-T3b the split one.\n- [ ] WS1-T3 after it.");
+  const root = project({ "_demo.md": suffixed });
+
+  assert.equal(nextStep(root, { want: "WS1-T3b" }).id, "WS1-T3b");
+
+  rmSync(root, { recursive: true, force: true });
+});
+
 test("a phase resolves to its own workstream", () => {
   const root = project({ "_demo.md": PLAN });
   const result = nextStep(root, { want: "WS2" });

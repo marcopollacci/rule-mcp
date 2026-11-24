@@ -39,7 +39,7 @@ export function continuationOf(want = "") {
 }
 
 /** A step id as the plan writes it, or "" when the request is not one. */
-const stepIdOf = (want) => (want.match(/^([a-z]{1,8}\d*-t\d+)$/iu)?.[1] ?? "").toUpperCase();
+const stepIdOf = (want) => want.match(/^([a-z]{1,8}\d*-t\d+[a-z]?)$/iu)?.[1] ?? "";
 
 /** The step a step id names, across every plan. */
 function byStepId(files, stepId) {
@@ -52,7 +52,7 @@ function byStepId(files, stepId) {
     }
   }
 
-  return { status: "closed", message: `no plan carries an open step ${stepId}` };
+  return { status: "closed", message: `no plan carries an open step ${stepId.toUpperCase()}` };
 }
 
 /** The plan a phase belongs to, when only the phase was named. */
