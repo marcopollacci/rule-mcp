@@ -13,6 +13,16 @@ dependency bump is one nobody reads. All of them are in `git log`.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
 and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- **agent-commands**: drop the help guard where the host answers help itself (`e542a8b`)
+
+### Documentation
+
+- **adr**: record that the help guard travels only where the host needs it (`6da61eb`)
+
 ## [0.2.1]
 
 ### Fixed
