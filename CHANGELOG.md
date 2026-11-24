@@ -17,6 +17,8 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **resume**: name the next plan step in the injected block (`3ffac21`)
+- **next**: tick a step against evidence and ship the /rule-next command (`c6a55f9`)
 - **next**: resolve the plan step a request names (`3cbf010`)
 - **audits**: read the prompt corpus across the three agent stores (`f93891e`)
 

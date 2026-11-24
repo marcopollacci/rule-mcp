@@ -113,6 +113,18 @@ export function registerFixCommand(program) {
 /** Register the `handon` command. */
 export function registerHandonCommand(program) {
   program
+    .command("resume")
+    .description("Print the block a resumed session injects, or nothing when there is no handoff")
+    .option("--dir <path>", "project root (default: .)", ".")
+    .action(async (options) => {
+      const { handoffBlock } = await import("../core/session/resume/index.js");
+
+      const block = handoffBlock(options.dir, "This session was resumed, so");
+
+      if (block) {
+        process.stdout.write(`${block}\n`);
+      }
+    })
     .command("handon")
     .description("Verify the last handoff against the repo now")
     .option("--dir <path>", "project root (default: .)", ".")

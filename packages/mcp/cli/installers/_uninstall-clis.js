@@ -100,13 +100,15 @@ const uninstallPi = ({ dryRun }) => {
   const piDir = dirname(file);
   const promptFile = join(piDir, "prompts", "rule.md");
   const extensionFile = join(piDir, "extensions", "rule-mcp-help.js");
+  const resumeFile = join(piDir, "extensions", "rule-mcp-resume.js");
 
   if (!dryRun) {
     removeFile(promptFile);
     removeFile(extensionFile);
+    removeFile(resumeFile);
   }
 
-  return [writeText({ file, content: removeJsonServer(readText(file)), dryRun }), promptFile, extensionFile];
+  return [writeText({ file, content: removeJsonServer(readText(file)), dryRun }), promptFile, extensionFile, resumeFile];
 };
 
 export { uninstallClaude, uninstallCodex, uninstallCursor, uninstallCopilot, uninstallGemini, uninstallPi };

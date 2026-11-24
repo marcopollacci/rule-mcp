@@ -7,6 +7,7 @@ import { commandConfig } from "./_env-command.js";
 import { upsertJsonServer } from "./_writers-json.js";
 import { commandTemplate } from "./_writers-text.js";
 import { piHelpExtension } from "./_help-emit.js";
+import { RESUME_EXTENSION_FILE, piResumeExtension } from "./_resume-surface.js";
 
 /**
  * Installs rule-mcp into Pi coding agent.
@@ -20,6 +21,8 @@ const installPi = ({ entrypoint, dryRun = false, global = false, mode = "stdio" 
   const promptFile = join(piDir, "prompts", "rule.md");
   // The extension answers `/<command> help` before the template reaches the model.
   const extensionFile = join(piDir, "extensions", "rule-mcp-help.js");
+  // Seeds a resumed session with the verified handoff and the step the plan orders.
+  const resumeFile = join(piDir, "extensions", RESUME_EXTENSION_FILE);
 
   return [
     writeText({
@@ -29,6 +32,7 @@ const installPi = ({ entrypoint, dryRun = false, global = false, mode = "stdio" 
     }),
     writeText({ file: promptFile, content: commandTemplate(), dryRun }),
     writeText({ file: extensionFile, content: piHelpExtension(), dryRun }),
+    writeText({ file: resumeFile, content: piResumeExtension(), dryRun }),
   ];
 };
 
