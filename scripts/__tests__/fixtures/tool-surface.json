@@ -1,5 +1,5 @@
 {
-  "count": 105,
+  "count": 106,
   "tools": [
     "rule_tool",
     "rule_tool_ai",
@@ -55,6 +55,7 @@
     "rule_tool_meta_next",
     "rule_tool_meta_nuxt",
     "rule_tool_meta_remix",
+    "rule_tool_next",
     "rule_tool_plan",
     "rule_tool_platform",
     "rule_tool_platform_auth",
