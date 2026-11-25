@@ -24,6 +24,7 @@ import { registerAiTool } from "../../tools/ai/index.js";
 import { registerHandoffTool } from "../../tools/handoff/index.js";
 import { registerNextTool } from "../../tools/next/index.js";
 import { registerDevserverTool } from "../../tools/devserver/index.js";
+import { registerStateTool } from "../../tools/state/index.js";
 import { registerHandonTool } from "../../tools/handon/index.js";
 import { registerMetaTool } from "../../tools/meta/index.js";
 import { clearSkillResolution, clearTools } from "../../tools/router/index.js";
@@ -81,6 +82,7 @@ export async function registerCoreTools() {
   registerHandonTool();
   registerNextTool();
   registerDevserverTool();
+  registerStateTool();
 
   registerProcessAdrTool();
   registerHandoffTool();

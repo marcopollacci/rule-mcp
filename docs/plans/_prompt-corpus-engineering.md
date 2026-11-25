@@ -50,7 +50,7 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 
 ## WS4 Project state
 
-- [ ] WS4-T1 `/rule-state": version, ADR count, open plan steps, dirty tree, last CI conclusion, last handoff.
+- [x] WS4-T1 `/rule-state": version, ADR count, open plan steps, dirty tree, last CI conclusion, last handoff.
 - [ ] WS4-T2 Reuse WS1-T1 for the next open step, and `gh` for the CI line, with a fallback when `gh` is absent.
 - [ ] WS4-T3 One screen, no model turn where the host allows it.
 

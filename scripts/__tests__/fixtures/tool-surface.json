@@ -1,5 +1,5 @@
 {
-  "count": 107,
+  "count": 108,
   "tools": [
     "rule_tool",
     "rule_tool_ai",
@@ -76,6 +76,7 @@
     "rule_tool_process_uv_release",
     "rule_tool_review",
     "rule_tool_search",
+    "rule_tool_state",
     "rule_tool_stats",
     "rule_tool_structural",
     "rule_tool_styleguide",

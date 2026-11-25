@@ -6,8 +6,8 @@ import { buildHelpMessage, helpHeading } from "@mcp/prompts/_help.js";
 import { areaIds, AREA_DISPATCH_NAME, skillAreas } from "@mcp/prompts/_areas.js";
 import { ROUTER, generalCheckBody, generalFixBody } from "./_bodies.js";
 import { areaBody, areaDispatchBody } from "./_bodies-area.js";
-import { ADR_BODY, COMPRESS_BODY, EXPORT_BODY, GIT_BODY, HANDOFF_BODY, HANDON_BODY, INIT_BODY, KEEP_BODY, NEXT_BODY, STATS_BODY, USAGE_BODY } from "./_bodies-session.js";
-import { commandNames, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND } from "./_names.js";
+import { ADR_BODY, COMPRESS_BODY, EXPORT_BODY, GIT_BODY, HANDOFF_BODY, HANDON_BODY, INIT_BODY, KEEP_BODY, STATS_BODY, USAGE_BODY } from "./_bodies-session.js";
+import { commandNames, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND, STATE_COMMAND } from "./_names.js";
 import { generalCommand } from "./_general-commands.js";
 import { personaBody, personaDispatchBody, personaTarget } from "./_personas.js";
 import { PERSONA_DISPATCH_NAME } from "@mcp/prompts/_registry.js";
@@ -99,6 +99,11 @@ const GENERAL_HELP_ARGUMENTS = {
   [FIX_COMMAND]: {
     name: "target",
     description: "Paths or files to fix. Default: the files the current git diff touches, then the whole project.",
+    required: false,
+  },
+  [STATE_COMMAND]: {
+    name: "focus",
+    description: "Optional: what to look at first. Default: the whole screen.",
     required: false,
   },
   [NEXT_COMMAND]: {

@@ -28,6 +28,7 @@ export * from "./_check-intent.js";
 export * from "./_bodies.js";
 export * from "./_bodies-area.js";
 export * from "./_bodies-session.js";
+export * from "./_bodies-plan.js";
 export * from "./_personas.js";
 export * from "./_definitions.js";
 export * from "./_render.js";

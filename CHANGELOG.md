@@ -17,6 +17,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **devserver**: follow the log a started run wrote, with its URL (`63d9cb7`)
 - **devserver**: start one command on the first free port and record it (`db1cd35`)
 - **devserver**: stop one listener against the port and pid that prove it (`a5e1419`)
 - **devserver**: report the ports in the documented range, and refuse the lifecycle (`c572716`)

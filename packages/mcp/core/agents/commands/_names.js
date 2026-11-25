@@ -14,6 +14,9 @@ export const FIX_COMMAND = "rule-fix";
 /** Advance the plan step a request names, or the one a resumed session takes. */
 export const NEXT_COMMAND = "rule-next";
 
+/** One screen of project state: version, decisions, plans, tree, CI, last handoff. */
+export const STATE_COMMAND = "rule-state";
+
 /**
  * Canonical command order: the router first, then all prompt names and
  * `/rule-check`, sorted locale-alphabetically. This is the single ordering used
@@ -30,7 +33,7 @@ export function commandNames() {
     .filter((name) => name !== ROUTER_COMMAND)
     .sort((a, b) => a.localeCompare(b));
 
-  const rest = [...prompts, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND].sort((a, b) => a.localeCompare(b));
+  const rest = [...prompts, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND, STATE_COMMAND].sort((a, b) => a.localeCompare(b));
 
   return [ROUTER_COMMAND, ...rest];
 }

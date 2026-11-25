@@ -7,8 +7,8 @@
  */
 
 import { ROUTER, generalCheckBody, generalFixBody } from "./_bodies.js";
-import { NEXT_BODY } from "./_bodies-session.js";
-import { ROUTER_COMMAND, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND } from "./_names.js";
+import { NEXT_BODY, STATE_BODY } from "./_bodies-plan.js";
+import { ROUTER_COMMAND, CHECK_COMMAND, FIX_COMMAND, NEXT_COMMAND, STATE_COMMAND } from "./_names.js";
 
 /** One command definition, or null when the name is a prompt instead. */
 export function generalCommand(name) {
@@ -31,6 +31,15 @@ export function generalCommand(name) {
       description: "Advance the plan step a request names, or the one a resumed session takes",
       argumentHint: "[want]",
       body: NEXT_BODY,
+    };
+  }
+
+  if (name === STATE_COMMAND) {
+    return {
+      name,
+      description: "Report the project state: version, decisions, plans, tree, last CI, last handoff",
+      argumentHint: "[focus]",
+      body: STATE_BODY,
     };
   }
 

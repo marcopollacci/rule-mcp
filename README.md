@@ -6,10 +6,10 @@ rule-mcp is an MCP server. It sends a free-text request to the correct skill. It
 
 - **Node 24+**
 - **82 skills**
-- **107 tools**
+- **108 tools**
 - **172 resources**
 - **13 prompts**
-- **17 slash commands**
+- **18 slash commands**
 
 [Documentation site](https://pixu1980.github.io/rule-mcp/) [Get started](docs/01-getting-started.md) [Browse reference](docs/README.md)
 
