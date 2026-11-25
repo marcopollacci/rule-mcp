@@ -53,6 +53,21 @@ test("the screen names the next step, the tree and the handoff", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+test("the newest handoff wins when several exist", () => {
+  const root = project();
+  const older = join(root, "docs/handoff/04-older.md");
+
+  writeFileSync(older, "# four\n");
+  // A record from last month must not beat the one just written.
+  writeFileSync(join(root, "docs/handoff/08-newest.md"), "# eight\n");
+
+  const screen = projectState(root, { run: () => "" });
+
+  assert.match(screen, /last handoff: `08-newest\.md`/u);
+
+  rmSync(root, { recursive: true, force: true });
+});
+
 test("a clean tree and a CI answer are reported as they come", () => {
   const root = project();
   const run = (file) => (file === "git" ? "" : JSON.stringify([{ conclusion: "success", status: "completed", displayTitle: "ci" }]));
