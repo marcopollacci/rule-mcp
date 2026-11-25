@@ -8,6 +8,7 @@ them by `handoff doctor`, so editing it by hand is work the next run throws away
 
 | #                                                                  | Title                                                                          | Date       | Branch                       |
 | ------------------------------------------------------------------ | ------------------------------------------------------------------------------ | ---------- | ---------------------------- |
+| [63](63-the-corpus-becomes-five-tools.md)                          | The corpus becomes five tools, and the plan closes itself                      | 2026-11-25 | main                         |
 | [62](62-oss-audit-baseline.md)                                     | OSS audit baseline                                                             | 2026-11-23 | main. It is the only branch. |
 | [61](61-collapsed-surface-and-release-prep.md)                     | Collapsed surface, completions, and the release prep                           | 2026-11-23 | main                         |
 | [60](60-docs-site-chrome-prose-and-the-ste100-gate.md)             | the site chrome, the closing prose, and the STE100 gate                        | 2026-11-10 | main                         |
