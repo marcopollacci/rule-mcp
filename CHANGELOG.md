@@ -17,6 +17,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **state**: answer /rule-state from the CLI, with no model turn on Pi (`4493b65`)
 - **state**: answer where the project is, and ship /rule-state (`9c3f779`)
 - **devserver**: follow the log a started run wrote, with its URL (`63d9cb7`)
 - **devserver**: start one command on the first free port and record it (`db1cd35`)
