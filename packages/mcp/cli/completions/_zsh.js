@@ -24,6 +24,8 @@ _rule_mcp_commands() {
     'project:Configure or take back a project-scope install'
     'handoff:Generate LLM context handoff summary'
     'handon:Verify the last handoff against the repo'
+    'resume:Print the block a resumed session injects'
+    'state:One screen of project state'
     'fix:Validate and auto-fix project file tree'
     'stats:Show telemetry statistics'
     'cache:Inspect the on-disk tool cache'

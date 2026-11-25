@@ -24,6 +24,8 @@ complete -c rule-mcp -n "__fish_use_subcommand" -a feature   -d "List or change 
 complete -c rule-mcp -n "__fish_use_subcommand" -a project   -d "Configure or take back a project-scope install"
 complete -c rule-mcp -n "__fish_use_subcommand" -a handoff   -d "LLM context handoff"
 complete -c rule-mcp -n "__fish_use_subcommand" -a handon    -d "Verify the last handoff"
+complete -c rule-mcp -n "__fish_use_subcommand" -a resume    -d "Print the block a resumed session injects"
+complete -c rule-mcp -n "__fish_use_subcommand" -a state     -d "One screen of project state"
 complete -c rule-mcp -n "__fish_use_subcommand" -a fix       -d "Auto-fix project file tree"
 complete -c rule-mcp -n "__fish_use_subcommand" -a stats     -d "Show telemetry statistics"
 complete -c rule-mcp -n "__fish_use_subcommand" -a cache     -d "Inspect the on-disk tool cache"
