@@ -113,6 +113,14 @@ export function registerFixCommand(program) {
 /** Register the `handon` command. */
 export function registerHandonCommand(program) {
   program
+    .command("state")
+    .description("One screen of project state: version, decisions, plans, tree, last CI, last handoff")
+    .option("--dir <path>", "project root (default: .)", ".")
+    .action(async (options) => {
+      const { projectState } = await import("../tools/state/index.js");
+
+      process.stdout.write(`${projectState(options.dir)}\n`);
+    })
     .command("resume")
     .description("Print the block a resumed session injects, or nothing when there is no handoff")
     .option("--dir <path>", "project root (default: .)", ".")

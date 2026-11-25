@@ -30,7 +30,7 @@ the package version from anywhere. An error exits 1 and prints to stderr;
 | [`skills`](#rule-mcp-skills)                 | 4       | Manage the rule-mcp AI skill system                                                       |
 | [`fix`](#rule-mcp-fix)                       | 3       | Apply the deterministic guardrail fixes of every skill                                    |
 | [`completions`](#rule-mcp-completions)       | 1       | Generate shell auto-completion script                                                     |
-| [`resume`](#rule-mcp-resume)                 | 1       | Print the block a resumed session injects, or nothing when there is no handoff            |
+| [`state`](#rule-mcp-state)                   | 1       | One screen of project state: version, decisions, plans, tree, last CI, last handoff       |
 | [`stats`](#rule-mcp-stats)                   | 0       | Show telemetry statistics from the local log                                              |
 | [`cache`](#rule-mcp-cache)                   | 1       | Inspect the on-disk tool cache                                                            |
 | [`roles`](#rule-mcp-roles)                   | 7       | Manage review persona roles                                                               |
@@ -415,12 +415,12 @@ rule-mcp completions
 | ------------- | ------- | ------- | ------------------------- |
 | `--shell <s>` | zsh     | -       | zsh (default), bash, fish |
 
-## rule-mcp resume
+## rule-mcp state
 
-Print the block a resumed session injects, or nothing when there is no handoff
+One screen of project state: version, decisions, plans, tree, last CI, last handoff
 
 ```sh
-rule-mcp resume
+rule-mcp state
 ```
 
 **Options**
