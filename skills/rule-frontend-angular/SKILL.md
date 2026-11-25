@@ -61,9 +61,11 @@ import { Component, Input, Output, EventEmitter } from "@angular/core";
   styleUrls: ["./_TodoItem.component.css"],
   template: `
     <article data-part="item" [attr.data-state-completed]="todo.completed ? 'done' : null">
-      <input type="checkbox" data-part="toggle" [checked]="todo.completed" (change)="toggle.emit(todo.id)" />
-      <span data-part="title">{{ todo.title }}</span>
-      <button data-part="delete" (click)="delete.emit(todo.id)">Delete</button>
+      <label data-part="title">
+        <input type="checkbox" data-part="toggle" [checked]="todo.completed" (change)="toggle.emit(todo.id)" />
+        {{ todo.title }}
+      </label>
+      <button type="button" data-part="delete" [attr.aria-label]="'Delete ' + todo.title" (click)="delete.emit(todo.id)">Delete</button>
     </article>
   `,
 })
@@ -242,18 +244,23 @@ readonly data = this.dataSignal.asReadonly();
 
 Rule: _Use `signal()` for local state, RxJS for complex async streams (debounce, combineLatest, etc.)._
 
-#### 3. Always use `track` / `trackBy` in `@for`
+#### 3. Track a stable identity in `@for`
 
-Without tracking, Angular removes and recreates every DOM element on every list change.
+`track` is mandatory in `@for`: a block without it does not compile. The risk is
+the expression you pass. `track $index` matches items by position, so a list that
+reorders, filters, inserts or deletes rebuilds the wrong DOM nodes - the same bug
+as React's `key={index}`.
 
 ```html
-<!-- ❌ Angular 17+ @for without track recreates all -->
+<!-- ✅ Stable identity -->
 @for (item of items; track item.id) {
 <li data-part="item">{{ item.title }}</li>
 }
 
-<!-- ❌ Angular legacy ngFor with index -->
-<li *ngFor="let item of items; let i = index" [attr.data-part]="'item'">{{ item.title }}</li>
+<!-- ❌ Position-based identity on a mutable list -->
+@for (item of items; track $index) {
+<li data-part="item">{{ item.title }}</li>
+}
 ```
 
 Rule: _Always provide a stable identity `track` in `@for`. Never use index for mutable lists._
@@ -291,12 +298,24 @@ this.route.params.subscribe((params) => {
   this.loadData(params.id);
 });
 
-// ✅ takeUntilDestroyed (Angular 16+)
+// ✅ takeUntilDestroyed (Angular 16+) - no argument inside an injection context
 import { takeUntilDestroyed } from "@angular/core/rxjs-interop";
 
-this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
-  this.loadData(params.id);
-});
+constructor() {
+  this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
+    this.loadData(params.id);
+  });
+}
+
+// ✅ Outside an injection context (ngOnInit, methods) pass a DestroyRef,
+// or it throws NG0203
+private destroyRef = inject(DestroyRef);
+
+ngOnInit() {
+  this.route.params.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+    this.loadData(params.id);
+  });
+}
 ```
 
 Rule: _Every subscription must be cleaned up. Prefer `takeUntilDestroyed` over manual `ngOnDestroy` Subject._
@@ -326,7 +345,8 @@ Every route should be lazy-loaded. Never import everything in the root module.
 export const routes: Routes = [
   {
     path: "admin",
-    loadComponent: () => import("./admin/_AdminPanel.component"),
+    // A named export needs .then(); a bare import() expects a default export
+    loadComponent: () => import("./admin/_AdminPanel.component").then((m) => m.AdminPanel),
   },
 ];
 ```
@@ -396,17 +416,17 @@ Rule: _If you reach for `ngDoCheck`, you are fighting the framework. Use signals
 
 ### Decision matrix
 
-| Symptom                           | Check first               | Likely pattern                | Fix                             |
-| --------------------------------- | ------------------------- | ----------------------------- | ------------------------------- |
-| Slow typing / UI freezes          | Change detection strategy | `Default` instead of `OnPush` | Set `OnPush` on every component |
-| Too many change detection cycles  | State origin              | Service state used as local   | Move to component signal        |
-| List recreates all DOM on update  | Track identity            | Missing `track` in `@for`     | Add `track item.id`             |
-| Stale displayed value             | Derivation                | Derived in lifecycle hook     | Use `computed()`                |
-| Memory leak on page switch        | Subscriptions             | Missing unsubscribe           | Add `takeUntilDestroyed`        |
-| Slow initial bundle               | Module structure          | Eager imports                 | Lazy-load routes                |
-| Component too large               | Reasons to change         | Mixed responsibilities        | Extract service + view          |
-| Heavy chart blocks initial render | Defer strategy            | Eager heavy component         | Use `@defer (on viewport)`      |
-| Manual diff logic exists          | Lifecycle misuse          | `ngDoCheck`                   | Replace with `computed()`       |
+| Symptom                           | Check first               | Likely pattern                 | Fix                             |
+| --------------------------------- | ------------------------- | ------------------------------ | ------------------------------- |
+| Slow typing / UI freezes          | Change detection strategy | `Default` instead of `OnPush`  | Set `OnPush` on every component |
+| Too many change detection cycles  | State origin              | Service state used as local    | Move to component signal        |
+| List recreates all DOM on update  | Track identity            | `track $index` on mutable list | Add `track item.id`             |
+| Stale displayed value             | Derivation                | Derived in lifecycle hook      | Use `computed()`                |
+| Memory leak on page switch        | Subscriptions             | Missing unsubscribe            | Add `takeUntilDestroyed`        |
+| Slow initial bundle               | Module structure          | Eager imports                  | Lazy-load routes                |
+| Component too large               | Reasons to change         | Mixed responsibilities         | Extract service + view          |
+| Heavy chart blocks initial render | Defer strategy            | Eager heavy component          | Use `@defer (on viewport)`      |
+| Manual diff logic exists          | Lifecycle misuse          | `ngDoCheck`                    | Replace with `computed()`       |
 
 ### Supporting resources
 
@@ -438,18 +458,19 @@ Rule: _If you reach for `ngDoCheck`, you are fighting the framework. Use signals
 
 ```typescript
 import { Component } from "@angular/core";
-import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-my-form",
+  imports: [ReactiveFormsModule],
   template: `
     <form data-part="form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <label data-part="field">
         <span data-part="label">Email</span>
         <input data-part="input" formControlName="email" type="email" />
-        <span data-part="error" *ngIf="form.get('email')?.invalid && form.get('email')?.touched">
-          {{ getError("email") }}
-        </span>
+        @if (form.get("email")?.invalid && form.get("email")?.touched) {
+          <span data-part="error">{{ getError("email") }}</span>
+        }
       </label>
       <button data-part="submit" [disabled]="form.invalid || submitting">Save</button>
     </form>

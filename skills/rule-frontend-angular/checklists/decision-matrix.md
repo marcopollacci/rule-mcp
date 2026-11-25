@@ -4,7 +4,7 @@
 | --------------------------------- | ------------------------- | ---------------------------------- | ------------------------------- |
 | Slow typing / UI freezes          | Change detection strategy | `Default` strategy                 | Use `OnPush` on every component |
 | Too many CD cycles                | State origin              | Global service state used as local | Move to component `signal()`    |
-| List recreates all DOM            | Track identity            | Missing `track` in `@for`          | Add `track item.id`             |
+| List recreates all DOM            | Track identity            | `track $index` on mutable list     | Add `track item.id`             |
 | Stale displayed value             | Derivation method         | Computed in lifecycle hook         | Use `computed()`                |
 | Memory leak on navigation         | Subscription cleanup      | Missing unsubscribe                | Add `takeUntilDestroyed()`      |
 | Slow initial bundle size          | Route loading             | Eager component imports            | Use `loadComponent`             |

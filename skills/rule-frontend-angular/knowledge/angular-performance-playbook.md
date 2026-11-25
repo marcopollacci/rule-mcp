@@ -77,7 +77,7 @@ Angular 17+ `@for` with `track`:
 }
 ```
 
-Without `track`, Angular identity-matches by index - same as React's key={index} bug.
+`track` is mandatory: `@for` without it does not compile. `track $index` matches by position - the same bug as React's `key={index}` on a list that reorders, filters, inserts or deletes.
 
 ## Pattern 4 - computed() over effect() for derivation
 
@@ -113,8 +113,16 @@ export class MyComponent {
   private destroyRef = inject(DestroyRef);
 
   constructor() {
+    // Injection context: no argument needed
     interval(1000)
       .pipe(takeUntilDestroyed())
+      .subscribe((v) => console.log(v));
+  }
+
+  ngOnInit() {
+    // Outside an injection context: pass the DestroyRef, or it throws NG0203
+    interval(5000)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((v) => console.log(v));
   }
 }
@@ -158,8 +166,9 @@ All routes should be lazy unless the component is needed on every page.
 
 ```typescript
 export const routes: Routes = [
-  { path: "", loadComponent: () => import("./home/_Home.component") },
-  { path: "settings", loadChildren: () => import("./settings/settings.routes") },
+  // Named exports need .then(); a bare import() expects a default export
+  { path: "", loadComponent: () => import("./home/_Home.component").then((m) => m.Home) },
+  { path: "settings", loadChildren: () => import("./settings/settings.routes").then((m) => m.routes) },
 ];
 ```
 
