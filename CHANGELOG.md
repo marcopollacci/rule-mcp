@@ -32,6 +32,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **completions**: complete the resume and state commands (`ec0bd88`)
 - **agent-commands**: drop the help guard where the host answers help itself (`e542a8b`)
 
 ### Documentation

@@ -47,6 +47,12 @@ test("every tool traces back to a rule-mcp-* directory in ./skills", () => {
     "rule_tool_update",
     "rule_tool_usage",
     "rule_tool_write_plan",
+    // Registered by code as well: the plan advancer, the dev-server surface,
+    // the project screen and the interview writer mint no skill tool.
+    "rule_tool_next",
+    "rule_tool_devserver",
+    "rule_tool_state",
+    "rule_tool_interview",
   ]);
   for (const name of surface.tools) {
     if (ACTION.has(name)) {

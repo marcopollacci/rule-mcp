@@ -60,21 +60,29 @@ export async function devserver({ action = "status", pid, port, expect, command,
   if (asked === "records") {
     const records = readRecords();
 
-    return records.length === 0
-      ? "No record on disk, so no process can be proven."
-      : ["# Records", "", ...records.map((entry) => `- \`${entry.port}\` pid ${entry.pid}: ${entry.command}`)].join("\n");
+    if (records.length === 0) {
+      return "No record on disk, so no process can be proven.";
+    }
+
+    const lines = ["# Records", ""];
+
+    for (const entry of records) {
+      lines.push(`- \`${entry.port}\` pid ${entry.pid}: ${entry.command}`);
+    }
+
+    return lines.join("\n");
   }
 
   if (REFUSED_ACTIONS.includes(asked)) {
     return [
       `\`${asked}\` is not implemented.`,
       "",
-      "Starting a process needs a record first (ADR 251 names the fields), and no step has written one yet. A stop exists and is narrow: it needs the pid and the port, and it refuses unless that pid really listens there.",
+      "A restart has to wait until a start and a stop are proven on a real run (ADR 251). Until then, stop the process and start it again as two calls.",
     ].join("\n");
   }
 
   if (!READ_ONLY_ACTIONS.includes(asked)) {
-    return `Unknown action "${action}". Use ${READ_ONLY_ACTIONS.join(", ")}.`;
+    return `Unknown action "${action}". Use ${READ_ONLY_ACTIONS.join(", ")}, ${REFUSED_ACTIONS.join(", ")}.`;
   }
 
   const scanned = scanRange(listenPorts());

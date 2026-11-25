@@ -6,7 +6,7 @@
  * ADR 251 fixes the record: port, pid, command, working directory, start time.
  * The record is what makes a later stop safe, so the start is not finished until
  * the record is on disk. The port comes from the scan, and the child learns it
- * through `PORT`, the one convention every dev server honours.
+ * through `PORT`, the one convention every dev server honors.
  */
 
 import { spawn as spawnProcess } from "node:child_process";

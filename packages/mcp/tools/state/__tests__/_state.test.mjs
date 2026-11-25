@@ -6,7 +6,7 @@
  */
 
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, rmSync, utimesSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { test } from "node:test";
@@ -57,9 +57,15 @@ test("the newest handoff wins when several exist", () => {
   const root = project();
   const older = join(root, "docs/handoff/04-older.md");
 
+  const newest = join(root, "docs/handoff/08-newest.md");
+
   writeFileSync(older, "# four\n");
-  // A record from last month must not beat the one just written.
-  writeFileSync(join(root, "docs/handoff/08-newest.md"), "# eight\n");
+  writeFileSync(newest, "# eight\n");
+  // The filesystem may stamp both within the same tick, so the order is stated
+  // instead of hoped for: 08 is one hour newer than 04, and 07 in between.
+  utimesSync(older, new Date(1_700_000_000_000), new Date(1_700_000_000_000));
+  utimesSync(join(root, "docs/handoff/07-recent.md"), new Date(1_700_001_000_000), new Date(1_700_001_000_000));
+  utimesSync(newest, new Date(1_700_002_000_000), new Date(1_700_002_000_000));
 
   const screen = projectState(root, { run: () => "" });
 

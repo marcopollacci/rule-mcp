@@ -19,6 +19,11 @@
 /** The extension file name under the Pi extensions directory. */
 export const RESUME_EXTENSION_FILE = "rule-mcp-resume.js";
 
+/**
+ * The Pi extension source, as one file.
+ *
+ * @returns {string}
+ */
 export function piResumeExtension() {
   return `/**
  * rule-mcp: seed a resumed session with the verified handoff and the next step.
@@ -72,5 +77,6 @@ export default function ruleMcpResume(pi) {
     return { message: { customType: "rule-mcp-resume", content, display: false } };
   });
 }
+
 `;
 }
