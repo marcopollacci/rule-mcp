@@ -154,7 +154,7 @@ test("a step id wrapped in bold or emphasis still resolves and ticks", () => {
     const ticked = tickStep(body, "WS1-T1");
 
     assert.equal(ticked.ticked, true, `${wrapper}: it ticks`);
-    assert.match(ticked.text, new RegExp(`- \\[x\\] ${wrapper.replaceAll("*", "\\*")}WS1-T1`, "u"), `${wrapper}: the marker survives`);
+    assert.match(ticked.text, new RegExp(String.raw`- \[x\] ${wrapper.replaceAll("*", String.raw`\*`)}WS1-T1`, "u"), `${wrapper}: the marker survives`);
 
     rmSync(root, { recursive: true, force: true });
   }
