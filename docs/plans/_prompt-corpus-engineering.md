@@ -51,7 +51,7 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 ## WS4 Project state
 
 - [x] WS4-T1 `/rule-state": version, ADR count, open plan steps, dirty tree, last CI conclusion, last handoff.
-- [ ] WS4-T2 Reuse WS1-T1 for the next open step, and `gh` for the CI line, with a fallback when `gh` is absent.
+- [x] WS4-T2 Reuse WS1-T1 for the next open step, and `gh` for the CI line, with a fallback when `gh` is absent. Satisfied by WS4-T1: `planState` calls `nextStep`, and with `gh` off PATH the line reads "unknown (no gh, or no run on this branch)". Verified by running the screen with the PATH stripped.
 - [ ] WS4-T3 One screen, no model turn where the host allows it.
 
 ## WS5 Structured interview
