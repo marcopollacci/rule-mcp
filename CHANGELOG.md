@@ -43,6 +43,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Documentation
 
+- **adr**: close out the prompt-corpus plan into 252 (`24d887c`)
 - **plans**: plan the Homebrew and Windows distribution channels (`d20e64a`)
 - **plans**: record the MIT spdx_id GitHub now reports (`da0ce67`)
 - **plans**: give the prompt-corpus plan the three graph lines (`0121b10`)
