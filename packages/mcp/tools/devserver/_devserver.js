@@ -11,11 +11,12 @@
  */
 
 import { listenPorts, scanRange, PORT_RANGE } from "./_scan.js";
+import { tailLog } from "./_logs.js";
 import { readRecords, startServer } from "./_start.js";
 import { stopProcess } from "./_stop.js";
 
 /** Actions the tool answers today. */
-export const READ_ONLY_ACTIONS = ["status", "list", "ports", "records"];
+export const READ_ONLY_ACTIONS = ["status", "list", "ports", "records", "logs"];
 
 /** Actions refused on purpose, with what each one waits for. */
 export const REFUSED_ACTIONS = ["restart"];
@@ -38,7 +39,7 @@ function listenerLines(inside) {
  * @param {{ action?: string }} [options]
  * @returns {string} Markdown
  */
-export async function devserver({ action = "status", pid, port, expect, command, cwd } = {}) {
+export async function devserver({ action = "status", pid, port, expect, command, cwd, lines } = {}) {
   const asked = String(action ?? "status")
     .trim()
     .toLowerCase();
@@ -50,6 +51,10 @@ export async function devserver({ action = "status", pid, port, expect, command,
 
   if (asked === "start") {
     return startServer({ command, cwd }).then((result) => result.message);
+  }
+
+  if (asked === "logs") {
+    return tailLog({ pid, lines }).message;
   }
 
   if (asked === "records") {
