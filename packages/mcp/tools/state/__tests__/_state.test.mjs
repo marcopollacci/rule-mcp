@@ -84,3 +84,20 @@ test("a clean tree and a CI answer are reported as they come", () => {
 
   rmSync(root, { recursive: true, force: true });
 });
+
+test("a project with nothing on disk reports zeros instead of throwing", () => {
+  const empty = mkdtempSync(join(tmpdir(), "rule-mcp-state-empty-"));
+
+  // No package.json, no docs/adr, no docs/plans, no docs/handoff: every reader
+  // has a catch for that, and each one answers empty rather than failing.
+  assert.equal(manifestVersion(empty), "");
+  assert.equal(adrCount(empty), 0);
+
+  const screen = projectState(empty, { run: () => "" });
+
+  assert.match(screen, /version: unknown/u);
+  assert.match(screen, /0 ADRs/u);
+  assert.match(screen, /last handoff: none/u);
+
+  rmSync(empty, { recursive: true, force: true });
+});

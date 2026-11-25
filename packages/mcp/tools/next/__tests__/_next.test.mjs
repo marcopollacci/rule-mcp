@@ -51,3 +51,11 @@ test("a refused tick names the plan and the step, and does not claim success", (
   assert.match(text, /Plan: `demo`, step WS1-T1/u);
   assert.doesNotMatch(text, /Ticked/u);
 });
+
+test("a step without an id or a workstream still renders what is known", () => {
+  const noId = renderNext({ status: "found", plan: "demo", step: "do the thing.", open: 1 });
+
+  assert.match(noId, /# Next step: demo$/mu, "no workstream leaves the plan alone");
+  assert.match(noId, /1 open in this plan\./u, "and no step id");
+  assert.match(noId, /```text\ndo the thing\.\n```/u);
+});
