@@ -76,6 +76,7 @@ import { Component, input, output } from "@angular/core";
 
 import type { Todo } from "../../services";
 
+/** One todo row: toggles completion and asks its parent to delete it. */
 @Component({
   selector: "todo-item",
   styleUrl: "./_TodoItem.component.css",
@@ -97,7 +98,11 @@ export class TodoItem {
 ```
 
 ```css
-/* components/TodoItem/_TodoItem.component.css */
+/**
+ * FILE: components/TodoItem/_TodoItem.component.css
+ * USAGE: Styles for TodoItem
+ * SCOPE: todo-item
+ */
 article[data-part="item"] {
   display: flex;
   align-items: center;
@@ -134,6 +139,7 @@ Use Angular's native `styleUrl` (v17+; `styleUrls: [...]` before) in the
 No fetch/adoptedStyleSheets needed - Angular handles scoped CSS loading.
 
 ```typescript
+/** Minimal component whose styles load from an external sheet. */
 @Component({
   selector: "my-component",
   styleUrl: "./_MyComponent.component.css",
@@ -147,6 +153,7 @@ export class MyComponent {}
 Use the built-in control flow; `*ngIf` / `*ngFor` / `*ngSwitch` are legacy.
 
 ```typescript
+/** Todo list with an empty state, built on the @if / @for control flow. */
 @Component({
   selector: "todo-list",
   template: `
@@ -261,6 +268,7 @@ template events fire, async pipes emit, or a template signal changes.
 
 ```typescript
 // up to v21
+/** Component that opts in to OnPush explicitly (v21 and earlier). */
 @Component({
   selector: "my-component",
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -379,6 +387,7 @@ Service state persists across routes. Component-scoped state via `signal()` shou
 
 ```typescript
 // ✅ Local state - scoped to component
+/** Search box whose term lives and dies with the component. */
 @Component({ ... })
 export class SearchComponent {
   private searchTerm = signal("");
@@ -395,6 +404,7 @@ Every route should be lazy-loaded. Never import everything in the root module.
 
 ```typescript
 // routes.ts - lazy by default
+/** Application routes; every entry loads its code on first navigation. */
 export const routes: Routes = [
   {
     path: "admin",
@@ -412,16 +422,25 @@ Split when data fetching, state transitions, formatting, and UI layout change fo
 
 ```typescript
 // ✅ Service handles data
+/** Owns the current user and its loading and error state. */
 @Injectable({ providedIn: "root" })
 export class UserService {
   readonly user = signal<User | null>(null);
   readonly isLoading = signal(false);
   readonly error = signal<string | null>(null);
 
-  loadUser(id: string) { /* ... */ }
+  /**
+   * Fetch one user and publish it through the signals above.
+   *
+   * @param id - the user id
+   */
+  loadUser(id: string) {
+    // fetch, then set user / isLoading / error
+  }
 }
 
 // ✅ Component handles display only
+/** Renders the user that UserService owns; holds no state of its own. */
 @Component({ ... })
 export class UserProfile {
   private userService = inject(UserService);
@@ -522,6 +541,7 @@ Check the exact Signal Forms API for the project version with
 import { Component, inject, signal } from "@angular/core";
 import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
+/** Email and name form with typed controls and field-level errors. */
 @Component({
   selector: "app-my-form",
   imports: [ReactiveFormsModule],
@@ -549,13 +569,23 @@ export class MyFormComponent {
 
   getError(controlName: "email" | "name"): string {
     const control = this.form.controls[controlName];
-    if (control?.hasError("required")) return "This field is required";
-    if (control?.hasError("email")) return "Invalid email";
+
+    if (control.hasError("required")) {
+      return "This field is required";
+    }
+
+    if (control.hasError("email")) {
+      return "Invalid email";
+    }
+
     return "";
   }
 
   onSubmit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      return;
+    }
+
     this.submitting.set(true);
   }
 }
