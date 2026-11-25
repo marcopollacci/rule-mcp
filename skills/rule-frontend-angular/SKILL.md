@@ -14,10 +14,28 @@ guardrails: [angular-no-ngclass]
 This skill adapts [rule-styleguide](../rule-styleguide/SKILL.md) and
 a store-and-signals architecture to **Angular standalone components**.
 
+## Step 0 - Pin the Angular version and load the official guidance
+
+Several rules below depend on the Angular major version. Before writing or
+reviewing code:
+
+1. Read the version: `frameworkVersion` from the Angular CLI MCP `list_projects`
+   tool, or `@angular/core` in `package.json`.
+2. With the Angular CLI MCP server available, call `get_best_practices` with the
+   workspace path to load the version-matched official guide, and
+   `search_documentation` (with the major version) for any API you are unsure of.
+   Never guess an API from memory.
+3. Apply the version notes in this skill (`v17+`, `v19+`, `v22+`). The examples
+   target v20+; on older versions fall back to the noted legacy form.
+4. Where the official guide and this skill disagree, this skill wins only on the
+   rule-mcp conventions it states explicitly as deviations (see Core Rules).
+
 ## Core Rules (inherited from rule-mcp skills)
 
-1. **Zero CSS classes** - only element selectors + `[data-part="..."]` + `[data-*]`
-2. **Zero inline styles** - external `.css` files only (`styleUrls` / `@Component.styles`)
+1. **Zero CSS classes** - only element selectors + `[data-part="..."]` + `[data-*]`.
+   Deliberate deviation: the angular.dev guide suggests `[class]` bindings instead
+   of `ngClass`; rule-mcp forbids both and moves state into `[attr.data-*]`.
+2. **Zero inline styles** - external `.css` files only (`styleUrl` / `@Component.styles`)
 3. **Flex first** - `display: grid` only for named areas, subgrid, explicit placement, or auto-fit tracks; anything a flex row or column can do is flex.
 4. **Semantic HTML is mandatory** - never `<div>` where a semantic element exists
 5. **Barrel pattern** - every component folder has `index.ts`
