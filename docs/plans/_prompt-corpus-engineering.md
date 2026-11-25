@@ -45,9 +45,8 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 ## WS3 Dev server lifecycle
 
 - [x] WS3-T1 `rule_tool_devserver` read-only half: `status`, `list`, `ports` over the 3000-6000 scan, with the process that owns each port. `start` and `stop` are refused, because a stop that guesses its target can end the editor or the MCP server.
-- [x] WS3-T1b The lifecycle itself: `start`, `stop`, `restart`. Needs an ADR that names how a command claims a port, how a stop proves its target, and what happens to a process whose parent leaves. No code before that ADR.
-- [x] WS3-T2 Selective stop ("every node process except the MCP servers") with a test on a real process table.
-- [ ] WS3-T3 Log tail and the first-available-port report, so a run says the URL it opened.
+- [ ] WS3-T1b `start`: launch one command, pick the first free port in 3000-6000, and write the record ADR 251 names (port, pid, command, cwd, startedAt) into the runtime state directory. ADR 251 is accepted, so the record's shape is decided; this is the step that writes it. Moved before WS3-T3, which cannot start before a process exists.
+- [ ] WS3-T3 Log tail and the URL report, for a process this tool started. Blocked by WS3-T1b: with no `start` there is no log to follow and no URL the tool opened. A tail of a log the user names is a different feature and needs its own line.
 
 ## WS4 Project state
 

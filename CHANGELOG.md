@@ -17,6 +17,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **devserver**: stop one listener against the port and pid that prove it (`a5e1419`)
 - **devserver**: report the ports in the documented range, and refuse the lifecycle (`c572716`)
 - **resume**: seed a resumed Pi session with the handoff and its next step (`9ad7b72`)
 - **resume**: name the next plan step in the injected block (`3ffac21`)
