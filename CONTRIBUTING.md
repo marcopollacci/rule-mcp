@@ -21,9 +21,9 @@ cd rule
 pnpm install
 ```
 
-This git root is the private workspace (`rule-mcp-workspace`). The
-published npm package is `packages/mcp` (`rule-mcp`). The workspace lists
-`packages/*` and nothing outside the checkout, so a clone installs on its own.
+This git root is the private workspace (`rule-mcp-workspace`). There is no
+npm package: the workspace lists `packages/*` and nothing outside the checkout,
+so a clone installs on its own and a release ships a source tarball.
 
 `pnpm install` runs `prepare`, which installs the git hooks from
 `.githooks/` as shims into `.git/hooks/`. To install them on demand:

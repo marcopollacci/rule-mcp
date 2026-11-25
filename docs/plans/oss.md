@@ -33,9 +33,9 @@ Reference: [the audit](../audits/oss.md) and [the review](../reviews/oss.md). Ev
 - [x] **WS1-T1 - Step 1 - E1 (high)**: License is a pointer file, so hosts cannot name it. GitHub returns NOASSERTION and the community profile returns key other.
   - [x] **WS1-T1.1 - 1.1**: Put the full MIT text in LICENSE and keep LICENSES/MIT.txt as the REUSE copy.
   - [x] **WS1-T1.2 - 1.2**: Re-run the GitHub license detection and record the new spdx_id. `gh api repos/pixu1980/rule-mcp/license` returns `MIT` at `a6d0218d`; before that commit it returned `NOASSERTION`, because the file carried a heading and a fence around the text and licensee reads the raw text only.
-- [ ] **WS1-T2 - Step 2 - E2 (high)**: Three documents disagree on the install route, and server.json advertises an npm package that returns 404.
-  - [ ] **WS1-T2.1 - 2.1**: Pick the one install route the project supports today.
-  - [ ] **WS1-T2.2 - 2.2**: Align README.md, CONTRIBUTING.md, docs/08-release.md and server.json packages with that route.
+- [x] **WS1-T2 - Step 2 - E2 (high)**: Three documents disagree on the install route, and server.json advertises an npm package that returns 404. Resolved in 2.1 and 2.2: one route, four sources agreeing.
+  - [x] **WS1-T2.1 - 2.1**: Pick the one install route the project supports today. Chosen: git clone plus the release tarball. No npm package exists, `rule-mcp update` works only in a clone, and `pnpm release` ships a tarball.
+  - [x] **WS1-T2.2 - 2.2**: Align README.md, CONTRIBUTING.md, docs/08-release.md and server.json packages with that route. `server.json` no longer advertises an npm package, and CONTRIBUTING.md no longer calls `packages/mcp` published. README and the release chapter already said there is none.
 - [ ] **WS1-T3 - Step 3 - E6 (high)**: Branch protection is off and GOVERNANCE points at owner action 16.5 that no plan file holds.
   - [ ] **WS1-T3.1 - 3.1**: Enable branch protection on main with the ci checks and one review.
   - [ ] **WS1-T3.2 - 3.2**: Replace the 16.5 reference in GOVERNANCE.md with the live setting or a current owner action.
