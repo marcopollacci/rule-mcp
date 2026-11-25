@@ -38,6 +38,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Documentation
 
+- **plans**: give the prompt-corpus plan the three graph lines (`0121b10`)
 - **plans**: close the prompt-corpus plan, every step landed (`8ed554f`)
 - **plans**: record that the CI fallback is proven with gh off PATH (`bb62c8f`)
 - **plans**: give the log step a process to follow before it (`2cf5431`)
