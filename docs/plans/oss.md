@@ -30,7 +30,7 @@ Reference: [the audit](../audits/oss.md) and [the review](../reviews/oss.md). Ev
 
 ### WS1 - high
 
-- [ ] **WS1-T1 - Step 1 - E1 (high)**: License is a pointer file, so hosts cannot name it. GitHub returns NOASSERTION and the community profile returns key other.
+- [x] **WS1-T1 - Step 1 - E1 (high)**: License is a pointer file, so hosts cannot name it. GitHub returns NOASSERTION and the community profile returns key other.
   - [ ] **WS1-T1.1 - 1.1**: Put the full MIT text in LICENSE and keep LICENSES/MIT.txt as the REUSE copy.
   - [ ] **WS1-T1.2 - 1.2**: Re-run the GitHub license detection and record the new spdx_id.
 - [ ] **WS1-T2 - Step 2 - E2 (high)**: Three documents disagree on the install route, and server.json advertises an npm package that returns 404.

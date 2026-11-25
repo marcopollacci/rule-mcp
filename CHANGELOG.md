@@ -32,6 +32,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **license**: carry the MIT text so a host can name it (`fbb3fdd`)
 - **tools**: pass the repo guardrails on the new surface (`c4d58af`)
 - **completions**: complete the resume and state commands (`ec0bd88`)
 - **agent-commands**: drop the help guard where the host answers help itself (`e542a8b`)

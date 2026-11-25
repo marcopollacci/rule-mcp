@@ -14,7 +14,7 @@ import { join } from "node:path";
 import { test } from "node:test";
 
 import { continuationOf, nextStep } from "../_step.js";
-import { firstOpenStep, openCount } from "../_step-scan.js";
+import { firstOpenStep, openCount, tickStep } from "../_step-scan.js";
 
 /** A project whose plans are the ones each test writes. */
 function project(plans) {
@@ -140,4 +140,22 @@ test("an unknown name and a closed plan both answer without inventing a step", (
   assert.equal(nextStep(root, {}).status, "closed");
 
   rmSync(root, { recursive: true, force: true });
+});
+
+test("a step id wrapped in bold or emphasis still resolves and ticks", () => {
+  // docs/plans/oss.md writes `- [ ] **WS1-T1 - Step 1 (high)**: …`, and the first
+  // scanner only read an id that opened the line.
+  for (const wrapper of ["**", "__", "_", "*"]) {
+    const body = `# demo\n\nStatus: \`in-progress\`\n\n## WS1\n\n- [ ] ${wrapper}WS1-T1 - Step 1${wrapper}: do it.\n`;
+    const root = project({ "_demo.md": body });
+
+    assert.equal(nextStep(root, { want: "WS1-T1" }).id, "WS1-T1", `${wrapper}: it resolves`);
+
+    const ticked = tickStep(body, "WS1-T1");
+
+    assert.equal(ticked.ticked, true, `${wrapper}: it ticks`);
+    assert.match(ticked.text, new RegExp(`- \\[x\\] ${wrapper.replaceAll("*", "\\*")}WS1-T1`, "u"), `${wrapper}: the marker survives`);
+
+    rmSync(root, { recursive: true, force: true });
+  }
 });
