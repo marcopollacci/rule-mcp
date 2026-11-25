@@ -11,13 +11,14 @@
  */
 
 import { listenPorts, scanRange, PORT_RANGE } from "./_scan.js";
+import { readRecords, startServer } from "./_start.js";
 import { stopProcess } from "./_stop.js";
 
 /** Actions the tool answers today. */
-export const READ_ONLY_ACTIONS = ["status", "list", "ports"];
+export const READ_ONLY_ACTIONS = ["status", "list", "ports", "records"];
 
 /** Actions refused on purpose, with what each one waits for. */
-export const REFUSED_ACTIONS = ["start", "restart"];
+export const REFUSED_ACTIONS = ["restart"];
 
 /** Render the range as a sentence. */
 const range = `${PORT_RANGE.from}-${PORT_RANGE.to}`;
@@ -37,7 +38,7 @@ function listenerLines(inside) {
  * @param {{ action?: string }} [options]
  * @returns {string} Markdown
  */
-export function devserver({ action = "status", pid, port, expect } = {}) {
+export async function devserver({ action = "status", pid, port, expect, command, cwd } = {}) {
   const asked = String(action ?? "status")
     .trim()
     .toLowerCase();
@@ -45,6 +46,18 @@ export function devserver({ action = "status", pid, port, expect } = {}) {
   // ADR 251: one listener, named by its port and pid, never a bulk kill.
   if (asked === "stop") {
     return stopProcess({ pid, port, expect }).message;
+  }
+
+  if (asked === "start") {
+    return startServer({ command, cwd }).then((result) => result.message);
+  }
+
+  if (asked === "records") {
+    const records = readRecords();
+
+    return records.length === 0
+      ? "No record on disk, so no process can be proven."
+      : ["# Records", "", ...records.map((entry) => `- \`${entry.port}\` pid ${entry.pid}: ${entry.command}`)].join("\n");
   }
 
   if (REFUSED_ACTIONS.includes(asked)) {

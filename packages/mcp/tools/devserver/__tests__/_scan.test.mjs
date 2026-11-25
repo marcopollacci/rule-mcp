@@ -59,13 +59,14 @@ test("a machine without lsof reports unknown, never free", () => {
   assert.equal(scanned.inside.length, 0);
 });
 
-test("status reports; start and stop are refused with the reason", () => {
+test("restart stays refused, and an unknown action says so", async () => {
+  // Start and stop exist now; restart waits until both are proven on a real run.
   for (const action of REFUSED_ACTIONS) {
-    const text = devserver({ action });
+    const text = await devserver({ action });
 
     assert.match(text, /is not implemented/u);
-    assert.match(text, /decision first|ADR/u, `${action} names what is missing`);
+    assert.match(text, /ADR/u, `${action} names what is missing`);
   }
 
-  assert.match(devserver({ action: "nope" }), /Unknown action/u);
+  assert.match(await devserver({ action: "nope" }), /Unknown action/u);
 });

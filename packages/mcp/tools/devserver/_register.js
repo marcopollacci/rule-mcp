@@ -21,7 +21,19 @@ export function registerDevserverTool() {
       "Report the dev servers listening on 3000-6000, with the process that owns each port and the first free one. Read-only: start and stop are refused until a decision names how a stop proves its target.",
     zodSchema: DevserverSchema,
     handler: async (arguments_) => ({
-      content: [{ type: "text", text: devserver({ action: arguments_.action ?? "status", pid: arguments_.pid, port: arguments_.port, expect: arguments_.expect }) }],
+      content: [
+        {
+          type: "text",
+          text: await devserver({
+            action: arguments_.action ?? "status",
+            pid: arguments_.pid,
+            port: arguments_.port,
+            expect: arguments_.expect,
+            command: arguments_.command,
+            cwd: arguments_.cwd,
+          }),
+        },
+      ],
     }),
   });
 }
