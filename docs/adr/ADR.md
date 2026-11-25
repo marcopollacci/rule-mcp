@@ -8,6 +8,7 @@ this directory are the source of truth; this index is generated from them by
 
 | #                                                                                                                       | Title                                                                                                     | Date       | Status     | Tags                                                                                |
 | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------- | ---------- | ----------------------------------------------------------------------------------- |
+| [252](252-close-out-plan-prompt-corpus-engineering.md)                                                                  | Close out plan _prompt-corpus-engineering                                                                 | 2026-11-25 | accepted   | docs, closeout, plan                                                                |
 | [251](251-signal-a-dev-server-only-against-a-record-it-can-prove.md)                                                    | Signal a dev server only against a record it can prove                                                    | 2026-11-24 | accepted   | cli, devserver, process                                                             |
 | [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md)                                      | Ship the help guard only to hosts that cannot answer help themselves                                      | 2026-11-24 | accepted   | cli, agent-commands, surface                                                        |
 | [249](249-main.md)                                                                                                      | main                                                                                                      | 2026-11-23 | accepted   | agent-commands, opencode, pi, slash-commands                                        |
@@ -267,6 +268,7 @@ file. Where a line stops short the rest is in the ADR.
 
 | ADR                                                                                                                     | Decision                                                                                                                                                                                                                        | Consequence                                                                                                                                                                                                                     |
 | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [252](252-close-out-plan-prompt-corpus-engineering.md)                                                                  | Fold the record into this ADR and the session handoff, then delete the source file.                                                                                                                                             | docs/plans/_prompt-corpus-engineering.md is gone from the tree; this ADR keeps what it delivered and the handoff of this session names it.                                                                                      |
 | [251](251-signal-a-dev-server-only-against-a-record-it-can-prove.md)                                                    | A start records what it launched in the runtime state directory: the port, the pid, the command line, the working directory and the start time.                                                                                 | Positive: every stop is auditable, and a stale record refuses instead of killing a stranger.                                                                                                                                    |
 | [250](250-ship-the-help-guard-only-to-hosts-that-cannot-answer-help-themselves.md)                                      | The guard travels with a per-target flag.                                                                                                                                                                                       | Positive: the transcript shows only the task on Pi and opencode, and every non-help invocation carries no usage block.                                                                                                          |
 | [249](249-main.md)                                                                                                      | FORMATS gains a per-format hint strategy: frontmatter writes argument-hint, description folds it into the description in the same hint-then-description order Pi renders, none drops it.                                        | opencode users now see an argument hint in the completion popup, at the cost of a slightly longer description line; the hint text is duplicated between the description and the existing Usage prose in rule-handoff until...   |
@@ -526,6 +528,7 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 
 ### docs
 
+- [252](252-close-out-plan-prompt-corpus-engineering.md) Close out plan _prompt-corpus-engineering
 - [248](248-close-out-plan-install-surface-depth-skills.md) Close out plan _install-surface-depth-skills
 - [244](244-the-documentation-holds-no-html-and-the-census-writes-whole-files.md) The documentation holds no HTML and the census writes whole files
 - [243](243-close-out-plan-publication-cutover.md) Close out plan _publication-cutover
@@ -612,6 +615,7 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 
 ### closeout
 
+- [252](252-close-out-plan-prompt-corpus-engineering.md) Close out plan _prompt-corpus-engineering
 - [248](248-close-out-plan-install-surface-depth-skills.md) Close out plan _install-surface-depth-skills
 - [243](243-close-out-plan-publication-cutover.md) Close out plan _publication-cutover
 - [242](242-close-out-plan-pi-integration-and-debt.md) Close out plan _pi-integration-and-debt
@@ -764,6 +768,7 @@ theme it carries, and the early ADRs that predate the tag field are listed last.
 
 ### plan
 
+- [252](252-close-out-plan-prompt-corpus-engineering.md) Close out plan _prompt-corpus-engineering
 - [248](248-close-out-plan-install-surface-depth-skills.md) Close out plan _install-surface-depth-skills
 - [243](243-close-out-plan-publication-cutover.md) Close out plan _publication-cutover
 - [242](242-close-out-plan-pi-integration-and-debt.md) Close out plan _pi-integration-and-debt

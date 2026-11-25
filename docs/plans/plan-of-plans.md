@@ -43,7 +43,7 @@ Branch history that motivated stages 1-5 (2026-10-21) lives in git and in ADR 17
 | Installer: remove the pnpm global link, fix the launcher deploy | _(retired)_ | done → ADR 207 | scaffold shape check |
 | Remove the minimal surface, clarify the depth step, gate the skill writes | _(retired)_ | done → ADR 248 | W1 remove the minimal surface; W2 rename the depth step; W3 gate the skill writes |
 | Collapse the area and persona command families | _(retired)_ | done → ADR 252 | WS1-T1..T7 open |
-| Engineering plan from the prompt corpus | `_prompt-corpus-engineering.md` | `planned` | WS0-T1..T2, WS1-T1..T4, WS2-T1..T4, WS3-T1..T3, WS4-T1..T3, WS5-T1..T3 |
+| Engineering plan from the prompt corpus | _(retired)_ | done → ADR 252 | WS0-T1..T2, WS1-T1..T4, WS2-T1..T4, WS3-T1..T3, WS4-T1..T3, WS5-T1..T3 |
 | Distribute through Homebrew and the Windows channels | `_package-manager-distribution.md` | `planned` | WS1-T1..T2, WS2-T1..T3, WS3-T1..T3, WS4-T1..T3, WS5-T1..T2, WS6-T1..T2 |
 
 ## 2 - What this file is not
@@ -150,7 +150,7 @@ Run only when WS-A/B/C are idle on the shared files in section 8. The OSS and su
 - [x] [`_installer-global-link-and-launcher-deploy.md`](_installer-global-link-and-launcher-deploy.md) - scaffold shape check; retired → [ADR 207](../adr/207-close-out-plan-installer-global-link-and-launcher-deploy.md).
 - [x] [`_install-surface-depth-skills.md`](_install-surface-depth-skills.md) - W1 remove the minimal surface; W2 rename the depth step; W3 gate the skill writes; retired → [ADR 248](../adr/248-close-out-plan-install-surface-depth-skills.md).
 - [x] [`_command-surface-collapse.md`](_command-surface-collapse.md) - WS1-T1..T7 open; retired → [ADR 252](../adr/252-close-out-plan-command-surface-collapse.md).
-- [ ] [`_prompt-corpus-engineering.md`](_prompt-corpus-engineering.md) - WS0-T1..T2, WS1-T1..T4, WS2-T1..T4, WS3-T1..T3, WS4-T1..T3, WS5-T1..T3.
+- [x] [`_prompt-corpus-engineering.md`](_prompt-corpus-engineering.md) - WS0-T1..T2, WS1-T1..T4, WS2-T1..T4, WS3-T1..T3, WS4-T1..T3, WS5-T1..T3; retired → [ADR 252](../adr/252-close-out-plan-prompt-corpus-engineering.md).
 - [ ] [`_package-manager-distribution.md`](_package-manager-distribution.md) - WS1-T1..T2, WS2-T1..T3, WS3-T1..T3, WS4-T1..T3, WS5-T1..T2, WS6-T1..T2.
 
 ### WS-G — ASD-STE100 writing and AI plan shape
