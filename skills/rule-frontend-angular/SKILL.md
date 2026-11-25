@@ -215,7 +215,7 @@ This section extends rule-frontend-angular with a structured performance review 
 
 ### Operating principles
 
-1. **Change detection is the key lever.** Default strategy checks every component on any async event. `OnPush` checks only when inputs change, events fire, or async pipes emit.
+1. **Change detection is the key lever.** With Zone.js and the `Default` strategy, every async event checks every component. `OnPush` checks only when inputs change, template events fire, async pipes emit, or a signal read in the template changes. Zoneless apps drop Zone.js and schedule checks only from those notifications.
 
 2. **Signals (Angular 16+) are the future.** Prefer `signal()` / `computed()` / `effect()` over `BehaviorSubject` + `async` pipe for component state.
 
@@ -234,21 +234,35 @@ This section extends rule-frontend-angular with a structured performance review 
 
 ### The 10 patterns
 
-#### 1. Use `OnPush` change detection by default
+#### 1. `OnPush` everywhere, zoneless where possible
 
-`ChangeDetectionStrategy.OnPush` reduces unnecessary checks. Components update only when inputs change, events fire, or async pipes emit.
+`OnPush` reduces unnecessary checks. Components update only when inputs change,
+template events fire, async pipes emit, or a template signal changes.
+
+- **v22+**: `OnPush` is the default. Do not set `changeDetection` explicitly.
+- **up to v21**: set it on every component.
 
 ```typescript
+// up to v21
 @Component({
   selector: "my-component",
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `...`,
 })
 export class MyComponent {}
 ```
 
-Rule: _Set `OnPush` on every component. Use `Default` only when you have a specific reason and understand the cost._
+**Zoneless.** Zoneless is the default from v21: check that no
+`provideZoneChangeDetection()` overrides it. On v20 opt in with
+`provideZonelessChangeDetection()` at bootstrap
+(`provideExperimentalZonelessChangeDetection()` on v18-v19). Then remove `zone.js`
+and `zone.js/testing` from the build and test polyfills. Zoneless requires
+components that notify Angular through signals, inputs, template events, the
+`async` pipe or `markForCheck()` - the same contract as `OnPush`. With the Angular
+CLI MCP server available, its `onpush_zoneless_migration` tool plans the
+migration file by file.
+
+Rule: _`OnPush` on every component (implicit on v22+). Use `Default` only with a stated reason. Stay zoneless._
 
 #### 2. Prefer Signals over `BehaviorSubject` + `async` pipe
 
@@ -438,17 +452,17 @@ Rule: _If you reach for `ngDoCheck`, you are fighting the framework. Use signals
 
 ### Decision matrix
 
-| Symptom                           | Check first               | Likely pattern                 | Fix                             |
-| --------------------------------- | ------------------------- | ------------------------------ | ------------------------------- |
-| Slow typing / UI freezes          | Change detection strategy | `Default` instead of `OnPush`  | Set `OnPush` on every component |
-| Too many change detection cycles  | State origin              | Service state used as local    | Move to component signal        |
-| List recreates all DOM on update  | Track identity            | `track $index` on mutable list | Add `track item.id`             |
-| Stale displayed value             | Derivation                | Derived in lifecycle hook      | Use `computed()`                |
-| Memory leak on page switch        | Subscriptions             | Missing unsubscribe            | Add `takeUntilDestroyed`        |
-| Slow initial bundle               | Module structure          | Eager imports                  | Lazy-load routes                |
-| Component too large               | Reasons to change         | Mixed responsibilities         | Extract service + view          |
-| Heavy chart blocks initial render | Defer strategy            | Eager heavy component          | Use `@defer (on viewport)`      |
-| Manual diff logic exists          | Lifecycle misuse          | `ngDoCheck`                    | Replace with `computed()`       |
+| Symptom                           | Check first               | Likely pattern                 | Fix                                |
+| --------------------------------- | ------------------------- | ------------------------------ | ---------------------------------- |
+| Slow typing / UI freezes          | Change detection strategy | `Default` instead of `OnPush`  | `OnPush` (implicit v22+), zoneless |
+| Too many change detection cycles  | State origin              | Service state used as local    | Move to component signal           |
+| List recreates all DOM on update  | Track identity            | `track $index` on mutable list | Add `track item.id`                |
+| Stale displayed value             | Derivation                | Derived in lifecycle hook      | Use `computed()`                   |
+| Memory leak on page switch        | Subscriptions             | Missing unsubscribe            | Add `takeUntilDestroyed`           |
+| Slow initial bundle               | Module structure          | Eager imports                  | Lazy-load routes                   |
+| Component too large               | Reasons to change         | Mixed responsibilities         | Extract service + view             |
+| Heavy chart blocks initial render | Defer strategy            | Eager heavy component          | Use `@defer (on viewport)`         |
+| Manual diff logic exists          | Lifecycle misuse          | `ngDoCheck`                    | Replace with `computed()`          |
 
 ### Supporting resources
 

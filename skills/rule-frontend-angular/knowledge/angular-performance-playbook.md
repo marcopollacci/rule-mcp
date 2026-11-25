@@ -8,12 +8,13 @@ Angular performance is about controlling **when change detection runs** and **ho
 
 Key levers:
 
-1. **ChangeDetectionStrategy.OnPush** - limits checks to input changes, events, and async pipes
-2. **Signals** - provide fine-grained reactivity without zone.js
-3. **Lazy loading** - defers code download until needed
-4. **`@defer`** - defers component rendering until conditions are met
+1. **ChangeDetectionStrategy.OnPush** - limits checks to input changes, events, async pipes and template signals (the default from v22)
+2. **Zoneless** - no zone.js; checks run only on those notifications (the default from v21)
+3. **Signals** - provide fine-grained reactivity without zone.js
+4. **Lazy loading** - defers code download until needed
+5. **`@defer`** - defers component rendering until conditions are met
 
-## Pattern 1 - OnPush by default
+## Pattern 1 - OnPush by default (implicit on v22+)
 
 `ChangeDetectionStrategy.Default` checks every component in the tree on any async activity (timer, HTTP response, click, etc.). `OnPush` checks only when:
 
@@ -22,7 +23,7 @@ Key levers:
 - An async pipe emits
 - A signal used in the template changes
 
-### Migration
+### Migration (up to v21; on v22+ OnPush is the default, omit it)
 
 ```typescript
 @Component({
@@ -254,4 +255,4 @@ Browser Performance panel: identify long scripting tasks caused by change detect
 
 ## Final principle
 
-Angular performance is about reducing change detection work. `OnPush` + Signals + Lazy loading + `@defer` cover 90% of real-world performance issues.
+Angular performance is about reducing change detection work. `OnPush` + zoneless + Signals + Lazy loading + `@defer` cover 90% of real-world performance issues.
