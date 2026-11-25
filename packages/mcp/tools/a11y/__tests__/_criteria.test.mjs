@@ -54,6 +54,23 @@ check("T6.1 muted autoplay is allowed", !failed(html("<video autoplay muted></vi
 check("T7 an iframe with no title fails", failed(html('<iframe src="x"></iframe>'), "a11y-iframe-title")?.wcag === "4.1.2");
 check("T7.1 aria-hidden on a focusable element fails", failed(html('<button aria-hidden="true">Go</button>'), "a11y-aria-hidden-focusable")?.wcag === "4.1.2");
 
+const tsx = (body) => checkCode("rule-styleguide-a11y", body, { fileName: "a.tsx" });
+
+check("T7.2 a div with role=button and no tabindex fails", failed(html('<div role="button">Go</div>'), "a11y-role-button-focusable")?.wcag === "2.1.1");
+check("T7.3 role=button with tabindex passes", !failed(html('<div role="button" tabindex="0">Go</div>'), "a11y-role-button-focusable"));
+check("T7.4 JSX tabIndex={0} passes", !failed(tsx('<div role="button" tabIndex={0}>Go</div>'), "a11y-role-button-focusable"));
+check("T7.5 JSX role={'button'} without tabIndex fails", Boolean(failed(tsx("<span role={'button'}>Go</span>"), "a11y-role-button-focusable")));
+check("T7.6 a native button with role=button is not flagged", !failed(html('<button role="button">Go</button>'), "a11y-role-button-focusable"));
+
+check("T7.7 an icon-only button with no name fails", failed(html('<button><svg viewBox="0 0 1 1"></svg></button>'), "a11y-button-name")?.wcag === "4.1.2");
+check("T7.8 a button with text passes", !failed(html("<button>Save</button>"), "a11y-button-name"));
+check("T7.9 aria-label names the button", !failed(html('<button aria-label="Close"><svg></svg></button>'), "a11y-button-name"));
+check("T7.10 JSX aria-label={...} names the button", !failed(tsx("<button aria-label={t('close')}><Icon /></button>"), "a11y-button-name"));
+check("T7.11 an expression child counts as text", !failed(tsx("<button>{label}</button>"), "a11y-button-name"));
+check("T7.12 an img with alt names the button", !failed(html('<button><img src="x.svg" alt="Search"></button>'), "a11y-button-name"));
+check("T7.13 an img with empty alt does not", Boolean(failed(html('<button><img src="x.svg" alt=""></button>'), "a11y-button-name")));
+check("T7.14 aria-labelledby names the button", !failed(html('<button aria-labelledby="t"><svg></svg></button>'), "a11y-button-name"));
+
 check(
   "T8 the rules do not fire on a JavaScript file",
   checkCode("rule-styleguide-a11y", "const img = 1;", { fileName: "a.js" }).failed.every((f) => !f.id.startsWith("a11y-img")),
