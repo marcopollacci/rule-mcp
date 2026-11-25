@@ -32,6 +32,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **next**: read a step id that sits inside emphasis (`c12644f`)
 - **license**: carry the MIT text so a host can name it (`fbb3fdd`)
 - **tools**: pass the repo guardrails on the new surface (`c4d58af`)
 - **completions**: complete the resume and state commands (`ec0bd88`)
