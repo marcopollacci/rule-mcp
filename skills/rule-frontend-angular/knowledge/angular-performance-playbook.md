@@ -26,7 +26,6 @@ Key levers:
 
 ```typescript
 @Component({
-  standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   // ...
 })
