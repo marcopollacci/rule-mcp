@@ -17,6 +17,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Added
 
+- **interview**: turn a schema of questions into one document, gaps included (`6550b34`)
 - **state**: answer /rule-state from the CLI, with no model turn on Pi (`4493b65`)
 - **state**: answer where the project is, and ship /rule-state (`9c3f779`)
 - **devserver**: follow the log a started run wrote, with its URL (`63d9cb7`)

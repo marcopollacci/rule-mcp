@@ -1,6 +1,6 @@
 # Prompt-corpus engineering plan
 
-Status: `in-progress`
+Status: `done`
 Owner: rule-mcp
 Created: 2026-11-24
 Reference: [`scripts/audits/prompt-corpus/index.mjs`](../../scripts/audits/prompt-corpus/index.mjs)
@@ -57,8 +57,8 @@ Measured on 2026-11-24 by `node scripts/audits/prompt-corpus/index.mjs`: 4 321 p
 ## WS5 Structured interview
 
 - [x] WS5-T1 `rule_tool_interview`: a schema of questions in, answers out as one document (ADR, plan or requirements).
-- [ ] WS5-T2 Refuse to invent an answer; leave an unanswered question open and say so.
-- [ ] WS5-T3 Tests: incomplete answers, refused answer, and the document shape.
+- [x] WS5-T2 Refuse to invent an answer; leave an unanswered question open and say so.
+- [x] WS5-T3 Tests: incomplete answers, refused answer, and the document shape.
 
 ## Acceptance
 
