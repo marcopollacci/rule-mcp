@@ -32,7 +32,7 @@ Reference: [the audit](../audits/oss.md) and [the review](../reviews/oss.md). Ev
 
 - [x] **WS1-T1 - Step 1 - E1 (high)**: License is a pointer file, so hosts cannot name it. GitHub returns NOASSERTION and the community profile returns key other.
   - [x] **WS1-T1.1 - 1.1**: Put the full MIT text in LICENSE and keep LICENSES/MIT.txt as the REUSE copy.
-  - [ ] **WS1-T1.2 - 1.2**: Re-run the GitHub license detection and record the new spdx_id.
+  - [x] **WS1-T1.2 - 1.2**: Re-run the GitHub license detection and record the new spdx_id. `gh api repos/pixu1980/rule-mcp/license` returns `MIT` at `a6d0218d`; before that commit it returned `NOASSERTION`, because the file carried a heading and a fence around the text and licensee reads the raw text only.
 - [ ] **WS1-T2 - Step 2 - E2 (high)**: Three documents disagree on the install route, and server.json advertises an npm package that returns 404.
   - [ ] **WS1-T2.1 - 2.1**: Pick the one install route the project supports today.
   - [ ] **WS1-T2.2 - 2.2**: Align README.md, CONTRIBUTING.md, docs/08-release.md and server.json packages with that route.

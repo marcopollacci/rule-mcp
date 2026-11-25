@@ -32,6 +32,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Fixed
 
+- **license**: keep LICENSE as the bare MIT text a detector reads (`a6d0218`)
 - **next**: keep the numeric suffix a nested step id carries (`c1426bd`)
 - **next**: read a step id that sits inside emphasis (`c12644f`)
 - **license**: carry the MIT text so a host can name it (`fbb3fdd`)
