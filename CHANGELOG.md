@@ -36,6 +36,7 @@ and the versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ### Documentation
 
+- **plans**: close the prompt-corpus plan, every step landed (`8ed554f`)
 - **plans**: record that the CI fallback is proven with gh off PATH (`bb62c8f`)
 - **plans**: give the log step a process to follow before it (`2cf5431`)
 - **adr**: require a record before a stop signals a dev server (`754f26e`)
