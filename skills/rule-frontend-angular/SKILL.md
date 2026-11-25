@@ -168,6 +168,23 @@ export class TodoList {
 }
 ```
 
+## Modern Angular APIs (v17+ unless noted)
+
+- **Inputs, outputs, two-way binding**: `input()` / `input.required()`, `output()`,
+  `model()`. Not `@Input` / `@Output` / `EventEmitter`.
+- **Dependency injection**: `inject()`, not constructor parameters.
+- **Host bindings**: the `host: {}` object of `@Component` / `@Directive`, not
+  `@HostBinding` / `@HostListener`.
+- **Template imports**: import only the directives and pipes the template uses
+  (`AsyncPipe`, `DatePipe`, ...). Never `CommonModule`.
+- **Derived state**: `computed()`; `linkedSignal()` (v19+) when derived state must
+  also be writable. Never `mutate()` on a signal: use `set()` / `update()`.
+- **Async data**: `resource()` / `httpResource()` (v19+/v20+) for signal-based
+  loading; RxJS only for real stream composition.
+- **Images**: `NgOptimizedImage` (`ngSrc`) for static images; it does not apply to
+  inline base64.
+- **Services**: `providedIn: "root"` for singletons (`@Service` on v22+).
+
 ## Barrel Pattern
 
 ```typescript
@@ -482,19 +499,28 @@ Rule: _If you reach for `ngDoCheck`, you are fighting the framework. Use signals
 
 ---
 
-## Forms (Angular Reactive Forms)
+## Forms
 
-### Prerequisites
+### Which forms API
 
-- Use Angular Reactive Forms (`FormGroup`, `FormControl`, `FormArray`)
-- Use `zod` with custom validators for schema validation
-- Prefer Reactive Forms over Template-Driven Forms
+- **v22+**: prefer Signal Forms (`@angular/forms/signals`) for new forms:
+  signal-based state, type-safe field access, schema-based validation. On v21
+  they are experimental: use them only when the project accepts that.
+- **Otherwise**: typed Reactive Forms (`FormGroup`, `FormControl`, `FormArray`),
+  never template-driven forms.
+- **Zoneless + Reactive Forms**: `setValue`, `patchValue`, `FormArray.push` and
+  the like do not schedule change detection. A template that reads form state
+  must get it through a signal (`toSignal(form.valueChanges)`) or a
+  `markForCheck()`.
 
-### Step 1 - Define form with validation
+Check the exact Signal Forms API for the project version with
+`search_documentation` before writing it.
+
+### Typed Reactive Forms example
 
 ```typescript
-import { Component } from "@angular/core";
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Component, inject, signal } from "@angular/core";
+import { FormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 
 @Component({
   selector: "app-my-form",
@@ -504,27 +530,25 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from "@angula
       <label data-part="field">
         <span data-part="label">Email</span>
         <input data-part="input" formControlName="email" type="email" />
-        @if (form.get("email")?.invalid && form.get("email")?.touched) {
+        @if (form.controls.email.invalid && form.controls.email.touched) {
           <span data-part="error">{{ getError("email") }}</span>
         }
       </label>
-      <button data-part="submit" [disabled]="form.invalid || submitting">Save</button>
+      <button data-part="submit" [disabled]="form.invalid || submitting()">Save</button>
     </form>
   `,
 })
 export class MyFormComponent {
-  form: FormGroup;
-  submitting = false;
+  private readonly fb = inject(FormBuilder);
 
-  constructor(private fb: FormBuilder) {
-    this.form = this.fb.group({
-      email: ["", [Validators.required, Validators.email]],
-      name: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
-    });
-  }
+  readonly submitting = signal(false);
+  readonly form = this.fb.nonNullable.group({
+    email: ["", [Validators.required, Validators.email]],
+    name: ["", [Validators.required, Validators.minLength(2), Validators.maxLength(255)]],
+  });
 
-  getError(controlName: string): string {
-    const control = this.form.get(controlName);
+  getError(controlName: "email" | "name"): string {
+    const control = this.form.controls[controlName];
     if (control?.hasError("required")) return "This field is required";
     if (control?.hasError("email")) return "Invalid email";
     return "";
@@ -532,14 +556,14 @@ export class MyFormComponent {
 
   onSubmit(): void {
     if (this.form.invalid) return;
-    this.submitting = true;
+    this.submitting.set(true);
   }
 }
 ```
 
 ### Checklist
 
-- [ ] Reactive Forms (not template-driven) used
+- [ ] Signal Forms on v22+, typed Reactive Forms otherwise (never template-driven)
 - [ ] Validators applied at `FormGroup`/`FormControl` level
 - [ ] Field-level errors rendered after touch
 - [ ] Submit button disabled when invalid or submitting

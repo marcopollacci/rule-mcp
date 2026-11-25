@@ -42,14 +42,14 @@ Key levers:
 
 ### When to use
 
-| Use case              | Tool                                  |
-| --------------------- | ------------------------------------- |
-| Local component state | `signal()`                            |
-| Derived values        | `computed()`                          |
-| Side effects          | `effect()`                            |
-| Complex async streams | RxJS (`Subject`, `mergeMap`, etc.)    |
-| HTTP requests         | RxJS (`HttpClient`)                   |
-| Forms                 | `FormsModule` / `ReactiveFormsModule` |
+| Use case              | Tool                                              |
+| --------------------- | ------------------------------------------------- |
+| Local component state | `signal()`                                        |
+| Derived values        | `computed()`                                      |
+| Side effects          | `effect()`                                        |
+| Complex async streams | RxJS (`Subject`, `mergeMap`, etc.)                |
+| HTTP requests         | RxJS (`HttpClient`)                               |
+| Forms                 | Signal Forms (v22+) / typed `ReactiveFormsModule` |
 
 ### Signal service pattern
 
