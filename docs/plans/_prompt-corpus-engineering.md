@@ -13,6 +13,12 @@ The server has 105 tools and 16 slash commands. `rule_tool_handon` proposes the 
 
 ## Dependency graph
 
+Depends on: ADR 146 (plan shape), ADR 251 (the record a dev-server stop trusts). The audit script depends on the three local session stores and on nothing in this repository.
+
+Feeds: nothing yet. Every edge ends inside this plan; a follow-up plan would be WS3-T1b's restart, once start and stop are proven on a real run.
+
+Shared files: `packages/mcp/core/skills/_load.js` (every tool registers there), `packages/mcp/core/agents/commands/_names.js` (every slash command is named there), `scripts/__tests__/fixtures/tool-surface.json` and `README.md`/`CLAUDE.md` (surface counts).
+
 ```text
 WS0 audit script ──► WS1 rule_tool_next ──► WS2 session resume hook
                             │                        │
