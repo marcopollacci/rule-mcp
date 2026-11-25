@@ -111,6 +111,20 @@ test("a step id may carry a letter suffix", () => {
   rmSync(root, { recursive: true, force: true });
 });
 
+test("a nested step id keeps its numeric suffix", () => {
+  // docs/plans/oss.md nests `WS1-T1.1` under `WS1-T1`, and a truncated id ticks
+  // the parent line while reporting the child.
+  const nested = "# demo\n\nStatus: `in-progress`\n\n## WS1\n\n- [x] **WS1-T1 - Step 1**: done.\n  - [ ] **WS1-T1.1 - 1.1**: the nested one.\n";
+  const root = project({ "_demo.md": nested });
+  const result = nextStep(root, { want: "demo" });
+
+  assert.equal(result.id, "WS1-T1.1", "the suffix survives");
+  assert.equal(nextStep(root, { want: "WS1-T1.1" }).id, "WS1-T1.1", "and it resolves by its own id");
+  assert.equal(nextStep(root, { want: "WS1-T1" }).status, "closed", "the parent is done, and a longer id is not it");
+
+  rmSync(root, { recursive: true, force: true });
+});
+
 test("a phase resolves to its own workstream", () => {
   const root = project({ "_demo.md": PLAN });
   const result = nextStep(root, { want: "WS2" });

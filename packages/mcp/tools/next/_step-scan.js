@@ -48,7 +48,7 @@ export function firstOpenStep(text, from = 0) {
     step.push(line.trim());
   }
 
-  const id = /^\s*(?:\*\*|__|\*|_)?([A-Za-z]{1,8}\d*-T\d+[A-Za-z]?)\b/.exec(step.join(" "))?.[1] ?? "";
+  const id = /^\s*(?:\*\*|__|\*|_)?([A-Za-z]{1,8}\d*-T\d+[A-Za-z]?(?:\.\d+)?)\b/.exec(step.join(" "))?.[1] ?? "";
 
   return { workstream: headingBefore(lines, index), step: step.join(" "), id, line: index + 1 };
 }
@@ -68,7 +68,7 @@ export const openCount = (text) => (text.match(/^\s*-\s*\[ \]\s+\S/gm) ?? []).le
  */
 export function matchStep(text, stepId) {
   const lines = text.split("\n");
-  const index = lines.findIndex((line) => new RegExp(String.raw`^\s*-\s*\[[ x]\]\s+(?:\*\*|__|\*|_)?${stepId}\b`, "i").test(line));
+  const index = lines.findIndex((line) => new RegExp(String.raw`^\s*-\s*\[[ x]\]\s+(?:\*\*|__|\*|_)?${stepId}(?![\w.])`, "i").test(line));
 
   if (index === -1 || /^\s*-\s*\[x\]/i.test(lines[index])) {
     return null;
@@ -88,7 +88,7 @@ export function matchStep(text, stepId) {
  * @returns {{ text: string, ticked: boolean }}
  */
 export function tickStep(text, stepId) {
-  const pattern = new RegExp(String.raw`^(\s*-\s*)\[ \](\s+(?:\*\*|__|\*|_)?${stepId}\b)`, "mu");
+  const pattern = new RegExp(String.raw`^(\s*-\s*)\[ \](\s+(?:\*\*|__|\*|_)?${stepId}(?![\w.]))`, "mu");
 
   if (!pattern.test(text)) {
     return { text, ticked: false };
