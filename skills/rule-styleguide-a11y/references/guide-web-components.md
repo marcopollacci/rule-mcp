@@ -38,7 +38,11 @@ class ToggleChip extends HTMLElement {
     const pressed = this.#internals.ariaPressed !== "true";
 
     this.#internals.ariaPressed = String(pressed);
-    this.#internals.states.toggle("pressed", pressed);
+    if (pressed) {
+      this.#internals.states.add("pressed");
+    } else {
+      this.#internals.states.delete("pressed");
+    }
   }
 }
 ```

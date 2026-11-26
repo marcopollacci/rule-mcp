@@ -70,6 +70,17 @@ check("T7.11 an expression child counts as text", !failed(tsx("<button>{label}</
 check("T7.12 an img with alt names the button", !failed(html('<button><img src="x.svg" alt="Search"></button>'), "a11y-button-name"));
 check("T7.13 an img with empty alt does not", Boolean(failed(html('<button><img src="x.svg" alt=""></button>'), "a11y-button-name")));
 check("T7.14 aria-labelledby names the button", !failed(html('<button aria-labelledby="t"><svg></svg></button>'), "a11y-button-name"));
+check("T7.15 an empty aria-label does not name the button", Boolean(failed(html('<button aria-label=""><svg></svg></button>'), "a11y-button-name")));
+check("T7.16 a whitespace-only aria-label does not name the button", Boolean(failed(html('<button aria-label="  "><svg></svg></button>'), "a11y-button-name")));
+check("T7.17 an empty title does not name the button", Boolean(failed(html("<button title=''><svg></svg></button>"), "a11y-button-name")));
+check("T7.18 a JSX empty string literal does not name the button", Boolean(failed(tsx('<button aria-label={""}><Icon /></button>'), "a11y-button-name")));
+check("T7.19 a self-closing JSX button with no name fails", Boolean(failed(tsx("<button />"), "a11y-button-name")));
+check("T7.20 a self-closing JSX button with aria-label passes", !failed(tsx('<button aria-label="Close" />'), "a11y-button-name"));
+check("T7.21 handler source in the opening tag is not visible text", Boolean(failed(tsx("<button onClick={() => save()}><Icon /></button>"), "a11y-button-name")));
+check("T7.22 a JSX arrow handler does not hide tabIndex", !failed(tsx('<div role="button" onClick={() => save()} tabIndex={0}>Save</div>'), "a11y-role-button-focusable"));
+check("T7.23 a link with href and role=button is already focusable", !failed(html('<a href="/save" role="button">Save</a>'), "a11y-role-button-focusable"));
+check("T7.24 an input with role=button is already focusable", !failed(html('<input type="button" role="button" value="Save">'), "a11y-role-button-focusable"));
+check("T7.25 a link without href and role=button still fails", Boolean(failed(html('<a role="button">Save</a>'), "a11y-role-button-focusable")));
 
 check(
   "T8 the rules do not fire on a JavaScript file",

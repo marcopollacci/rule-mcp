@@ -72,7 +72,7 @@ No framework: ARIA state is set through DOM properties.
 | Concept            | Syntax                                                                                        |
 | :----------------- | :-------------------------------------------------------------------------------------------- |
 | State binding      | `button.ariaExpanded = String(isOpen)`.                                                       |
-| Boolean attribute  | `button.toggleAttribute("aria-hidden", isHidden)`.                                            |
+| ARIA boolean       | `button.ariaHidden = String(isHidden)` (`"true"`/`"false"`, never `toggleAttribute`).         |
 | Host semantics     | `this.#internals.role = "button"`, `this.#internals.ariaPressed = "true"` (ElementInternals). |
 | Shadow DOM caution | `aria-controls` / `aria-describedby` IDs do not cross Shadow DOM. Use `ElementInternals`.     |
 
@@ -87,7 +87,7 @@ toggle.addEventListener("click", () => {
 Full authoring rules: [`guide-web-components.md`](./guide-web-components.md).
 
 ----------------- | :---------------------------------------------------------------------------------------- |
-| State binding | `.ariaExpanded=${this.isOpen}` or `?aria-hidden=${this.isHidden}` |
+| State binding | `.ariaExpanded=${this.isOpen}` or `aria-hidden=${String(this.isHidden)}` |
 | Shadow DOM caution | `aria-controls` / `aria-describedby` IDs do not cross Shadow DOM - use `ElementInternals` |
 
 ```js
